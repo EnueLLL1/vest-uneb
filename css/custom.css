@@ -1,0 +1,9 @@
+/* Estilos complementares e tipografia acadêmica UNEB */
+canvas {
+  image-rendering: auto;
+}
+
+.math-font {
+  font-family: 'Merriweather', serif;
+  font-style: italic;
+}
