@@ -1,0 +1,195 @@
+
+--- PÁGINA 3 ---
+Matemática
+Questão 01
+(Correta: A)
+Os         dados         fornecidos         pelo         Inpe         (Instituto         de         Pesquisas
+Espaciais)         mostram,         no         gráfico         abaixo,         que         no         período
+de         2022         a         2023,         houve         uma         queda         no         índice         de
+desmatamento         na         Amazônia         Legal.         Observando         as
+informações         do         gráfico,         calcule,         aproximadamente,         o
+percentual         na         queda         desse         índice         de         desmatamento         no
+período         citado         acima.
+(A) 39%
+(B) 35%
+(C) 30%
+(D) 37%
+(E) 32%
+Questão 02
+(Correta: D)
+Uma         empresa         possui         um         custo         fixo         mensal         no         valor         de
+R$         182,00         e         um         custo         variável,         em         média,         de         R$         8,00
+por         peça         produzida.                  Quantas         peças         poderão         ser
+produzidas,         em         determinado         mês,         se         a         empresa
+disponibilizar         R$         4.838,00?
+(A) 472
+(B) 391
+(C) 483
+(D) 582
+(E) 564
+Questão 03
+(Correta: B)
+Dada         a         sequência         numérica         -2,         3         e         8,         onde         p1,         p2         e         p3
+representam         as         respectivas         posições         de         cada         elemento
+na         sequência         acima,         calcule         a         diferença         entre         os
+elementos         p19         -         p20         .
+(A) -2
+(B) -5
+(C) 4
+(D) 6
+(E) 3
+Questão 04
+(Correta: D)
+Considere         que         uma         cadeira         defeituosa,         possua         uma         de
+suas         quatro         pernas         menor         do         que         a         das         outras         três.
+Desse         modo,         quantos         planos         distintos,         formados         pelos
+pés         dessa         cadeira,         poderemos         obter         quando         alguém
+nela         sentar-se.         Os         pés         dessa         cadeira         estão         indicados
+pelos         pontos         A,         B,         C         e         D,         conforme         figura         abaixo.
+(A) 5
+(B) 1
+(C) 2
+(D) 4
+(E) 3
+Questão 05
+(Correta: C)
+Em         uma         caixa         existem         4         balas         de         chocolate         e         5         balas         de
+coco.         Sabendo         que         Sílvio         só         gosta         de         bala         de         chocolate,
+qual         a         probabilidade         de         Silvio         escolher         duas         balas,         uma
+em         seguida         da         outra,         e         as         duas         serem         de         chocolate?
+(A) 2/7
+(B) 3/5
+(C) 1/6
+(D) 5/6
+(E) 2/9
+Questão 06
+(Correta: E)
+O         Sr.         Gustavo,         sua         esposa         Mariana,         seu         filho         Felipe,
+suas         filhas         Letícia         e         Cristiane         irão         pousar,         um         ao         lado         do
+outro,         para         uma         fotografia.                  De         quantas         maneiras
+diferentes         a         família         poderá         posar         para         essa         fotografia,
+sabendo         que         os         irmãos         deverão         ficar         sempre         juntos         em
+qualquer         ordem?
+(A) 30
+(B) 24
+(C) 42
+(D) 40
+Dia 2 - MT, CN - 1 3
+--- PÁGINA 4 ---
+(E) 36
+Questão 07
+(Questão anulada)
+Na         figura         abaixo,         está         representado         um         prisma         reto         de
+base         trapezoidal         cuja         altura         mede         12         cm.         Sabendo         que         a
+base         desse         prisma         é         um         trapézio         isósceles         cujos         lados
+não         paralelos         medem         2√3         cm         e         a         base         menor         mede         √3
+cm,         observe         a         figura         e         calcule         o         volume         do         prisma         em
+cm3         .
+(A) 24√3
+(B) 40√3
+(C) 32√3
+(D) 36√3
+(E) 28√3
+Questão 08
+(Correta: D)
+Tatiana         vai         fazer         aniversário,         e         alguns         de         seus         colegas
+da         escola         se         reunirão         para         presenteá-la.         O         valor         do
+presente         escolhido         é         de         R$         120,00.         No         entanto         dois
+deles         não         mais         poderão         participar,         acarretando         um
+aumento         de         R$         5,00         para         cada         um         dos         colegas
+restantes.         Sendo         assim,         quantos         colegas         participarão         da
+compra         do         presente?
+(A) 9
+(B) 7
+(C) 5
+(D) 6
+(E) 10
+Questão 09
+(Correta: A)
+No         plano         cartesiano         R2,         a         reta         de         equação         x         +         y         =         -1
+intercepta         a         curva         x2         +         (y         +3)2         =         4         nos         pontos         M         e         N.
+Desse         modo,         podemos         afirmar         que         a         distância         entre         os
+pontos         M         e         N         é         igual         a:
+(A) 2√2
+(B) 3√5
+(C) 3√3
+(D) 3√2
+(E) 5√3
+Questão 10
+(Correta: A)
+Considere         que         no         gráfico         abaixo         esteja         representado         o
+consumo         de         energia         elétrica         de         um         estabelecimento
+comercial         durante         um         determinado         período         do         dia.                  A
+razão         entre         o         consumo,         em         Kw/hora,         do         intervalo         de
+tempo         das         8h         às         10h,         e         do         intervalo         de         tempo         das         16h
+ás         20h,         nessa         ordem,         é         igual         a:
+(A) 2/3
+(B) 5/3
+(C) 3/4
+(D) 4/5
+(E) 5/2
+Questão 11
+(Correta: B)
+A         prefeitura         de         uma         cidade         irá         construir         uma         praça         em
+forma         de         triângulo,         de         acordo         com         os         espaços         descritos
+abaixo:
+-         Espaço         destinado         aos         sanitários         (S)
+-         Espaço         destinado         aos         bebedouros         (B)
+-         Espaço         destinado         ao         parque         de         diversão         (D)
+-         Espaço         destinado         às         churrasqueiras         (C)
+A         figura         abaixo         representa         o         esboço         dessa         praça         e
+algumas         de         suas         dimensões.
+Dia 2 - MT, CN - 1 4
+--- PÁGINA 5 ---
+Se         uma         criança,         estando         no         parque         de         diversões         (P),
+quiser         ir         até         as         churrasqueiras         (C),         passando
+obrigatoriamente         pelos         bebedouros         (B),         quantos         metros
+irá         caminhar?
+(A) 37,5
+(B) 50
+(C) 62,5
+(D) 45
+(E) 42,5
+Questão 12
+(Correta: C)
+Uma         pirâmide         é         seccionada         a         uma         distância         de                  2/3                  de
+sua         base.         Sabendo         que         o         volume         dessa         pirâmide         é         igual
+a         81         cm3,         calcule,         em         cm3,                  o         volume         do         tronco         de
+pirâmide         obtido         a         partir         desse         seccionamento.
+(A) 62
+(B) 70
+(C) 78
+(D) 67
+(E) 60
+Questão 13
+(Correta: E)
+No                  círculo                  trigonométrico                  abaixo         de         raio         igual         a         1,
+considere         os         arcos                  AB         =         π/3         rd         ,         AC         =         α         e         CD         =         π/4         rd.
+Calcule         o         valor         da         expressão         cos         π/3         +         tg         α         .
+(A) 2/3
+(B) -2/3
+(C) -3/4
+(D) 3/2
+(E) -1/2
+Questão 14
+(Questão anulada)
+Na         figura         abaixo         o         segmento         AB         está         contido         no
+diâmetro         do         círculo.         Sabendo         que         as         medidas         dos
+segmentos         AB,         BC         e         DC,         são         respectivamente,         8         cm,         6
+cm         e         4         cm,         calcule         a         área         do         círculo         em         cm2         .
+(A) π(5,5)2
+(B) π(7,1)2
+(C) π(3,2)2
+(D) π(6,5)2
+(E) π(4,3)2
+Questão 15
+(Correta: A)
+Na         equação         x3         +         px2         −         2x         +         1         =         0,         duas         de         suas         raízes
+são         simétricas.         Desse         modo         podemos         afirmar         que         o
+parâmetro         p,         é         igual         a:
+(A) -1/2
+(B) -2/3
+(C) 5/2
+(D) 2/3
+(E) 3/4
+Dia 2 - MT, CN - 1 5

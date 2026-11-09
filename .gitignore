@@ -1,0 +1,14 @@
+# Logs and OS files
+Thumbs.db
+Desktop.ini
+.DS_Store
+*.tmp
+*.log
+
+# Dependencies (if any)
+node_modules/
+
+# IDE & Gemini
+.gemini/
+.idea/
+.vscode/

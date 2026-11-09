@@ -1,0 +1,234 @@
+
+--- PÁGINA 5 ---
+Matemática
+Questão 01
+(Correta: B)
+Marcelo         gosta         tanto         de         Matemática         que         resolveu
+escrever         todos         os         anagramas         de         seu         nome         em         ordem
+alfabética.         Após         todo         esse         trabalho         chegou         à         conclusão
+de         que         seu         nome         ocupa         a         posição:
+(A) 2880
+(B) 2977
+(C) 2520
+(D) 745
+(E) 2976
+Questão 02
+(Correta: A)
+Um         hexaedro         regular         H         apresenta         superfície         total
+medindo         3,375         cm².         A         base         de         uma         pirâmide         P         tem         a
+área         com         a         mesma         medida         da         área         de         uma         face
+hexaedro         regular         H.         Determine         a         altura         da         pirâmide         P
+para         que         seu         volume         seja         4         cm³.
+(A)
+(B)
+(C)
+(D)
+(E)
+Questão 03
+(Correta: E)
+Na         sequência         crescente         de         quatro         termos,         representada
+abaixo,         os         três         últimos         estão         em         progressão         geométrica,
+e         os         três         primeiros         estão         em         progressão         aritmética.
+Determine         valor         numérico         do         produto         dos         termos         dessa
+sequência.
+Sequência:
+(A) 1440
+(B) 729
+(C) 405
+(D) 25515
+(E) 3645
+Questão 04
+(Correta: A)
+José         Sortudo         ganhou         um         prêmio         de         R$         80.000,00         em
+uma         loteria.         Resolveu         aplicar         esse         prêmio         durante         um
+tempo         até         que         o         valor         chegasse         a         R$         320.000,00.
+Conseguiu         uma         aplicação         bancária         rendendo         juros
+compostos         de         6%         ao         ano.         Supondo         que         esse         rendimento
+não         irá         mudar         ao         longo         dos         anos         e         que         nenhum         valor
+será         acrescentado,         José         Sortudo         atingirá         seu         objetivo
+após         quantos         anos?
+(Use:         log(1,06)         ≈         0,025         e         log(2)         ≈         0,3)
+(A) 24
+(B) 25
+(C) 20
+(D) 12
+(E) 15
+Questão 05
+(Correta: A)
+Considere         n         um         número         real         da         matriz         P         invertível
+abaixo:
+Determine         a         soma         dos         elementos         da         matriz         inversa         de         P,
+sendo         sua         segunda         coluna         descrita         abaixo:
+(A) -         2
+(B) 2
+(C) -         14
+(D) 14
+(E) 8
+Questão 06
+(Correta: D)
+Um         vendedor         de         automóveis         seminovos         estava
+conseguindo         o         excelente         lucro         de         50%         sobre         o         preço         de
+compra         de         seus         veículos.         Porém         sua         loja         estava         ficando
+muito         cheia,         pois         as         vendas         não         estavam         acontecendo
+com         a         frequência         que         ele         esperava.
+Decidiu         então         dar         um         desconto         no         seu         preço         de         venda.
+Dessa         forma,         seu         lucro         sobre         o         preço         de         compra         passou
+a         ser         de         20%.         Determine         o         desconto         dado         sobre         o         preço
+de         venda.
+(A) 30%
+(B) 45%
+VESTIBULAR - 1 1
+--- PÁGINA 6 ---
+(C) 25%
+(D) 20%
+(E) 40%
+Questão 07
+(Correta: E)
+Em         um         curso         preparatório         para         concursos         públicos         a
+média         das         idades         de         uma         turma         com         20         alunos         é         24
+anos.         Dois         alunos         com         a         mesma         idade         ingressaram
+nessa         turma         fazendo         com         que         a         média         aritmética         das
+idades         subisse         para         25         anos.         Qual         a         idade         dos         alunos
+que         ingressaram         na         turma?
+(A) 25         anos.
+(B) 28         anos.
+(C) 30         anos.
+(D) 40         anos.
+(E) 35         anos.
+Questão 08
+(Correta: B)
+O         proprietário         de         uma         loja         de         flores         exóticas         observou
+que         vendendo         uma         flor         rara         por         x         reais,         o         lucro         obtido
+com         essa         venda         é         (x         −         20)         reais,         com         20         reais         o         preço         de
+custo         da         flor.
+Também         observou         que         a         quantidade         vendida         dessa         flor
+depende         do         preço         de         venda,         e         fica         por         volta         de         (100         −         x)
+unidades         a         cada         mês.
+Modelando         a         situação         apresentada         como         uma         função
+quadrática,         determine         o         lucro         máximo         mensal         dessa         loja.
+(A) 4000         reais.
+(B) 1600         reais.
+(C) 2000         reais.
+(D) 1800         reais.
+(E) 3600         reais.
+Questão 09
+(Correta: E)
+Considere         no         plano         cartesiano         a         circunferência         de
+equação         x²         +         y²         −         25         =         0         e         a         reta         de         equação         x         −         y         −         1         =
+0.         A         intersecção         da         reta         com         a         circunferência         determina
+a         corda         AB.         Determine         a         medida         da         corda         AB,         sendo         o
+plano         cartesiano         graduado         em         centímetros.
+(A)
+(B)
+(C)
+(D)
+(E)
+Questão 10
+(Correta: D)
+É         fato         que         a         Matemática         se         encontra         em         diversas
+situações         do         nosso         cotidiano         e         em         algumas         ocasiões
+acaba         passando         despercebida.         Um         exemplo         é         a
+numeração         dos         calçados.         Uma         fórmula         matemática
+ajuda         a         padronizar         os         tamanhos         de         acordo         com         a
+medida         dos         pés.         É         claro         que         essa         fórmula         mostra         uma
+boa         noção         de         tamanho.         O         ideal         sempre         é         experimentar.
+Ernesto,         ao         saber         dessa         fórmula,         resolveu         acrescentar
+10%         à         medida         de         seu         pé.         Aplicou         a         fórmula         e         verificou
+que         a         numeração         seria         40.         Qual         a         medida         exata         do         pé
+de         Ernesto,         segundo         a         fórmula?
+(N         →         número         do         calçado         e         P         →         tamanho         do         pé         em
+centímetros)
+Fórmula
+(A) 27,5         cm.
+(B) 26         cm.
+(C) 25         cm.
+(D) 24         cm.
+(E) 26,4         cm.
+Questão 11
+(Correta: B)
+Considerando         as         funções         reais         definidas         por         f(x)         =         4x         +         3
+e         g(x)         =         5         −         3x.
+Sabendo         que         3         +         f(g(2p         +         1))         =         4p         −         g(f(p         −         3)),
+determine         a         razão         entre         f(p)         e         g(p).
+(A)
+(B)
+(C)
+(D)
+(E)
+VESTIBULAR - 1 2
+--- PÁGINA 7 ---
+Questão 12
+(Correta: C)
+Sr.         José         Esperança         faz         apostas         semanais         em         um         jogo
+que         apresenta         as         seguintes         características:
+ Cada         volante         de         aposta         é         numerado
+de1         a         20;
+ Cada         aposta         é         configurada         com         5         números;
+ O         apostador         pode         marcar         um         mínimo         de         5
+números         e         um         máximo         de         8         números         em         cada         volante;
+ Todo         sábado         os         20         números         são         colocados
+em         um         globo         giratório         e         5         números         são         sorteados;
+ Ganha         o         prêmio         o         volante         que         estiver         com
+os         5         números         sorteados;
+Sr.         José         Esperança         aposta         sempre         os         mesmos         seis
+números         em         um         volante,         pois         acredita         que         pelo         fato         de
+seus         números         ainda         não         terem         sidos         sorteados,         suas
+chances         de         ganhar         ficam         cada         vez         maiores.
+Assinale         a         probabilidade         de         o         Sr.         José         Esperança         ser         o
+ganhador         do         prêmio         com         sua         aposta         rotineira.
+(A)
+(B)
+(C)
+(D)
+(E)
+Questão 13
+(Correta: D)
+Um         grupo         de         126         pessoas         saiu         do         município         de         Volta
+Redonda,         localizado         no         Sul         do         estado         do         Rio         de         Janeiro,
+em         direção         aos         pontos         turísticos         da         capital         carioca.         O
+ponto         inicial         foi         a         região         da         Praça         Mauá         para         conhecer         o
+Museu         do         Amanhã         e         o         Museu         de         Arte         do         Rio.         Devido         a
+problemas         no         trajeto,         chegaram         muito         próximo         do         horário
+de         fechamento         dos         museus.         Todos         conseguiram         visitar
+pelo         menos         um         desses         museus,         porém         um         sétimo         das
+pessoas         que         visitaram         o         Museu         do         Amanhã         também
+conseguiu         visitar         o         Museu         de         Arte         do         Rio,         e         um         terço         das
+pessoas         que         visitaram         o         Museu         de         Arte         do         Rio         também
+conseguiu         visitar         o         Museu         do         Amanhã.         Diante         dos
+dados,         quantas         pessoas         conseguiram         visitar         os         dois
+museus?
+(A) 53.
+(B) 28.
+(C) 42.
+(D) 14.
+(E) 18.
+Questão 14
+(Correta: A)
+Valdir         pretende         comprar         um         aparelho         celular         e         gostou         de
+um         modelo         que         está         sendo         anunciado         por         R$9108,00         à
+vista         ou         em         duas         parcelas         mensais         sem         juros         de
+R$4554,00.         O         dinheiro         que         ele         reservou         para         essa
+compra         não         é         suficiente         para         o         pagamento         à         vista         e
+Valdir         não         quer         acrescentar         mais         nenhum         real         para         essa
+compra.         Entretanto,         se         Valdir         pagar         a         primeira         parcela         e,
+no         mesmo         dia         investir         a         quantia         restante         do         que         havia
+reservado         para         compra         em         uma         aplicação         bancária         que
+rende         1,2%         ao         mês         não         precisará         acrescentar         nenhum
+valor         ao         que         já         havia         reservado         para         compra.
+Quanto         Valdir         reservou         para         comprar         esse         celular?
+(A) 9054         reais
+(B) 9000         reais
+(C) 8970         reais
+(D) 9050         reais
+(E) 9100         reais
+Questão 15
+(Correta: D)
+Sendo         as         medidas         MN         =         4         cm,         NP         =         2         cm         e         PQ         =         10         cm,
+determine         a         medida         do         ângulo         interno         M         do         triângulo
+PMQ,         representado         como         ângulo         β.
+(A) 25º
+(B) 60º
+(C) 22,5º
+(D) 45º
+(E) 30º
+VESTIBULAR - 1 3
