@@ -61,6 +61,7 @@ export function updateMetricUI() {
   const totalModules = 6;
   const percent = Math.round((completedCount / totalModules) * 100);
 
+  // Métricas do Header
   const elPercent = document.getElementById('metric-percent');
   const elBar = document.getElementById('metric-progress-bar');
   const elScore = document.getElementById('metric-score');
@@ -73,6 +74,52 @@ export function updateMetricUI() {
   }
   if (elScore) elScore.textContent = state.score;
   if (elDoneCount) elDoneCount.textContent = completedCount;
+
+  // Métricas do Hub do Estudante (Pilar 3: Minha Progressão e Pilar 1: Status)
+  const elHubPercent = document.getElementById('hub-metric-percent');
+  const elHubBar = document.getElementById('hub-metric-progress-bar');
+  const elHubModules = document.getElementById('hub-metric-modules');
+  const elHubXp = document.getElementById('hub-metric-xp');
+  const elHubStatus = document.getElementById('hub-aula-status');
+  const btnHubContinue = document.getElementById('btn-hub-continue-class');
+
+  if (elHubPercent) elHubPercent.textContent = `${percent}%`;
+  if (elHubBar) {
+    if ('value' in elHubBar) elHubBar.value = percent;
+    else elHubBar.style.width = `${percent}%`;
+  }
+  if (elHubModules) elHubModules.textContent = completedCount;
+  if (elHubXp) elHubXp.textContent = state.score;
+
+  const MODULE_NAMES = {
+    'mod-logica': 'Eixo 1: Lógica Matemática',
+    'mod-numeros': 'Eixo 2: Sequências & Contagem',
+    'mod-algebra': 'Eixo 3: Álgebra & Parábola',
+    'mod-trig': 'Eixo 4: Trigonometria',
+    'mod-financas': 'Eixo 5: Matemática Financeira',
+    'mod-estatistica': 'Eixo 6: Estatística & Sturges'
+  };
+  const MODULE_DAYS = {
+    'mod-logica': 'day1',
+    'mod-numeros': 'day1',
+    'mod-algebra': 'day1',
+    'mod-trig': 'day2',
+    'mod-financas': 'day2',
+    'mod-estatistica': 'day2'
+  };
+  const nextModId = Object.keys(MODULE_NAMES).find(id => !state.completedModules[id]) || 'mod-logica';
+  const isAllComplete = completedCount === totalModules;
+
+  if (elHubStatus) {
+    elHubStatus.textContent = isAllComplete
+      ? 'Status da Aula: Concluído ✓ • Todos os 6 módulos finalizados!'
+      : `Status da Aula: Em andamento • Módulo atual: ${MODULE_NAMES[nextModId]}`;
+  }
+  if (btnHubContinue) {
+    btnHubContinue.setAttribute('data-target-module', nextModId);
+    btnHubContinue.setAttribute('data-axis', nextModId);
+    btnHubContinue.setAttribute('data-hub-goto', MODULE_DAYS[nextModId]);
+  }
 
   Object.entries(state.completedModules).forEach(([modId, done]) => {
     const btn = document.getElementById(`btn-comp-${modId}`);
@@ -91,18 +138,93 @@ export function updateMetricUI() {
   });
 }
 
+const ALL_MODULE_IDS = [
+  'mod-logica',
+  'mod-numeros',
+  'mod-algebra',
+  'mod-trig',
+  'mod-financas',
+  'mod-estatistica'
+];
+
+export function filterDayModulesByAxis(activeModId = 'all') {
+  const showAll = !activeModId || activeModId === 'all';
+
+  document.querySelectorAll('[data-axis-chip]').forEach((btn) => {
+    const chipId = btn.getAttribute('data-axis-chip');
+    const isActive = showAll ? chipId === 'all' : chipId === activeModId;
+    btn.setAttribute('aria-pressed', String(isActive));
+    btn.classList.toggle('btn-pill-primary', isActive);
+    btn.classList.toggle('font-bold', isActive);
+    btn.classList.toggle('btn-pill-secondary', !isActive);
+    btn.classList.toggle('font-semibold', !isActive);
+  });
+
+  ALL_MODULE_IDS.forEach((id) => {
+    const modEl = document.getElementById(id);
+    if (modEl) {
+      modEl.classList.toggle('hidden', !showAll && id !== activeModId);
+    }
+  });
+
+  redrawActiveCanvases();
+}
+
+export function navigateToModule(modId) {
+  const MODULE_MAP = {
+    'mod-1': 'mod-logica',
+    'mod-2': 'mod-numeros',
+    'mod-3': 'mod-algebra',
+    'mod-4': 'mod-trig',
+    'mod-5': 'mod-financas',
+    'mod-6': 'mod-estatistica',
+    'mod-logica': 'mod-logica',
+    'mod-numeros': 'mod-numeros',
+    'mod-algebra': 'mod-algebra',
+    'mod-trig': 'mod-trig',
+    'mod-financas': 'mod-financas',
+    'mod-estatistica': 'mod-estatistica'
+  };
+  const MODULE_DAYS = {
+    'mod-logica': 'day1',
+    'mod-numeros': 'day1',
+    'mod-algebra': 'day1',
+    'mod-trig': 'day2',
+    'mod-financas': 'day2',
+    'mod-estatistica': 'day2'
+  };
+  const actualModId = MODULE_MAP[modId] || modId;
+  const dayView = MODULE_DAYS[actualModId] || 'day1';
+  filterDayModulesByAxis('all');
+  switchView(dayView);
+  requestAnimationFrame(() => {
+    const el = document.getElementById(actualModId);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+}
+
+export function initStudent() {
+  switchView('home');
+}
+
 export function switchView(viewName, save = true) {
   const state = getState();
-  const safeView = (viewName === 'turma' && !isTeacherModeActive(state)) ? 'day1' : viewName;
+  let targetView = viewName;
+  if (targetView === 'aulas') targetView = 'day1';
+  if (targetView === 'simulado') targetView = 'quiz';
+
+  const safeView = (targetView === 'turma' && !isTeacherModeActive(state)) ? 'home' : targetView;
   state.currentView = safeView;
 
-  ['day1', 'day2', 'quiz', 'turma'].forEach(id => {
+  ['home', 'day1', 'day2', 'quiz', 'turma'].forEach(id => {
     const viewEl = document.getElementById(`view-${id}`);
     const navEl = document.getElementById(`nav-${id}`);
     if (viewEl) viewEl.classList.add('hidden');
     if (navEl) {
-      navEl.classList.remove('bg-uneb-accent', 'text-white');
-      navEl.classList.add('text-slate-300');
+      navEl.classList.remove('bg-uneb-accent', 'text-white', 'shadow-sm');
+      navEl.classList.add('text-slate-200');
       navEl.removeAttribute('aria-current');
     }
   });
@@ -111,9 +233,31 @@ export function switchView(viewName, save = true) {
   const activeNav = document.getElementById(`nav-${safeView}`);
   if (activeView) activeView.classList.remove('hidden');
   if (activeNav) {
-    activeNav.classList.add('bg-uneb-accent', 'text-white');
-    activeNav.classList.remove('text-slate-300');
+    activeNav.classList.add('bg-uneb-accent', 'text-white', 'shadow-sm');
+    activeNav.classList.remove('text-slate-200');
     activeNav.setAttribute('aria-current', 'page');
+  }
+
+  // Sincroniza a barra inferior móvel (Mobile Bottom Nav)
+  const mobileNavMap = {
+    home: 'mobile-nav-home',
+    day1: 'mobile-nav-aulas',
+    day2: 'mobile-nav-aulas',
+    quiz: 'mobile-nav-quiz'
+  };
+  document.querySelectorAll('#mobile-bottom-nav button').forEach(tab => {
+    tab.classList.remove('text-iris-bolt');
+    tab.classList.add('text-slate-500');
+    tab.setAttribute('aria-selected', 'false');
+  });
+  const activeMobileTabId = mobileNavMap[safeView];
+  if (activeMobileTabId) {
+    const activeTab = document.getElementById(activeMobileTabId);
+    if (activeTab) {
+      activeTab.classList.remove('text-slate-500');
+      activeTab.classList.add('text-iris-bolt');
+      activeTab.setAttribute('aria-selected', 'true');
+    }
   }
 
   if (save) saveState();
@@ -188,7 +332,7 @@ export function applySessionUI() {
   if (btnReset) btnReset.classList.toggle('hidden', isPreviewingStudent);
 
   if (!isTeacher && state.currentView === 'turma') {
-    switchView('day1', false);
+    switchView('home', false);
   }
 
   if (studentBadge) {
@@ -254,7 +398,7 @@ export function enterStudentSession(rawName = '', rawClassCode = 'UNEB-A') {
     teacherPreviewAsStudent: false
   }, 'session');
   applySessionUI();
-  switchView(getState().currentView === 'turma' ? 'day1' : (getState().currentView || 'day1'), false);
+  switchView('home', false);
   scheduleCloudSync(true);
   showToast(`Bem-vindo(a), ${cleanName} (${cleanClass})! Sessão de Estudante iniciada.`);
   return true;
@@ -456,15 +600,83 @@ function setupGlobalListeners() {
   const btnReset = document.getElementById('btn-reset-progress');
   if (btnReset) btnReset.addEventListener('click', handleResetStudentProgress);
 
-  // Navegação entre abas
+  // Navegação entre abas (Desktop)
+  const navHome = document.getElementById('nav-home');
   const navDay1 = document.getElementById('nav-day1');
   const navDay2 = document.getElementById('nav-day2');
   const navQuiz = document.getElementById('nav-quiz');
   const navTurma = document.getElementById('nav-turma');
-  if (navDay1) navDay1.addEventListener('click', () => switchView('day1'));
-  if (navDay2) navDay2.addEventListener('click', () => switchView('day2'));
+  if (navHome) navHome.addEventListener('click', () => switchView('home'));
+  if (navDay1) navDay1.addEventListener('click', () => {
+    filterDayModulesByAxis('all');
+    switchView('day1');
+  });
+  if (navDay2) navDay2.addEventListener('click', () => {
+    filterDayModulesByAxis('all');
+    switchView('day2');
+  });
   if (navQuiz) navQuiz.addEventListener('click', () => switchView('quiz'));
   if (navTurma) navTurma.addEventListener('click', () => switchView('turma'));
+
+  // Chips horizontais de seleção rápida de Eixos Temáticos nas Aulas
+  document.querySelectorAll('[data-axis-chip]').forEach((chipBtn) => {
+    chipBtn.addEventListener('click', () => {
+      const chip = chipBtn.getAttribute('data-axis-chip');
+      if (!chip || chip === 'all') {
+        filterDayModulesByAxis('all');
+      } else {
+        navigateToModule(chip);
+        filterDayModulesByAxis(chip);
+      }
+    });
+  });
+
+  // Navegação Thumb-Zone (Mobile Bottom Nav)
+  const mobileNavHome = document.getElementById('mobile-nav-home');
+  const mobileNavAulas = document.getElementById('mobile-nav-aulas');
+  const mobileNavQuiz = document.getElementById('mobile-nav-quiz');
+  if (mobileNavHome) mobileNavHome.addEventListener('click', () => switchView('home'));
+  if (mobileNavAulas) mobileNavAulas.addEventListener('click', () => switchView('day1'));
+  if (mobileNavQuiz) mobileNavQuiz.addEventListener('click', () => switchView('quiz'));
+
+  document.querySelectorAll('#mobile-bottom-nav [data-target-view]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.getAttribute('data-target-view');
+      if (target) switchView(target);
+    });
+  });
+
+  // Ações do Hub do Estudante (Pilar 1 e Pilar 2)
+  const btnHubContinue = document.getElementById('btn-hub-continue-class');
+  if (btnHubContinue) {
+    btnHubContinue.addEventListener('click', () => {
+      const mod = btnHubContinue.getAttribute('data-target-module') || 'mod-logica';
+      navigateToModule(mod);
+    });
+  }
+
+  const btnHubStartQuiz = document.getElementById('btn-hub-start-quiz');
+  if (btnHubStartQuiz) {
+    btnHubStartQuiz.addEventListener('click', () => switchView('quiz'));
+  }
+
+  document.querySelectorAll('#hub-quadro-aula [data-target-module], #hub-quadro-aula [data-axis]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const mod = btn.getAttribute('data-target-module') || btn.getAttribute('data-axis');
+      if (mod) navigateToModule(mod);
+    });
+  });
+
+  // Toggle do menu de utilitários no Mobile
+  const btnMobileUtil = document.getElementById('btn-mobile-util-trigger');
+  const studentUtilActions = document.getElementById('student-util-actions');
+  if (btnMobileUtil && studentUtilActions) {
+    btnMobileUtil.addEventListener('click', () => {
+      const isExpanded = btnMobileUtil.getAttribute('aria-expanded') === 'true';
+      btnMobileUtil.setAttribute('aria-expanded', String(!isExpanded));
+      studentUtilActions.classList.toggle('hidden', isExpanded);
+    });
+  }
 
   // Botões de conclusão dos módulos
   document.querySelectorAll('[data-comp-module]').forEach(btn => {
@@ -533,6 +745,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const state = getState();
   applySessionUI();
-  switchView(state.currentView || 'day1', false);
+  const initialView = state.currentView || (state.sessionRole === 'student' ? 'home' : 'day1');
+  switchView(initialView, false);
 });
 

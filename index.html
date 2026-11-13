@@ -152,8 +152,8 @@
             Sessão Estudante
           </span>
 
-          <!-- Progresso Geral -->
-          <div class="bg-blue-950/60 px-4 py-1.5 rounded-lg border border-blue-800/80 flex items-center gap-3 text-xs">
+          <!-- Progresso Geral (Descongestionado no mobile: oculto em telas < 1024px) -->
+          <div class="hidden lg:flex bg-blue-950/60 px-4 py-1.5 rounded-lg border border-blue-800/80 items-center gap-3 text-xs">
             <div>
               <div class="flex justify-between gap-2 text-slate-200 font-medium mb-1">
                 <span id="metric-progress-label">Progresso</span>
@@ -168,20 +168,34 @@
             </div>
           </div>
 
-          <button type="button" id="btn-student-share-report"
-            class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-500 hover:bg-emerald-400 text-slate-950 transition-colors cursor-pointer shadow-sm">
-            Enviar / Código
+          <!-- Gatilho de Opções Utilitárias para Mobile (<1024px) -->
+          <button type="button" id="btn-mobile-util-trigger" aria-expanded="false" aria-controls="student-util-actions"
+            class="lg:hidden p-2 rounded-lg text-xs font-semibold bg-white/10 hover:bg-white/20 text-white border border-white/20 transition-colors cursor-pointer min-h-[44px] min-w-[44px] inline-flex items-center justify-center gap-1.5"
+            aria-label="Opções e utilitários da sessão">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+            </svg>
+            <span>Opções</span>
           </button>
 
-          <button type="button" id="btn-reset-progress"
-            class="text-xs text-blue-100 hover:text-rose-200 underline underline-offset-2 transition-colors cursor-pointer">
-            Resetar
-          </button>
+          <!-- Ações Utilitárias do Estudante (Responsivo: desktop inline, mobile recolhível) -->
+          <div id="student-util-actions"
+            class="hidden lg:flex flex-col lg:flex-row items-center gap-2 w-full lg:w-auto p-3 lg:p-0 bg-blue-950/90 lg:bg-transparent rounded-lg lg:rounded-none border lg:border-none border-blue-800/80">
+            <button type="button" id="btn-student-share-report"
+              class="w-full lg:w-auto px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-500 hover:bg-emerald-400 text-slate-950 transition-colors cursor-pointer shadow-sm min-h-[44px] lg:min-h-0 flex items-center justify-center">
+              Enviar / Código
+            </button>
 
-          <button type="button" id="btn-switch-session-student" data-switch-session="true"
-            class="px-2.5 py-1 rounded-lg text-xs font-medium bg-white/10 hover:bg-white/20 text-white border border-white/20 transition-colors cursor-pointer">
-            Trocar sessão
-          </button>
+            <button type="button" id="btn-reset-progress"
+              class="w-full lg:w-auto text-xs text-blue-100 hover:text-rose-200 underline underline-offset-2 transition-colors cursor-pointer py-1.5 min-h-[44px] lg:min-h-0 flex items-center justify-center">
+              Resetar
+            </button>
+
+            <button type="button" id="btn-switch-session-student" data-switch-session="true"
+              class="w-full lg:w-auto px-2.5 py-1 rounded-lg text-xs font-medium bg-white/10 hover:bg-white/20 text-white border border-white/20 transition-colors cursor-pointer min-h-[44px] lg:min-h-0 flex items-center justify-center">
+              Trocar sessão
+            </button>
+          </div>
         </div>
 
         <!-- Barra Docente (visível apenas na Sessão Docente) -->
@@ -208,8 +222,16 @@
 
   <!-- Navegação de Trilhas -->
   <nav aria-label="Navegação principal"
-    class="bg-uneb-primaryDark text-white px-4 sm:px-6 lg:px-8 border-t border-blue-900/60 border-b-4 border-uneb-accent shadow-md lg:sticky lg:top-0 z-40">
+    class="hidden lg:block bg-uneb-primaryDark text-white px-4 sm:px-6 lg:px-8 border-t border-blue-900/60 border-b-4 border-uneb-accent shadow-md lg:sticky lg:top-0 z-40">
     <div class="max-w-7xl mx-auto flex flex-wrap items-center gap-2 sm:gap-3 py-2">
+      <button type="button" id="nav-home"
+        class="view-tab-btn flex items-center gap-2 px-3 sm:px-4 py-2 rounded-md font-medium text-xs sm:text-sm transition-all text-slate-200 hover:text-white hover:bg-blue-900/50">
+        <svg class="w-4 h-4 shrink-0" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+        </svg>
+        <span>Início</span>
+      </button>
       <button type="button" id="nav-day1" aria-current="page"
         class="view-tab-btn flex items-center gap-2 px-3 sm:px-4 py-2 rounded-md font-medium text-xs sm:text-sm transition-all bg-uneb-accent text-white shadow-sm">
         <svg class="w-4 h-4 shrink-0" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -252,12 +274,169 @@
   </nav>
 
   <!-- CONTEÚDO PRINCIPAL -->
-  <main id="main-content" tabindex="-1" class="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 flex-1 min-w-0">
+  <main id="main-content" tabindex="-1" class="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 pb-20 lg:pb-8 pb-safe-bottom-nav flex-1 min-w-0">
+
+    <!-- ========================================== -->
+    <!-- VISUALIZAÇÃO: HUB DO ESTUDANTE (3 PILARES)  -->
+    <!-- ========================================== -->
+    <div id="view-home" class="space-y-8">
+
+      <!-- Pilar 1 (Protagonista): Quadro da Aula -->
+      <section id="hub-quadro-aula" class="card-feature-quizlet card-feature-quizlet-highlight p-6 sm:p-8 space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-200 text-xs font-semibold text-indigo-700 mb-2">
+              <span class="w-2 h-2 rounded-full bg-iris-bolt animate-pulse"></span>
+              <span id="hub-aula-status">Status da Aula: Em andamento • Módulo atual: Eixo 1: Lógica Matemática</span>
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-serif font-bold text-slate-900 tracking-tight">Quadro da Aula</h2>
+            <p class="text-sm text-slate-600 mt-1">Imersão completa nos 6 eixos de Matemática para o Vestibular UNEB 2026.</p>
+          </div>
+          <div class="shrink-0">
+            <button type="button" id="btn-hub-continue-class" data-target-module="mod-logica" data-axis="mod-logica" data-hub-goto="day1"
+              class="btn-pill btn-pill-primary inline-flex items-center gap-2 text-sm shadow-md hover:shadow-lg transition-all cursor-pointer">
+              <span>Continuar Aula →</span>
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-3">Atalhos Diretos por Eixo Temático</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            <!-- Eixo 1 -->
+            <button type="button" data-target-module="mod-logica" data-axis="mod-logica" data-hub-goto="day1"
+              class="p-4 rounded-xl border border-mist hover:border-iris-bolt bg-white hover:bg-slate-50 text-left transition-all cursor-pointer group shadow-sm flex flex-col justify-between">
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <span class="text-xs font-bold text-iris-bolt px-2 py-0.5 rounded-full bg-indigo-50 border border-indigo-100">Eixo 1 • Dia 1</span>
+                <span class="text-xs text-slate-400 group-hover:text-iris-bolt transition-colors">Acessar →</span>
+              </div>
+              <div>
+                <div class="font-bold text-sm text-slate-900 group-hover:text-iris-bolt transition-colors">Lógica Matemática</div>
+                <p class="text-xs text-slate-500 mt-0.5">Tabela-verdade, proposições e negação formal</p>
+              </div>
+            </button>
+            <!-- Eixo 2 -->
+            <button type="button" data-target-module="mod-numeros" data-axis="mod-numeros" data-hub-goto="day1"
+              class="p-4 rounded-xl border border-mist hover:border-iris-bolt bg-white hover:bg-slate-50 text-left transition-all cursor-pointer group shadow-sm flex flex-col justify-between">
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <span class="text-xs font-bold text-iris-bolt px-2 py-0.5 rounded-full bg-indigo-50 border border-indigo-100">Eixo 2 • Dia 1</span>
+                <span class="text-xs text-slate-400 group-hover:text-iris-bolt transition-colors">Acessar →</span>
+              </div>
+              <div>
+                <div class="font-bold text-sm text-slate-900 group-hover:text-iris-bolt transition-colors">Sequências & Contagem</div>
+                <p class="text-xs text-slate-500 mt-0.5">Combinatória, PA, PG e padrões numéricos</p>
+              </div>
+            </button>
+            <!-- Eixo 3 -->
+            <button type="button" data-target-module="mod-algebra" data-axis="mod-algebra" data-hub-goto="day1"
+              class="p-4 rounded-xl border border-mist hover:border-iris-bolt bg-white hover:bg-slate-50 text-left transition-all cursor-pointer group shadow-sm flex flex-col justify-between">
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <span class="text-xs font-bold text-iris-bolt px-2 py-0.5 rounded-full bg-indigo-50 border border-indigo-100">Eixo 3 • Dia 1</span>
+                <span class="text-xs text-slate-400 group-hover:text-iris-bolt transition-colors">Acessar →</span>
+              </div>
+              <div>
+                <div class="font-bold text-sm text-slate-900 group-hover:text-iris-bolt transition-colors">Álgebra & Parábola</div>
+                <p class="text-xs text-slate-500 mt-0.5">Funções quadráticas, vértice e raízes reais</p>
+              </div>
+            </button>
+            <!-- Eixo 4 -->
+            <button type="button" data-target-module="mod-trig" data-axis="mod-trig" data-hub-goto="day2"
+              class="p-4 rounded-xl border border-mist hover:border-iris-bolt bg-white hover:bg-slate-50 text-left transition-all cursor-pointer group shadow-sm flex flex-col justify-between">
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <span class="text-xs font-bold text-iris-bolt px-2 py-0.5 rounded-full bg-indigo-50 border border-indigo-100">Eixo 4 • Dia 2</span>
+                <span class="text-xs text-slate-400 group-hover:text-iris-bolt transition-colors">Acessar →</span>
+              </div>
+              <div>
+                <div class="font-bold text-sm text-slate-900 group-hover:text-iris-bolt transition-colors">Trigonometria</div>
+                <p class="text-xs text-slate-500 mt-0.5">Círculo trigonométrico, ângulos e redução</p>
+              </div>
+            </button>
+            <!-- Eixo 5 -->
+            <button type="button" data-target-module="mod-financas" data-axis="mod-financas" data-hub-goto="day2"
+              class="p-4 rounded-xl border border-mist hover:border-iris-bolt bg-white hover:bg-slate-50 text-left transition-all cursor-pointer group shadow-sm flex flex-col justify-between">
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <span class="text-xs font-bold text-iris-bolt px-2 py-0.5 rounded-full bg-indigo-50 border border-indigo-100">Eixo 5 • Dia 2</span>
+                <span class="text-xs text-slate-400 group-hover:text-iris-bolt transition-colors">Acessar →</span>
+              </div>
+              <div>
+                <div class="font-bold text-sm text-slate-900 group-hover:text-iris-bolt transition-colors">Matemática Financeira</div>
+                <p class="text-xs text-slate-500 mt-0.5">Juros compostos, aportes e montante</p>
+              </div>
+            </button>
+            <!-- Eixo 6 -->
+            <button type="button" data-target-module="mod-estatistica" data-axis="mod-estatistica" data-hub-goto="day2"
+              class="p-4 rounded-xl border border-mist hover:border-iris-bolt bg-white hover:bg-slate-50 text-left transition-all cursor-pointer group shadow-sm flex flex-col justify-between">
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <span class="text-xs font-bold text-iris-bolt px-2 py-0.5 rounded-full bg-indigo-50 border border-indigo-100">Eixo 6 • Dia 2</span>
+                <span class="text-xs text-slate-400 group-hover:text-iris-bolt transition-colors">Acessar →</span>
+              </div>
+              <div>
+                <div class="font-bold text-sm text-slate-900 group-hover:text-iris-bolt transition-colors">Estatística & Sturges</div>
+                <p class="text-xs text-slate-500 mt-0.5">Medidas de tendência e classes de Sturges</p>
+              </div>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Grade dos Pilares 2 e 3 -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+        <!-- Pilar 2: Simulado Oficial UNEB -->
+        <section id="hub-simulado" class="card-feature-quizlet p-6 sm:p-8 space-y-5">
+          <div class="flex items-center justify-between gap-3">
+            <span class="text-xs font-semibold px-3 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-200">
+              60 min • 15 questões
+            </span>
+            <span class="text-xs text-slate-500 font-mono">Edição 2025</span>
+          </div>
+          <div>
+            <h3 class="text-xl sm:text-2xl font-serif font-bold text-slate-900">Simulado Oficial UNEB</h3>
+            <p class="text-sm text-slate-600 mt-1 leading-relaxed">
+              Treine com as 15 questões reais e cronometradas do Vestibular Oficial da UNEB (edições 2025, 2024, 2023 e Imersão).
+            </p>
+          </div>
+          <div class="pt-2">
+            <button type="button" id="btn-hub-start-quiz"
+              class="btn-pill btn-pill-outline w-full sm:w-auto inline-flex items-center justify-center gap-2 text-sm shadow-sm hover:shadow transition-all cursor-pointer">
+              <span>Iniciar Simulado</span>
+              <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            </button>
+          </div>
+        </section>
+
+        <!-- Pilar 3: Minha Progressão -->
+        <section id="hub-progressao" class="card-feature-quizlet p-6 sm:p-8 space-y-5">
+          <div class="flex items-center justify-between gap-3">
+            <span class="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+              Desempenho Geral
+            </span>
+            <span class="text-xs font-bold text-slate-700 font-mono"><span id="hub-metric-xp">0</span> XP</span>
+          </div>
+          <div>
+            <div class="flex items-baseline justify-between mb-2">
+              <h3 class="text-xl sm:text-2xl font-serif font-bold text-slate-900">Minha Progressão</h3>
+              <span id="hub-metric-percent" class="text-2xl sm:text-3xl font-bold text-slate-900 font-mono">0%</span>
+            </div>
+            <progress id="hub-metric-progress-bar" max="100" value="0"
+              class="progress-quizlet w-full h-3 block rounded-full"></progress>
+          </div>
+          <div class="flex items-center justify-between text-xs text-slate-500 pt-1 border-t border-mist">
+            <span>Módulos finalizados: <strong id="hub-metric-modules" class="text-slate-800">0</strong>/6 módulos</span>
+            <span class="text-slate-400">Objetivo: 6/6 módulos</span>
+          </div>
+        </section>
+
+      </div>
+
+    </div>
 
     <!-- ========================================== -->
     <!-- VISUALIZAÇÃO: DIA 1                        -->
     <!-- ========================================== -->
-    <div id="view-day1" class="space-y-12">
+    <div id="view-day1" class="space-y-12 hidden">
 
       <!-- Cabeçalho do Dia 1 -->
       <section class="bg-white p-6 rounded-xl border border-uneb-border shadow-sm">
@@ -282,6 +461,39 @@
         </div>
 
       </section>
+
+      <!-- Barra Horizontal de Seleção Rápida de Eixos (Mobile-First) -->
+      <nav id="aulas-axis-chips" data-axis-chips aria-label="Seleção rápida de Eixos Temáticos"
+        class="flex items-center gap-2 overflow-x-auto pb-2 pt-1">
+        <button type="button" data-axis-chip="all" aria-pressed="true"
+          class="btn-pill btn-pill-primary text-xs font-bold shrink-0 cursor-pointer">
+          Todos do Dia
+        </button>
+        <button type="button" data-axis-chip="mod-logica" data-axis="mod-logica" aria-pressed="false"
+          class="btn-pill btn-pill-secondary text-xs font-semibold shrink-0 cursor-pointer">
+          Eixo 1 • Lógica
+        </button>
+        <button type="button" data-axis-chip="mod-numeros" data-axis="mod-numeros" aria-pressed="false"
+          class="btn-pill btn-pill-secondary text-xs font-semibold shrink-0 cursor-pointer">
+          Eixo 2 • Contagem
+        </button>
+        <button type="button" data-axis-chip="mod-algebra" data-axis="mod-algebra" aria-pressed="false"
+          class="btn-pill btn-pill-secondary text-xs font-semibold shrink-0 cursor-pointer">
+          Eixo 3 • Parábola
+        </button>
+        <button type="button" data-axis-chip="mod-trig" data-axis="mod-trig" aria-pressed="false"
+          class="btn-pill btn-pill-secondary text-xs font-semibold shrink-0 cursor-pointer">
+          Eixo 4 • Trigonometria (Dia 2)
+        </button>
+        <button type="button" data-axis-chip="mod-financas" data-axis="mod-financas" aria-pressed="false"
+          class="btn-pill btn-pill-secondary text-xs font-semibold shrink-0 cursor-pointer">
+          Eixo 5 • Finanças (Dia 2)
+        </button>
+        <button type="button" data-axis-chip="mod-estatistica" data-axis="mod-estatistica" aria-pressed="false"
+          class="btn-pill btn-pill-secondary text-xs font-semibold shrink-0 cursor-pointer">
+          Eixo 6 • Estatística (Dia 2)
+        </button>
+      </nav>
 
       <!-- EIXO 1: LÓGICA MATEMÁTICA -->
       <section id="mod-logica" class="bg-white rounded-xl border border-uneb-border shadow-sm overflow-hidden">
@@ -898,6 +1110,39 @@
         </div>
 
       </section>
+
+      <!-- Barra Horizontal de Seleção Rápida de Eixos (Dia 2) -->
+      <nav id="aulas-axis-chips-day2" data-axis-chips aria-label="Seleção rápida de Eixos Temáticos — Dia 2"
+        class="flex items-center gap-2 overflow-x-auto pb-2 pt-1">
+        <button type="button" data-axis-chip="all" aria-pressed="true"
+          class="btn-pill btn-pill-primary text-xs font-bold shrink-0 cursor-pointer">
+          Todos do Dia
+        </button>
+        <button type="button" data-axis-chip="mod-logica" data-axis="mod-logica" aria-pressed="false"
+          class="btn-pill btn-pill-secondary text-xs font-semibold shrink-0 cursor-pointer">
+          Eixo 1 • Lógica (Dia 1)
+        </button>
+        <button type="button" data-axis-chip="mod-numeros" data-axis="mod-numeros" aria-pressed="false"
+          class="btn-pill btn-pill-secondary text-xs font-semibold shrink-0 cursor-pointer">
+          Eixo 2 • Contagem (Dia 1)
+        </button>
+        <button type="button" data-axis-chip="mod-algebra" data-axis="mod-algebra" aria-pressed="false"
+          class="btn-pill btn-pill-secondary text-xs font-semibold shrink-0 cursor-pointer">
+          Eixo 3 • Parábola (Dia 1)
+        </button>
+        <button type="button" data-axis-chip="mod-trig" data-axis="mod-trig" aria-pressed="false"
+          class="btn-pill btn-pill-secondary text-xs font-semibold shrink-0 cursor-pointer">
+          Eixo 4 • Trigonometria
+        </button>
+        <button type="button" data-axis-chip="mod-financas" data-axis="mod-financas" aria-pressed="false"
+          class="btn-pill btn-pill-secondary text-xs font-semibold shrink-0 cursor-pointer">
+          Eixo 5 • Finanças
+        </button>
+        <button type="button" data-axis-chip="mod-estatistica" data-axis="mod-estatistica" aria-pressed="false"
+          class="btn-pill btn-pill-secondary text-xs font-semibold shrink-0 cursor-pointer">
+          Eixo 6 • Estatística
+        </button>
+      </nav>
 
       <!-- EIXO 4: CÍRCULO TRIGONOMÉTRICO & GEOMETRIA -->
       <section id="mod-trig" class="bg-white rounded-xl border border-uneb-border shadow-sm overflow-hidden">
@@ -1529,7 +1774,12 @@
             <span class="text-[11px] font-mono font-bold uppercase text-slate-600">Cartão de Questões:</span>
             <span id="quiz-progress-text" class="text-xs font-bold text-uneb-primary">0/15 Respondidas</span>
           </div>
-          <div class="flex items-center gap-2">
+          <div class="flex flex-wrap items-center gap-2">
+            <span id="quiz-focused-counter" class="badge-quizlet font-mono font-bold">1 / 15</span>
+            <button type="button" id="btn-quiz-toggle-mode" aria-pressed="true"
+              class="btn-pill btn-pill-outline text-[11px] font-semibold px-3 py-1 cursor-pointer">
+              Ver Lista Completa
+            </button>
             <span id="quiz-status-pill"
               class="text-[10px] px-2 py-0.5 rounded font-mono font-bold bg-amber-50 text-amber-800 border border-amber-200">Em
               Andamento</span>
@@ -1545,6 +1795,29 @@
       <!-- Lista de Questões -->
       <div id="quiz-questions-container" class="space-y-6">
         <!-- Renderizado dinamicamente pelo JavaScript -->
+      </div>
+
+      <!-- Barra de Navegação Focada (Estilo Testes do NotebookLM: Dica à esquerda, Anterior/Próxima em pílula #4255ff à direita) -->
+      <div id="quiz-focused-controls"
+        class="card-quizlet p-4 bg-white rounded-xl border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-3">
+        <div class="flex flex-wrap items-center gap-2">
+          <button type="button" id="btn-quiz-hint"
+            class="btn-pill btn-pill-outline px-4 py-2 text-xs font-semibold flex items-center gap-1.5 cursor-pointer">
+            <span>Dica / Eixo</span>
+          </button>
+          <span id="quiz-hint-popover" role="status" aria-live="polite"
+            class="hidden text-xs text-slate-700 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200 max-w-md"></span>
+        </div>
+        <div class="flex items-center gap-2.5 ml-auto">
+          <button type="button" id="btn-quiz-prev"
+            class="btn-pill btn-pill-secondary px-4 py-2 text-xs font-bold disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer">
+            ← Anterior
+          </button>
+          <button type="button" id="btn-quiz-next"
+            class="btn-pill btn-pill-primary px-5 py-2 text-xs font-bold cursor-pointer">
+            Próxima →
+          </button>
+        </div>
       </div>
 
       <!-- Caixa de Envio / Entrega no Modo Simulado -->
@@ -1773,11 +2046,47 @@
       </div>
     </div>
   </footer>
+
+  <!-- ========================================== -->
+  <!-- BARRA DE NAVEGAÇÃO INFERIOR MOBILE (THUMB-ZONE) -->
+  <!-- ========================================== -->
+  <nav id="mobile-bottom-nav" aria-label="Navegação móvel por toque"
+    class="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur border-t border-slate-200 px-4 py-2 flex items-center justify-around lg:hidden shadow-lg">
+    <!-- Aba 1: Início -->
+    <button type="button" id="mobile-nav-home" data-target-view="home" role="tab" aria-selected="true"
+      class="flex flex-col items-center justify-center min-h-[44px] min-w-[44px] py-1 px-3 text-xs font-semibold text-iris-bolt transition-colors cursor-pointer">
+      <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+      </svg>
+      <span class="mt-0.5">Início</span>
+    </button>
+
+    <!-- Aba 2: Aulas -->
+    <button type="button" id="mobile-nav-aulas" data-target-view="day1" role="tab" aria-selected="false"
+      class="flex flex-col items-center justify-center min-h-[44px] min-w-[44px] py-1 px-3 text-xs font-semibold text-slate-500 hover:text-slate-900 transition-colors cursor-pointer">
+      <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+      </svg>
+      <span class="mt-0.5">Aulas</span>
+    </button>
+
+    <!-- Aba 3: Simulado -->
+    <button type="button" id="mobile-nav-quiz" data-target-view="quiz" role="tab" aria-selected="false"
+      class="flex flex-col items-center justify-center min-h-[44px] min-w-[44px] py-1 px-3 text-xs font-semibold text-slate-500 hover:text-slate-900 transition-colors cursor-pointer">
+      <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      <span class="mt-0.5">Simulado</span>
+    </button>
+  </nav>
   </div> <!-- /#app-shell -->
 
   <!-- Mensagem Flutuante / Toast para Avisos Rápidos (Sem alert()) -->
   <div id="toast-container" role="region" aria-label="Notificações" aria-live="polite"
-    class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+    class="fixed bottom-24 lg:bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
   <script type="module" src="js/app.js"></script>
 </body>

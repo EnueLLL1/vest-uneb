@@ -19,6 +19,8 @@ import { confirmAction } from '../utils/confirm.js';
 let timerSeconds = 60 * 60;
 let timerInterval = null;
 let timerRunning = true;
+let currentQuestionIndex = 0;
+let quizDisplayMode = 'focused'; // 'focused' (1 questão por vez) | 'full' (lista completa)
 const teacherQuestionOverrides = new Map();
 
 function escapeHtml(str) {
@@ -95,7 +97,27 @@ export function toggleQuizTimer() {
   }
 }
 
+export function setQuizQuestionIndex(idx) {
+  const totalCount = getCurrentQuizData().questions.length;
+  const maxIdx = Math.max(0, totalCount - 1);
+  currentQuestionIndex = Math.min(maxIdx, Math.max(0, Number(idx) || 0));
+  renderQuizQuestions();
+}
+
+export function toggleQuizDisplayMode() {
+  quizDisplayMode = quizDisplayMode === 'focused' ? 'full' : 'focused';
+  renderQuizQuestions();
+}
+
 export function scrollToQuestion(qId) {
+  const questions = getCurrentQuizData().questions;
+  const targetIdx = questions.findIndex((q) => q.id === qId);
+  if (targetIdx >= 0) {
+    currentQuestionIndex = targetIdx;
+    if (quizDisplayMode === 'focused') {
+      renderQuizQuestions();
+    }
+  }
   const card = document.getElementById(`quiz-card-${qId}`);
   if (card) {
     card.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -131,6 +153,7 @@ function syncQuizModeButtons(mode) {
 export function changeQuizEdition(editionKey) {
   const state = getState();
   state.selectedEdition = editionKey;
+  currentQuestionIndex = 0;
   const quizData = getCurrentQuizData();
 
   syncTimerForCurrentEdition();
@@ -194,6 +217,41 @@ export function renderQuizQuestions() {
   const answeredKeys = Object.keys(currentAnswers);
   const answeredCount = answeredKeys.length;
   const totalCount = quizData.questions.length;
+  const maxIdx = Math.max(0, totalCount - 1);
+  if (currentQuestionIndex > maxIdx) currentQuestionIndex = maxIdx;
+  if (currentQuestionIndex < 0) currentQuestionIndex = 0;
+  const isFocused = quizDisplayMode === 'focused';
+
+  const focusedCounter = document.getElementById('quiz-focused-counter');
+  if (focusedCounter) {
+    focusedCounter.textContent = `${totalCount > 0 ? currentQuestionIndex + 1 : 0} / ${totalCount}`;
+  }
+
+  const btnToggleMode = document.getElementById('btn-quiz-toggle-mode');
+  if (btnToggleMode) {
+    btnToggleMode.setAttribute('aria-pressed', String(isFocused));
+    btnToggleMode.textContent = isFocused ? 'Ver Lista Completa' : 'Modo Focado (1 a 1)';
+  }
+
+  const focusedControls = document.getElementById('quiz-focused-controls');
+  if (focusedControls) {
+    focusedControls.classList.toggle('hidden', !isFocused || totalCount === 0);
+  }
+
+  const hintPopover = document.getElementById('quiz-hint-popover');
+  if (hintPopover) {
+    hintPopover.classList.add('hidden');
+    hintPopover.textContent = '';
+  }
+
+  const btnPrev = document.getElementById('btn-quiz-prev');
+  const btnNext = document.getElementById('btn-quiz-next');
+  if (btnPrev) {
+    btnPrev.disabled = currentQuestionIndex <= 0;
+  }
+  if (btnNext) {
+    btnNext.textContent = currentQuestionIndex >= maxIdx ? 'Ir para Entrega ↑' : 'Próxima →';
+  }
 
   syncQuizModeButtons(state.quizMode);
 
@@ -265,6 +323,9 @@ export function renderQuizQuestions() {
           navBtnClass += 'bg-white text-slate-700 border-slate-300 hover:border-uneb-primary hover:text-uneb-primary';
         }
       }
+      if (isFocused && idx === currentQuestionIndex) {
+        navBtnClass += ' ring-2 ring-offset-1 ring-indigo-500';
+      }
       navBtn.className = navBtnClass;
       navBtn.textContent = idx + 1;
       navGrid.appendChild(navBtn);
@@ -272,7 +333,7 @@ export function renderQuizQuestions() {
 
     // Card da questão
     const qCard = document.createElement('div');
-    qCard.className = 'bg-white p-5 sm:p-6 rounded-xl border border-slate-200 shadow-sm scroll-mt-48 sm:scroll-mt-40';
+    qCard.className = `card-quizlet bg-white p-5 sm:p-6 rounded-xl border border-slate-200 shadow-sm scroll-mt-48 sm:scroll-mt-40${isFocused && idx !== currentQuestionIndex ? ' hidden' : ''}`;
     qCard.id = `quiz-card-${q.id}`;
 
     let optionsHtml = '';
@@ -538,6 +599,7 @@ export function restartQuiz() {
   }
 
   const quizData = getCurrentQuizData();
+  currentQuestionIndex = 0;
   syncTimerForCurrentEdition();
 
   setState(null, 'quiz-restart');
@@ -619,6 +681,57 @@ export function initQuiz() {
 
   const btnScrollTop = document.getElementById('btn-quiz-scroll-top');
   if (btnScrollTop) btnScrollTop.addEventListener('click', scrollQuizToTop);
+
+  const btnToggleMode = document.getElementById('btn-quiz-toggle-mode');
+  if (btnToggleMode) {
+    btnToggleMode.addEventListener('click', toggleQuizDisplayMode);
+  }
+
+  const btnQuizPrev = document.getElementById('btn-quiz-prev');
+  if (btnQuizPrev) {
+    btnQuizPrev.addEventListener('click', () => {
+      if (currentQuestionIndex > 0) {
+        currentQuestionIndex--;
+        renderQuizQuestions();
+      }
+    });
+  }
+
+  const btnQuizNext = document.getElementById('btn-quiz-next');
+  if (btnQuizNext) {
+    btnQuizNext.addEventListener('click', () => {
+      const totalCount = getCurrentQuizData().questions.length;
+      if (currentQuestionIndex < totalCount - 1) {
+        currentQuestionIndex++;
+        renderQuizQuestions();
+      } else {
+        const submitBox = document.getElementById('quiz-submit-box');
+        const targetEl = (submitBox && !submitBox.classList.contains('hidden'))
+          ? submitBox
+          : document.getElementById('quiz-nav-panel');
+        targetEl?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    });
+  }
+
+  const btnQuizHint = document.getElementById('btn-quiz-hint');
+  if (btnQuizHint) {
+    btnQuizHint.addEventListener('click', () => {
+      const hintPopover = document.getElementById('quiz-hint-popover');
+      if (!hintPopover) return;
+      const wasHidden = hintPopover.classList.contains('hidden');
+      if (wasHidden) {
+        const questions = getCurrentQuizData().questions;
+        const currentQ = questions[currentQuestionIndex];
+        if (currentQ) {
+          hintPopover.textContent = `Eixo: ${currentQ.axis} • Dica: Identifique os dados-chave do enunciado antes de testar as alternativas.`;
+        }
+        hintPopover.classList.remove('hidden');
+      } else {
+        hintPopover.classList.add('hidden');
+      }
+    });
+  }
 
   syncTimerForCurrentEdition();
   renderQuizQuestions();

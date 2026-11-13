@@ -130,7 +130,7 @@ export function isTeacherModeActive(stateSlice = appState) {
 }
 
 export function loadState() {
-  const validViews = new Set(['day1', 'day2', 'quiz', 'turma']);
+  const validViews = new Set(['home', 'day1', 'day2', 'quiz', 'turma']);
   const validQuizModes = new Set(['simulado', 'estudo']);
   const validRoles = new Set(['student', 'teacher']);
 
