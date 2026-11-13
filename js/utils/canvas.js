@@ -19,3 +19,4 @@ export function setupCanvasResolution(canvas) {
   ctx.scale(dpr, dpr);
   return { ctx, width: rect.width, height: rect.height };
 }
+

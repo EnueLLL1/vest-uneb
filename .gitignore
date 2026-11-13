@@ -7,8 +7,10 @@ Desktop.ini
 
 # Dependencies (if any)
 node_modules/
+.vercel/
 
 # IDE & Gemini
 .gemini/
 .idea/
 .vscode/
+

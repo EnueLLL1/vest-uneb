@@ -5,147 +5,229 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Portal Vestibular UNEB | Imersão Matemática em 2 Dias</title>
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Google Fonts: Inter & Merriweather for academic typography -->
+  <link rel="icon" type="image/svg+xml"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230B3B78'/%3E%3Ctext x='16' y='23' font-family='Georgia,serif' font-size='20' font-weight='bold' text-anchor='middle' fill='%23FFFFFF'%3EU%3C/text%3E%3C/svg%3E">
+  <!-- Google Fonts (Fallback automático offline para fontes de sistema) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap"
     rel="stylesheet">
-  <!-- Banco Oficial de Provas e Questões UNEB (Offline) -->
+  <!-- Folha de estilos compilada estática (100% offline) + complementos -->
+  <link rel="stylesheet" href="css/app.css">
   <link rel="stylesheet" href="css/custom.css">
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            uneb: {
-              primary: '#1e3a8a', // Deep Academic Navy
-              primaryDark: '#172554',
-              accent: '#0d9488', // Academic Teal/Green
-              border: '#e2e8f0'
-            }
-          },
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-            serif: ['Merriweather', 'serif']
-          }
-        }
-      }
-    }
-  </script>
-  
 </head>
 
 <body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
+  <a href="#main-content"
+    class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:bg-white focus:text-uneb-primary focus:px-4 focus:py-2 focus:rounded-md focus:shadow-lg focus:font-semibold">
+    Ir para o conteúdo principal
+  </a>
 
   <!-- ========================================== -->
-  <!-- BARRA SUPERIOR ACADÊMICA INSTITUCIONAL    -->
+  <!-- PORTAL DE ENTRADA POR SESSÃO (ALUNO / DOCENTE) -->
   <!-- ========================================== -->
-  <header class="bg-uneb-primary text-white border-b-4 border-uneb-accent shadow-md sticky top-0 z-50">
-    <div
-      class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col md:flex-row items-center justify-between gap-4">
-
-      <!-- Marca Institucional -->
-      <div class="flex items-center gap-3">
-        <div
-          class="w-10 h-10 rounded bg-white text-uneb-primary flex items-center justify-center font-serif font-bold text-xl shadow-inner border border-blue-200">
-          U
+  <section id="session-gate" aria-label="Seleção de sessão"
+    class="flex-1 flex flex-col items-center justify-center px-4 py-10 bg-gradient-to-br from-uneb-primary via-uneb-primaryDark to-slate-900 text-white">
+    <div class="max-w-3xl w-full space-y-6">
+      <div class="text-center space-y-2">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-900/70 border border-blue-400/30 text-xs font-semibold text-emerald-300">
+          <span>Programa Intensivo • Edital UNEB 2026</span>
         </div>
-        <div>
-          <div class="flex items-center gap-2">
-            <span class="text-xs tracking-wider uppercase font-semibold text-emerald-300">Programa Intensivo</span>
-            <span class="text-xs px-2 py-0.5 rounded-full bg-blue-900/60 border border-blue-400/40 text-blue-200">Edital
-              UNEB 2026</span>
-          </div>
-          <h1 class="text-lg sm:text-xl font-serif font-bold leading-tight">Imersão em Matemática Vestibular</h1>
-        </div>
+        <h1 class="text-2xl sm:text-3xl font-serif font-bold text-white">Imersão em Matemática Vestibular</h1>
+        <p class="text-sm text-blue-100 max-w-xl mx-auto">
+          Escolha seu perfil para iniciar com o ambiente adequado ao estudo autônomo ou à aula projetada.
+        </p>
       </div>
 
-      <!-- Métricas do Aluno & Controles -->
-      <div class="flex flex-wrap items-center justify-center gap-4 w-full md:w-auto">
-
-        <!-- Progresso Geral -->
-        <div class="bg-blue-950/60 px-4 py-1.5 rounded-lg border border-blue-800/80 flex items-center gap-3 text-xs">
-          <div>
-            <div class="flex justify-between gap-2 text-slate-300 font-medium mb-1">
-              <span>Progresso</span>
-              <span id="metric-percent" class="font-bold text-white">0%</span>
-            </div>
-            <div class="w-28 bg-slate-700 h-2 rounded-full overflow-hidden">
-              <div id="metric-progress-bar" class="bg-emerald-400 h-full w-0 transition-all duration-300"></div>
-            </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <!-- Card Sessão de Estudante -->
+        <div class="bg-white text-slate-800 rounded-2xl p-6 shadow-2xl border border-slate-200 flex flex-col justify-between space-y-4">
+          <div class="space-y-2">
+            <span class="inline-block text-[11px] font-bold uppercase tracking-wide px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+              Treino Autônomo
+            </span>
+            <h2 class="text-lg font-serif font-bold text-slate-900">Sessão de Estudante</h2>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Explore os 6 eixos passo a passo, resolva desafios práticos no simulador e acompanhe sua evolução em XP e no Simulado UNEB sem spoilers.
+            </p>
           </div>
-          <div class="border-l border-blue-800 pl-3 text-slate-300">
-            <span class="block">Pontuação: <strong id="metric-score" class="text-white">0</strong> XP</span>
-            <span class="block text-[11px] text-emerald-300"><span id="metric-done-count">0</span>/6 módulos</span>
-          </div>
+          <form id="gate-student-form" class="space-y-3">
+            <div>
+              <label for="gate-student-name" class="block text-xs font-medium text-slate-700 mb-1">
+                Seu nome (opcional)
+              </label>
+              <input type="text" id="gate-student-name" maxlength="40" placeholder="Ex.: Maria Clara"
+                class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-uneb-primary">
+            </div>
+            <button type="submit" id="btn-enter-student"
+              class="w-full py-2.5 px-4 rounded-lg bg-uneb-primary hover:bg-blue-900 text-white font-bold text-sm transition-colors shadow cursor-pointer">
+              Entrar como Aluno →
+            </button>
+          </form>
         </div>
 
-        <!-- Toggle Modo Aula vs Autônomo -->
-        <div class="flex items-center bg-blue-900/80 p-1 rounded-lg border border-blue-700 text-xs">
-          <button id="btn-mode-student"
-            class="px-2.5 py-1 rounded transition-colors font-medium bg-white text-uneb-primary shadow-sm"
-            title="Oculta resoluções imediatas para treino">
-            Estudante
-          </button>
-          <button id="btn-mode-teacher"
-            class="px-2.5 py-1 rounded transition-colors font-medium text-blue-200 hover:text-white"
-            title="Mostra notas pedagógicas e resolução imediata">
-            Professor
-          </button>
+        <!-- Card Sessão Docente -->
+        <div class="bg-slate-900/95 text-slate-100 rounded-2xl p-6 shadow-2xl border border-amber-400/30 flex flex-col justify-between space-y-4">
+          <div class="space-y-2">
+            <span class="inline-block text-[11px] font-bold uppercase tracking-wide px-2.5 py-0.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30">
+              Projeção em Lousa
+            </span>
+            <h2 class="text-lg font-serif font-bold text-white">Sessão Docente</h2>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Acesso exclusivo ao Painel de Aula: notas didáticas, botão para demonstrar casos no simulador e controle de gabarito na lousa (oculto por padrão).
+            </p>
+          </div>
+          <form id="gate-teacher-form" class="space-y-3">
+            <div>
+              <label for="gate-teacher-code" class="block text-xs font-medium text-slate-200 mb-1">
+                Código da turma / professor
+              </label>
+              <input type="password" id="gate-teacher-code" autocomplete="one-time-code" aria-describedby="gate-teacher-error" placeholder="Digite o código docente"
+                class="w-full px-3 py-2 rounded-lg border border-slate-700 bg-slate-950 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-400">
+              <p id="gate-teacher-error" role="alert" class="hidden text-xs text-rose-300 mt-1.5 font-medium"></p>
+            </div>
+            <button type="submit" id="btn-enter-teacher"
+              class="w-full py-2.5 px-4 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-sm transition-colors shadow cursor-pointer">
+              Entrar como Professor →
+            </button>
+          </form>
         </div>
-
-        <button id="btn-reset-progress"
-          class="text-xs text-blue-200 hover:text-rose-300 underline underline-offset-2 transition-colors">
-          Resetar
-        </button>
       </div>
+    </div>
+  </section>
 
+  <!-- ========================================== -->
+  <!-- SHELL PRINCIPAL DA APLICAÇÃO               -->
+  <!-- ========================================== -->
+  <div id="app-shell" class="hidden flex-1 flex flex-col min-w-0">
+
+    <!-- Faixa de pré-visualização docente como aluno -->
+    <div id="teacher-preview-banner" class="hidden bg-amber-400 text-slate-950 px-4 py-1.5 text-xs font-semibold flex flex-wrap items-center justify-center gap-3 border-b border-amber-500">
+      <span>Modo Pré-visualização de Aluno ativo — gabaritos e notas docentes estão ocultos.</span>
+      <button type="button" id="btn-exit-student-preview"
+        class="px-2.5 py-0.5 rounded bg-slate-900 text-white hover:bg-slate-800 text-[11px] font-bold cursor-pointer">
+        Voltar à Visão Docente
+      </button>
     </div>
 
-    <!-- Navegação de Trilhas (Tabs) -->
-    <nav class="bg-uneb-primaryDark px-4 sm:px-6 lg:px-8 border-t border-blue-900/60">
-      <div class="max-w-7xl mx-auto flex items-center space-x-2 sm:space-x-4 overflow-x-auto py-2">
-        <button id="nav-day1"
-          class="view-tab-btn flex items-center gap-2 px-4 py-2 rounded-md font-medium text-sm transition-all bg-uneb-accent text-white shadow-sm">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-          </svg>
-          <span>DIA 1: Lógica, Números & Álgebra</span>
-          <span class="text-[11px] bg-white/20 px-1.5 py-0.5 rounded font-mono">Eixos 1-3</span>
-        </button>
-        <button id="nav-day2"
-          class="view-tab-btn flex items-center gap-2 px-4 py-2 rounded-md font-medium text-sm transition-all text-slate-300 hover:text-white hover:bg-blue-900/50">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-          </svg>
-          <span>DIA 2: Formas, Finanças & Dados</span>
-          <span class="text-[11px] bg-white/10 px-1.5 py-0.5 rounded font-mono">Eixos 4-6</span>
-        </button>
-        <button id="nav-quiz"
-          class="view-tab-btn flex items-center gap-2 px-4 py-2 rounded-md font-medium text-sm transition-all text-slate-300 hover:text-white hover:bg-blue-900/50">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <span>Simulado Geral Integrado</span>
-          <span
-            class="text-[11px] bg-amber-400/20 text-amber-300 border border-amber-400/30 px-1.5 py-0.5 rounded font-mono">6
-            Questões</span>
-        </button>
-      </div>
-    </nav>
-  </header>
+    <!-- ========================================== -->
+    <!-- BARRA SUPERIOR ACADÊMICA INSTITUCIONAL    -->
+    <!-- ========================================== -->
+    <header class="bg-uneb-primary text-white">
+      <div
+        class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col md:flex-row items-center justify-between gap-4">
 
-  <!-- Mensagem Flutuante / Toast para Avisos Rápidos (Sem alert()) -->
-  <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+        <!-- Marca Institucional -->
+        <div class="flex items-center gap-3 min-w-0">
+          <div
+            class="w-10 h-10 shrink-0 rounded bg-white text-uneb-primary flex items-center justify-center font-serif font-bold text-xl shadow-inner border border-blue-200">
+            U
+          </div>
+          <div class="min-w-0">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="text-xs tracking-wider uppercase font-semibold text-emerald-300">Programa Intensivo</span>
+              <span class="text-xs px-2 py-0.5 rounded-full bg-blue-900/60 border border-blue-400/40 text-blue-100">Edital
+                UNEB 2026</span>
+            </div>
+            <h1 class="text-lg sm:text-xl font-serif font-bold leading-tight">Imersão em Matemática Vestibular</h1>
+          </div>
+        </div>
+
+        <!-- Painel de Métricas do Estudante (apenas na Sessão de Estudante ou Prévia de Aluno) -->
+        <div id="student-header-panel" class="flex flex-wrap items-center justify-center gap-3 w-full md:w-auto">
+          <span id="student-name-badge"
+            class="px-2.5 py-1 rounded-full bg-blue-900/80 border border-blue-400/30 text-xs font-semibold text-blue-100">
+            Sessão Estudante
+          </span>
+
+          <!-- Progresso Geral -->
+          <div class="bg-blue-950/60 px-4 py-1.5 rounded-lg border border-blue-800/80 flex items-center gap-3 text-xs">
+            <div>
+              <div class="flex justify-between gap-2 text-slate-200 font-medium mb-1">
+                <span id="metric-progress-label">Progresso</span>
+                <span id="metric-percent" class="font-bold text-white">0%</span>
+              </div>
+              <progress id="metric-progress-bar" max="100" value="0" aria-labelledby="metric-progress-label"
+                class="w-28 h-2 block"></progress>
+            </div>
+            <div class="border-l border-blue-800 pl-3 text-slate-200">
+              <span class="block">Pontuação: <strong id="metric-score" class="text-white">0</strong> XP</span>
+              <span class="block text-[11px] text-emerald-300"><span id="metric-done-count">0</span>/6 módulos</span>
+            </div>
+          </div>
+
+          <button type="button" id="btn-reset-progress"
+            class="text-xs text-blue-100 hover:text-rose-200 underline underline-offset-2 transition-colors cursor-pointer">
+            Resetar
+          </button>
+
+          <button type="button" id="btn-switch-session-student" data-switch-session="true"
+            class="px-2.5 py-1 rounded-lg text-xs font-medium bg-white/10 hover:bg-white/20 text-white border border-white/20 transition-colors cursor-pointer">
+            Trocar sessão
+          </button>
+        </div>
+
+        <!-- Barra Docente (visível apenas na Sessão Docente) -->
+        <div id="teacher-header-panel" class="hidden flex flex-wrap items-center justify-center gap-2.5 w-full md:w-auto">
+          <span class="px-2.5 py-1 rounded-full bg-amber-400/20 border border-amber-300/40 text-amber-200 text-xs font-bold">
+            Sessão Docente • Modo Aula
+          </span>
+          <button type="button" id="btn-teacher-toggle-answers" aria-pressed="false"
+            class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-white/10 hover:bg-white/20 text-white border border-white/25 transition-colors cursor-pointer">
+            Gabarito na Lousa: Oculto
+          </button>
+          <button type="button" id="btn-teacher-preview-student"
+            class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-900/80 hover:bg-blue-800 text-blue-100 border border-blue-400/30 transition-colors cursor-pointer">
+            Ver como Aluno
+          </button>
+          <button type="button" id="btn-switch-session-teacher" data-switch-session="true"
+            class="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white/10 hover:bg-white/20 text-white border border-white/20 transition-colors cursor-pointer">
+            Trocar sessão
+          </button>
+        </div>
+
+      </div>
+    </header>
+
+  <!-- Navegação de Trilhas -->
+  <nav aria-label="Navegação principal"
+    class="bg-uneb-primaryDark text-white px-4 sm:px-6 lg:px-8 border-t border-blue-900/60 border-b-4 border-uneb-accent shadow-md lg:sticky lg:top-0 z-40">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center gap-2 sm:gap-3 py-2">
+      <button type="button" id="nav-day1" aria-current="page"
+        class="view-tab-btn flex items-center gap-2 px-3 sm:px-4 py-2 rounded-md font-medium text-xs sm:text-sm transition-all bg-uneb-accent text-white shadow-sm">
+        <svg class="w-4 h-4 shrink-0" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+        </svg>
+        <span>DIA 1: Lógica, Números & Álgebra</span>
+        <span class="text-[11px] bg-white/20 px-1.5 py-0.5 rounded font-mono">Eixos 1-3</span>
+      </button>
+      <button type="button" id="nav-day2"
+        class="view-tab-btn flex items-center gap-2 px-3 sm:px-4 py-2 rounded-md font-medium text-xs sm:text-sm transition-all text-slate-200 hover:text-white hover:bg-blue-900/50">
+        <svg class="w-4 h-4 shrink-0" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+        </svg>
+        <span>DIA 2: Formas, Finanças & Dados</span>
+        <span class="text-[11px] bg-white/15 px-1.5 py-0.5 rounded font-mono">Eixos 4-6</span>
+      </button>
+      <button type="button" id="nav-quiz"
+        class="view-tab-btn flex items-center gap-2 px-3 sm:px-4 py-2 rounded-md font-medium text-xs sm:text-sm transition-all text-slate-200 hover:text-white hover:bg-blue-900/50">
+        <svg class="w-4 h-4 shrink-0" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>Simulado Geral Integrado</span>
+        <span id="nav-quiz-badge"
+          class="text-[11px] bg-amber-400/20 text-amber-200 border border-amber-400/30 px-1.5 py-0.5 rounded font-mono">15
+          Questões</span>
+      </button>
+    </div>
+  </nav>
 
   <!-- CONTEÚDO PRINCIPAL -->
-  <main class="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 flex-1">
+  <main id="main-content" tabindex="-1" class="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 flex-1 min-w-0">
 
     <!-- ========================================== -->
     <!-- VISUALIZAÇÃO: DIA 1                        -->
@@ -177,418 +259,590 @@
       </section>
 
       <!-- EIXO 1: LÓGICA MATEMÁTICA -->
-      <section class="bg-white rounded-xl border border-uneb-border shadow-sm overflow-hidden">
-        <div class="bg-slate-100/80 px-6 py-4 border-b border-uneb-border flex items-center justify-between">
-          <div class="flex items-center gap-3">
+      <section id="mod-logica" class="bg-white rounded-xl border border-uneb-border shadow-sm overflow-hidden">
+        <div class="bg-slate-100/80 px-6 py-4 border-b border-uneb-border flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-3 min-w-0">
             <span
-              class="w-7 h-7 rounded-full bg-uneb-primary text-white font-bold text-xs flex items-center justify-center">1</span>
-            <div>
+              class="w-7 h-7 shrink-0 rounded-full bg-uneb-primary text-white font-bold text-xs flex items-center justify-center">1</span>
+            <div class="min-w-0">
               <h3 class="font-serif font-bold text-lg text-slate-900">Eixo 1 — Lógica Matemática & Tabela-Verdade</h3>
-              <p class="text-xs text-slate-500">Proposições compostas, conectivos fundamentais e equivalências lógicas
-              </p>
+              <p class="text-xs text-slate-600">Proposições compostas, conectivos fundamentais e equivalências lógicas</p>
             </div>
           </div>
-          <button data-comp-module="mod-logica" id="btn-comp-mod-logica"
-            class="px-3 py-1.5 rounded text-xs font-medium border border-slate-300 hover:border-emerald-500 hover:text-emerald-700 bg-white transition-colors">
+          <button type="button" data-comp-module="mod-logica" id="btn-comp-mod-logica" aria-pressed="false"
+            class="px-3 py-1.5 rounded text-xs font-medium border border-slate-300 hover:border-emerald-500 hover:text-emerald-700 bg-white transition-colors shrink-0 cursor-pointer">
             Marcar como Concluído ✓
           </button>
         </div>
 
-        <div class="p-6 grid grid-cols-1 lg:grid-cols-12 gap-8">
-          <!-- Simulador de Conectivos -->
-          <div class="lg:col-span-7 space-y-6">
-            <h4 class="font-semibold text-slate-900 text-sm flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-blue-600"></span>
-              Laboratório Interativo de Conectivos Lógicos
-            </h4>
-            <p class="text-xs text-slate-600">
-              Alterne o valor de verdade das proposições simples <span class="math-font font-bold">P</span> e <span
-                class="math-font font-bold">Q</span> para ver a inferência imediata:
-            </p>
+        <div data-stage-bar class="px-6 pt-4 pb-2 border-b border-slate-100"></div>
 
-            <div class="grid grid-cols-2 gap-4">
-              <!-- Switch P -->
-              <div class="p-4 rounded-lg border border-slate-200 bg-slate-50 flex items-center justify-between">
-                <div>
-                  <span class="text-xs text-slate-500 block uppercase font-mono">Proposição P</span>
-                  <span id="label-prop-p" class="font-serif font-bold text-slate-800 text-sm">"O candidato
-                    estudou"</span>
-                </div>
-                <button id="toggle-p"
-                  class="px-4 py-2 rounded-lg font-bold text-xs transition-all bg-emerald-600 text-white shadow">
-                  VERDADEIRO (V)
+        <!-- ETAPA 1: CONCEITO VISUAL -->
+        <div data-stage="conceito" class="p-6 space-y-5">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            <div class="lg:col-span-5 space-y-2">
+              <span class="text-[11px] font-bold uppercase tracking-wide text-indigo-700">Escolha uma regra para explorar</span>
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-2">
+                <button type="button" data-logic-rule="condicional" aria-pressed="true"
+                  class="px-3 py-2 rounded-lg text-xs font-bold bg-uneb-primary text-white shadow-sm cursor-pointer transition-all text-left">
+                  1. Condicional (P → Q)
                 </button>
-              </div>
-              <!-- Switch Q -->
-              <div class="p-4 rounded-lg border border-slate-200 bg-slate-50 flex items-center justify-between">
-                <div>
-                  <span class="text-xs text-slate-500 block uppercase font-mono">Proposição Q</span>
-                  <span id="label-prop-q" class="font-serif font-bold text-slate-800 text-sm">"Aprovado na UNEB"</span>
-                </div>
-                <button id="toggle-q"
-                  class="px-4 py-2 rounded-lg font-bold text-xs transition-all bg-emerald-600 text-white shadow">
-                  VERDADEIRO (V)
+                <button type="button" data-logic-rule="negacao" aria-pressed="false"
+                  class="px-3 py-2 rounded-lg text-xs font-semibold bg-white text-slate-700 border border-slate-200 hover:border-indigo-300 cursor-pointer transition-all text-left">
+                  2. Negação da Condicional (MANÉ)
+                </button>
+                <button type="button" data-logic-rule="contrapositiva" aria-pressed="false"
+                  class="px-3 py-2 rounded-lg text-xs font-semibold bg-white text-slate-700 border border-slate-200 hover:border-indigo-300 cursor-pointer transition-all text-left">
+                  3. Equivalência Contrapositiva
+                </button>
+                <button type="button" data-logic-rule="demorgan" aria-pressed="false"
+                  class="px-3 py-2 rounded-lg text-xs font-semibold bg-white text-slate-700 border border-slate-200 hover:border-indigo-300 cursor-pointer transition-all text-left">
+                  4. Leis de De Morgan (E ↔ OU)
                 </button>
               </div>
             </div>
 
-            <!-- Painel de Resultados dos Conectivos -->
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
-              <!-- Conjunção -->
-              <div class="p-3 rounded-lg border border-slate-200 bg-white">
-                <div class="text-[11px] font-mono text-slate-500 mb-1">Conjunção (E)</div>
-                <div class="math-font text-base font-bold text-slate-800 mb-1">P ∧ Q</div>
-                <div id="res-conj" class="text-sm font-bold text-emerald-600 bg-emerald-50 py-1 rounded">V</div>
-                <div class="text-[10px] text-slate-500 mt-1">Só V se ambos forem V</div>
+            <div class="lg:col-span-7 bg-slate-50 border border-slate-200 rounded-xl p-5 space-y-3">
+              <h4 id="logic-concept-title" class="font-serif font-bold text-base text-slate-900">Condicional (P → Q)</h4>
+              <div id="logic-concept-formula" class="p-3 rounded-lg bg-slate-900 text-emerald-300 font-mono text-xs sm:text-sm font-bold">
+                P → Q só é FALSO quando P = V e Q = F (Vera Fischer)
               </div>
-
-              <!-- Disjunção -->
-              <div class="p-3 rounded-lg border border-slate-200 bg-white">
-                <div class="text-[11px] font-mono text-slate-500 mb-1">Disjunção (OU)</div>
-                <div class="math-font text-base font-bold text-slate-800 mb-1">P ∨ Q</div>
-                <div id="res-disj" class="text-sm font-bold text-emerald-600 bg-emerald-50 py-1 rounded">V</div>
-                <div class="text-[10px] text-slate-500 mt-1">Só F se ambos forem F</div>
-              </div>
-
-              <!-- Condicional -->
-              <div class="p-3 rounded-lg border border-blue-200 bg-blue-50/50">
-                <div class="text-[11px] font-mono text-blue-700 font-semibold mb-1">Condicional (Se...então)</div>
-                <div class="math-font text-base font-bold text-slate-900 mb-1">P → Q</div>
-                <div id="res-cond" class="text-sm font-bold text-emerald-600 bg-emerald-50 py-1 rounded">V</div>
-                <div class="text-[10px] text-rose-600 font-medium mt-1">Falso apenas se V → F</div>
-              </div>
-
-              <!-- Bicondicional -->
-              <div class="p-3 rounded-lg border border-slate-200 bg-white">
-                <div class="text-[11px] font-mono text-slate-500 mb-1">Bicondicional (Se e somente se)</div>
-                <div class="math-font text-base font-bold text-slate-800 mb-1">P ↔ Q</div>
-                <div id="res-bicond" class="text-sm font-bold text-emerald-600 bg-emerald-50 py-1 rounded">V</div>
-                <div class="text-[10px] text-slate-500 mt-1">V se valores forem iguais</div>
-              </div>
-            </div>
-
-            <!-- Notas de Professor (Alternáveis) -->
-            <div class="teacher-note hidden p-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-900 text-xs">
-              <strong>Nota Pedagógica para Aula:</strong> Destaque para a turma a equivalência clássica cobrada no
-              vestibular: a negação de <span class="math-font">P → Q</span> é <span class="math-font">P ∧ ~Q</span>
-              (regra do "Maném": mantém a primeira e nega a segunda).
+              <p id="logic-concept-example" class="text-xs sm:text-sm text-slate-700 leading-relaxed"></p>
+              <div id="logic-concept-tip" class="p-3 rounded-lg bg-blue-50 border border-blue-200 text-xs text-blue-900 font-medium"></div>
             </div>
           </div>
 
-          <!-- Enigma de Dedução Estilo UNEB -->
-          <div class="lg:col-span-5 bg-slate-50 p-5 rounded-xl border border-slate-200 flex flex-col justify-between">
-            <div>
-              <div class="flex items-center justify-between mb-3">
-                <span class="text-xs uppercase font-mono tracking-wider text-slate-500 font-semibold">Desafio de
-                  Aplicação</span>
-                <span class="text-[11px] px-2 py-0.5 rounded bg-blue-100 text-blue-800 font-medium">Equivalência</span>
-              </div>
-              <h5 class="text-sm font-serif font-bold text-slate-900 mb-2">
-                Qual é a negação lógica da afirmação: "Se chove na Bahia, então o vestibular da UNEB atrasa"?
-              </h5>
-              <div class="space-y-2 mt-4 text-xs">
-                <button data-logic-opt="1"
-                  class="logic-opt w-full text-left p-2.5 rounded border border-slate-200 bg-white hover:bg-slate-100 transition-colors">
-                  A) Se não chove na Bahia, o vestibular não atrasa.
-                </button>
-                <button data-logic-opt="2"
-                  class="logic-opt w-full text-left p-2.5 rounded border border-slate-200 bg-white hover:bg-slate-100 transition-colors">
-                  B) Não chove na Bahia e o vestibular atrasa.
-                </button>
-                <button data-logic-opt="3"
-                  class="logic-opt w-full text-left p-2.5 rounded border border-slate-200 bg-white hover:bg-slate-100 transition-colors">
-                  C) Chove na Bahia e o vestibular da UNEB NÃO atrasa.
-                </button>
-                <button data-logic-opt="4"
-                  class="logic-opt w-full text-left p-2.5 rounded border border-slate-200 bg-white hover:bg-slate-100 transition-colors">
-                  D) Se o vestibular não atrasa, não choveu na Bahia.
-                </button>
-              </div>
-            </div>
-            <div id="logic-feedback" class="mt-4 p-3 rounded text-xs hidden"></div>
+          <div class="flex justify-end pt-2 border-t border-slate-100">
+            <button type="button" data-advance-stage="laboratorio"
+              class="px-4 py-2 rounded-lg text-xs font-bold bg-uneb-primary text-white hover:bg-blue-900 transition-colors cursor-pointer">
+              Ir para o Laboratório Vivo →
+            </button>
           </div>
         </div>
 
+        <!-- ETAPA 2 (E MISSÃO DA ETAPA 3): WORKBENCH COMPARTILHADO -->
+        <div data-workbench class="hidden p-6 space-y-6">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <!-- Simulador de Conectivos -->
+            <div class="lg:col-span-7 space-y-5">
+              <h4 class="font-semibold text-slate-900 text-sm flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-blue-600"></span>
+                Laboratório Interativo de Conectivos Lógicos
+              </h4>
+              <p class="text-xs text-slate-600">
+                Alterne o valor de verdade das proposições simples <span class="math-font font-bold">P</span> e <span
+                  class="math-font font-bold">Q</span> para ver cada linha da tabela-verdade acender:
+              </p>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="p-4 rounded-lg border border-slate-200 bg-slate-50 flex items-center justify-between gap-2">
+                  <div class="min-w-0">
+                    <span class="text-xs text-slate-600 block uppercase font-mono">Proposição P</span>
+                    <span id="label-prop-p" class="font-serif font-bold text-slate-800 text-sm">"Chove hoje"</span>
+                  </div>
+                  <button type="button" id="toggle-p"
+                    class="px-4 py-2 rounded-lg font-bold text-xs transition-all bg-emerald-600 text-white shadow shrink-0 cursor-pointer">
+                    VERDADEIRO (V)
+                  </button>
+                </div>
+                <div class="p-4 rounded-lg border border-slate-200 bg-slate-50 flex items-center justify-between gap-2">
+                  <div class="min-w-0">
+                    <span class="text-xs text-slate-600 block uppercase font-mono">Proposição Q</span>
+                    <span id="label-prop-q" class="font-serif font-bold text-slate-800 text-sm">"Levo guarda-chuva"</span>
+                  </div>
+                  <button type="button" id="toggle-q"
+                    class="px-4 py-2 rounded-lg font-bold text-xs transition-all bg-emerald-600 text-white shadow shrink-0 cursor-pointer">
+                    VERDADEIRO (V)
+                  </button>
+                </div>
+              </div>
+
+              <!-- Cards dos 4 conectivos -->
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+                <div class="p-3 rounded-lg border border-slate-200 bg-white">
+                  <div class="text-[11px] font-mono text-slate-600 mb-1">Conjunção (E)</div>
+                  <div class="math-font text-base font-bold text-slate-800 mb-1">P ∧ Q</div>
+                  <div id="res-conj" class="text-sm font-bold text-emerald-700 bg-emerald-50 py-1 rounded">V</div>
+                  <div class="text-[10px] text-slate-600 mt-1">Só V se ambos V</div>
+                </div>
+                <div class="p-3 rounded-lg border border-slate-200 bg-white">
+                  <div class="text-[11px] font-mono text-slate-600 mb-1">Disjunção (OU)</div>
+                  <div class="math-font text-base font-bold text-slate-800 mb-1">P ∨ Q</div>
+                  <div id="res-disj" class="text-sm font-bold text-emerald-700 bg-emerald-50 py-1 rounded">V</div>
+                  <div class="text-[10px] text-slate-600 mt-1">Só F se ambos F</div>
+                </div>
+                <div class="p-3 rounded-lg border border-blue-200 bg-blue-50/50">
+                  <div class="text-[11px] font-mono text-blue-700 font-semibold mb-1">Condicional (Se...então)</div>
+                  <div class="math-font text-base font-bold text-slate-900 mb-1">P → Q</div>
+                  <div id="res-cond" class="text-sm font-bold text-emerald-700 bg-emerald-50 py-1 rounded">V</div>
+                  <div class="text-[10px] text-rose-700 font-medium mt-1">Falso só se V → F</div>
+                </div>
+                <div class="p-3 rounded-lg border border-slate-200 bg-white">
+                  <div class="text-[11px] font-mono text-slate-600 mb-1">Bicondicional</div>
+                  <div class="math-font text-base font-bold text-slate-800 mb-1">P ↔ Q</div>
+                  <div id="res-bicond" class="text-sm font-bold text-emerald-700 bg-emerald-50 py-1 rounded">V</div>
+                  <div class="text-[10px] text-slate-600 mt-1">V se valores iguais</div>
+                </div>
+              </div>
+
+              <div id="logic-live-sentence"
+                class="p-3 rounded-lg bg-indigo-50/70 border border-indigo-200 text-xs text-indigo-950 font-medium">
+              </div>
+
+              <!-- Nota Docente -->
+              <div data-lab-extra class="teacher-note hidden p-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-900 text-xs">
+                <strong>Nota Pedagógica para Aula (Eixo 1):</strong> Peça aos alunos que encontrem a única linha em que a promessa "Se P então Q" é quebrada (<span class="math-font">V → F = F</span>) antes de mostrar a negação <span class="math-font">P ∧ ~Q</span>.
+              </div>
+            </div>
+
+            <!-- Tabela-Verdade Completa 4 linhas (visível no Laboratório para acompanhar ao vivo) -->
+            <div data-lab-extra class="lg:col-span-5 bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
+              <div class="flex items-center justify-between">
+                <h5 class="text-xs font-bold uppercase tracking-wide text-slate-800">Tabela-Verdade Completa</h5>
+                <span class="text-[11px] font-mono text-indigo-700 font-semibold">Linha ativa em destaque</span>
+              </div>
+              <div class="overflow-x-auto bg-white rounded-lg border border-slate-200">
+                <table class="w-full text-xs">
+                  <thead class="bg-slate-100 text-slate-700 font-mono">
+                    <tr>
+                      <th class="py-1.5 px-2 text-center">P</th>
+                      <th class="py-1.5 px-2 text-center">Q</th>
+                      <th class="py-1.5 px-2 text-center">P∧Q</th>
+                      <th class="py-1.5 px-2 text-center">P∨Q</th>
+                      <th class="py-1.5 px-2 text-center">P→Q</th>
+                      <th class="py-1.5 px-2 text-center">P↔Q</th>
+                    </tr>
+                  </thead>
+                  <tbody id="logic-truth-table-rows"></tbody>
+                </table>
+              </div>
+              <p class="text-[11px] text-slate-600 leading-relaxed">
+                Observe que a coluna <span class="font-mono font-bold text-slate-800">P → Q</span> só fica vermelha (F) quando P = V e Q = F.
+              </p>
+            </div>
+          </div>
+
+          <div data-lab-footer class="flex justify-end pt-3 border-t border-slate-100">
+            <button type="button" data-advance-stage="pratica"
+              class="px-4 py-2 rounded-lg text-xs font-bold bg-uneb-primary text-white hover:bg-blue-900 transition-colors cursor-pointer">
+              Avançar para Prática Rápida →
+            </button>
+          </div>
+        </div>
+
+        <!-- ETAPA 3: PRÁTICA RÁPIDA (RENDERIZADA PELO CONTROLADOR) -->
+        <div data-stage="pratica" class="hidden p-6 pt-3"></div>
       </section>
 
       <!-- EIXO 2: NÚMEROS, SEQUÊNCIAS & ANÁLISE COMBINATÓRIA -->
-      <section class="bg-white rounded-xl border border-uneb-border shadow-sm overflow-hidden">
-        <div class="bg-slate-100/80 px-6 py-4 border-b border-uneb-border flex items-center justify-between">
-          <div class="flex items-center gap-3">
+      <section id="mod-numeros" class="bg-white rounded-xl border border-uneb-border shadow-sm overflow-hidden">
+        <div class="bg-slate-100/80 px-6 py-4 border-b border-uneb-border flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-3 min-w-0">
             <span
-              class="w-7 h-7 rounded-full bg-uneb-primary text-white font-bold text-xs flex items-center justify-center">2</span>
-            <div>
+              class="w-7 h-7 shrink-0 rounded-full bg-uneb-primary text-white font-bold text-xs flex items-center justify-center">2</span>
+            <div class="min-w-0">
               <h3 class="font-serif font-bold text-lg text-slate-900">Eixo 2 — Números, Sequências & Combinatória</h3>
-              <p class="text-xs text-slate-500">Progressões (PA/PG), contagem com ordem e sem ordem</p>
+              <p class="text-xs text-slate-600">Progressões (PA/PG), contagem com ordem e sem ordem</p>
             </div>
           </div>
-          <button data-comp-module="mod-numeros" id="btn-comp-mod-numeros"
-            class="px-3 py-1.5 rounded text-xs font-medium border border-slate-300 hover:border-emerald-500 hover:text-emerald-700 bg-white transition-colors">
+          <button type="button" data-comp-module="mod-numeros" id="btn-comp-mod-numeros" aria-pressed="false"
+            class="px-3 py-1.5 rounded text-xs font-medium border border-slate-300 hover:border-emerald-500 hover:text-emerald-700 bg-white transition-colors shrink-0 cursor-pointer">
             Marcar como Concluído ✓
           </button>
         </div>
 
-        <div class="p-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div data-stage-bar class="px-6 pt-4 pb-2 border-b border-slate-100"></div>
 
-          <!-- Simulador: Arranjo vs Combinação -->
-          <div class="border border-slate-200 rounded-xl p-5 bg-slate-50/50 flex flex-col justify-between">
-            <div>
-              <div class="flex items-center justify-between mb-3">
-                <h4 class="font-semibold text-slate-900 text-sm">Simulador: Arranjo vs. Combinação</h4>
-                <span class="text-[11px] font-mono bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded">A ordem
-                  importa?</span>
+        <!-- ETAPA 1: CONCEITO VISUAL -->
+        <div data-stage="conceito" class="p-6 space-y-5">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div class="bg-indigo-50/70 border border-indigo-200 rounded-xl p-5 space-y-2.5">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold uppercase tracking-wide text-indigo-800">Pódio vs. Comissão (A Ordem Importa?)</span>
+                <span class="text-[11px] font-mono bg-white px-2 py-0.5 rounded border border-indigo-200 text-indigo-700">A vs C</span>
               </div>
-              <p class="text-xs text-slate-600 mb-4">
-                Ajuste a quantidade total de elementos (<span class="math-font">n</span>) e o tamanho dos grupos
-                escolhidos (<span class="math-font">p</span>):
+              <p class="text-xs text-slate-700 leading-relaxed">
+                Pergunta de ouro na UNEB: <strong>se trocar a posição muda o resultado?</strong>
               </p>
-
-              <!-- Sliders -->
-              <div class="space-y-4">
-                <div>
-                  <div class="flex justify-between text-xs text-slate-700 mb-1">
-                    <label for="slider-n">Total de elementos (<span class="math-font">n</span>):</label>
-                    <strong id="val-n" class="font-mono text-sm text-uneb-primary">7</strong>
-                  </div>
-                  <input type="range" id="slider-n" min="2" max="12" value="7" aria-label="Total de elementos n"
-                    class="w-full h-2 my-1 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-700">
+              <div class="grid grid-cols-2 gap-2 text-xs">
+                <div class="bg-white p-3 rounded-lg border border-indigo-200">
+                  <div class="font-bold text-indigo-900 mb-1">Ordem IMPORTA → Arranjo</div>
+                  <p class="text-[11px] text-slate-600">Pódio (1º/2º/3º), senhas numéricas, cargos distintos (Ana Presidente ≠ Ana Secretária).</p>
                 </div>
-                <div>
-                  <div class="flex justify-between text-xs text-slate-700 mb-1">
-                    <label for="slider-p">Elementos escolhidos (<span class="math-font">p</span>):</label>
-                    <strong id="val-p" class="font-mono text-sm text-uneb-primary">3</strong>
-                  </div>
-                  <input type="range" id="slider-p" min="1" max="7" value="3" aria-label="Elementos escolhidos p"
-                    class="w-full h-2 my-1 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-700">
-                </div>
-              </div>
-
-              <!-- Comparativo de Resultados -->
-              <div class="grid grid-cols-2 gap-4 mt-6">
-                <div class="p-4 rounded-lg bg-white border border-slate-200 shadow-sm">
-                  <div class="text-[11px] font-semibold uppercase text-slate-600">Arranjo Simples (A)</div>
-                  <div class="text-xs text-slate-600 mb-1">A ordem IMPORTA (ex: pódio, senhas)</div>
-                  <div id="res-arranjo" class="text-xl font-bold font-mono text-blue-800">210</div>
-                  <div class="text-[11px] text-slate-500 font-mono mt-1">n! / (n - p)!</div>
-                </div>
-
-                <div class="p-4 rounded-lg bg-white border border-emerald-200 shadow-sm">
-                  <div class="text-[11px] font-semibold uppercase text-emerald-800">Combinação Simples (C)</div>
-                  <div class="text-xs text-slate-600 mb-1">A ordem NÃO importa (comissões, jogos)</div>
-                  <div id="res-combinacao" class="text-xl font-bold font-mono text-emerald-700">35</div>
-                  <div class="text-[11px] text-slate-500 font-mono mt-1">n! / [p! · (n - p)!]</div>
+                <div class="bg-white p-3 rounded-lg border border-emerald-200">
+                  <div class="font-bold text-emerald-900 mb-1">Ordem NÃO importa → Combinação</div>
+                  <p class="text-[11px] text-slate-600">Comissões sem cargos, duplas, aperto de mão, sorteios {Ana, Beto} = {Beto, Ana}. Divide por <span class="font-mono font-bold">p!</span>.</p>
                 </div>
               </div>
             </div>
 
-            <div class="mt-4 p-3 bg-blue-50/70 border border-blue-100 rounded text-xs text-blue-900">
-              <strong>Relação Fundamental:</strong> Note que o Arranjo é exatamente <span id="comb-ratio"
-                class="font-bold">6</span> vezes maior que a Combinação (<span id="comb-formula" class="math-font">p! =
-                3! = 6</span> formas de ordenar os mesmos elementos).
+            <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 space-y-2.5">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold uppercase tracking-wide text-slate-800">Soma (PA) vs. Multiplicação (PG)</span>
+                <span class="text-[11px] font-mono bg-white px-2 py-0.5 rounded border border-slate-200 text-slate-700">Crescimento</span>
+              </div>
+              <div class="grid grid-cols-2 gap-2 text-xs">
+                <div class="bg-white p-3 rounded-lg border border-slate-200">
+                  <div class="font-bold text-uneb-primary mb-1">PA: Soma constante (+r)</div>
+                  <p class="text-[11px] text-slate-600 font-mono">aₙ = a₁ + (n − 1)·r</p>
+                  <p class="text-[11px] text-slate-500 mt-1">Ex.: 2, 5, 8, 11... Cresce em linha reta.</p>
+                </div>
+                <div class="bg-white p-3 rounded-lg border border-emerald-200">
+                  <div class="font-bold text-emerald-800 mb-1">PG: Multiplica constante (·q)</div>
+                  <p class="text-[11px] text-slate-600 font-mono">aₙ = a₁ · q^(n − 1)</p>
+                  <p class="text-[11px] text-slate-500 mt-1">Ex.: 3, 6, 12, 24... Dispara exponencialmente.</p>
+                </div>
+              </div>
+              <p class="text-[11px] text-slate-600 pt-1">
+                Dica extra: em anagramas com letras repetidas (ex.: SALVADOR tem 2 A's), divida <span class="font-mono font-bold">8! / 2!</span>.
+              </p>
             </div>
           </div>
 
-          <!-- Calculadora de Progressões PA / PG -->
-          <div class="border border-slate-200 rounded-xl p-5 bg-slate-50/50 flex flex-col justify-between">
-            <div>
-              <div class="flex items-center justify-between mb-3">
-                <h4 class="font-semibold text-slate-900 text-sm">Laboratório de PA & PG</h4>
-                <div class="inline-flex rounded-md shadow-sm text-xs" role="group">
-                  <button type="button" id="tab-pa"
-                    class="px-3 py-1 font-medium bg-uneb-primary text-white rounded-l-lg border border-uneb-primary">
-                    PA
-                  </button>
-                  <button type="button" id="tab-pg"
-                    class="px-3 py-1 font-medium bg-white text-slate-700 hover:bg-slate-100 rounded-r-lg border border-slate-300">
-                    PG
-                  </button>
+          <div class="flex justify-end pt-2 border-t border-slate-100">
+            <button type="button" data-advance-stage="laboratorio"
+              class="px-4 py-2 rounded-lg text-xs font-bold bg-uneb-primary text-white hover:bg-blue-900 transition-colors cursor-pointer">
+              Ir para o Laboratório Vivo →
+            </button>
+          </div>
+        </div>
+
+        <!-- ETAPA 2 (E MISSÃO DA ETAPA 3): WORKBENCH COMPARTILHADO -->
+        <div data-workbench class="hidden p-6 space-y-6">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+            <!-- Simulador: Arranjo vs Combinação -->
+            <div class="border border-slate-200 rounded-xl p-5 bg-slate-50/50 flex flex-col justify-between space-y-4">
+              <div>
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                  <h4 class="font-semibold text-slate-900 text-sm">Simulador: Arranjo vs. Combinação</h4>
+                  <div class="flex gap-1.5" role="group" aria-label="Tipo de agrupamento">
+                    <button type="button" id="comb-mode-arr" aria-pressed="true"
+                      class="px-3 py-1.5 rounded-lg text-xs font-bold bg-indigo-600 text-white shadow-sm cursor-pointer transition-all">
+                      Ordem importa (Arranjo)
+                    </button>
+                    <button type="button" id="comb-mode-comb" aria-pressed="false"
+                      class="px-3 py-1.5 rounded-lg text-xs font-medium bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 cursor-pointer transition-all">
+                      Ordem NÃO importa (Combinação)
+                    </button>
+                  </div>
+                </div>
+                <p class="text-xs text-slate-600 mb-4">
+                  Ajuste o total de elementos (<span class="math-font">n</span>) e os escolhidos (<span class="math-font">p</span>):
+                </p>
+
+                <!-- Sliders -->
+                <div class="space-y-4">
+                  <div>
+                    <div class="flex justify-between text-xs text-slate-700 mb-1">
+                      <label for="slider-n">Total de elementos (<span class="math-font">n</span>):</label>
+                      <strong id="val-n" class="font-mono text-sm text-uneb-primary">7</strong>
+                    </div>
+                    <input type="range" id="slider-n" min="2" max="12" value="7" aria-label="Total de elementos n"
+                      class="w-full h-2 my-1 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-700">
+                  </div>
+                  <div>
+                    <div class="flex justify-between text-xs text-slate-700 mb-1">
+                      <label for="slider-p">Elementos escolhidos (<span class="math-font">p</span>):</label>
+                      <strong id="val-p" class="font-mono text-sm text-uneb-primary">3</strong>
+                    </div>
+                    <input type="range" id="slider-p" min="1" max="7" value="3" aria-label="Elementos escolhidos p"
+                      class="w-full h-2 my-1 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-700">
+                  </div>
+                </div>
+
+                <!-- Comparativo de Resultados -->
+                <div class="grid grid-cols-2 gap-4 mt-5">
+                  <div id="card-arranjo" class="bg-indigo-50 p-3 rounded-lg border-2 border-indigo-500 text-center ring-2 ring-indigo-200 transition-all">
+                    <div class="text-[11px] font-semibold uppercase text-slate-700">Arranjo Simples (A)</div>
+                    <div class="text-xs text-slate-600 mb-1">Ordem IMPORTA (pódio, senhas)</div>
+                    <div id="res-arranjo" class="text-xl font-bold font-mono text-blue-800">210</div>
+                    <div class="text-[11px] text-slate-500 font-mono mt-1">n! / (n - p)!</div>
+                  </div>
+
+                  <div id="card-combinacao" class="bg-emerald-50/40 p-3 rounded-lg border border-emerald-200 text-center opacity-70 transition-all">
+                    <div class="text-[11px] font-semibold uppercase text-emerald-800">Combinação Simples (C)</div>
+                    <div class="text-xs text-slate-600 mb-1">Ordem NÃO importa (comissão)</div>
+                    <div id="res-combinacao" class="text-xl font-bold font-mono text-emerald-700">35</div>
+                    <div class="text-[11px] text-slate-500 font-mono mt-1">n! / [p! · (n - p)!]</div>
+                  </div>
                 </div>
               </div>
 
-              <!-- Inputs da Sequência -->
-              <div class="grid grid-cols-3 gap-3 mb-4">
-                <div>
-                  <label class="block text-[11px] font-medium text-slate-600 mb-1">1º Termo (<span
-                      class="math-font">a₁</span>)</label>
-                  <input type="number" id="seq-a1" value="2"
-                    class="w-full px-2 py-1.5 rounded border border-slate-300 text-sm font-mono">
+              <div data-lab-extra class="space-y-2">
+                <div id="comb-step-formula" class="p-2.5 bg-slate-900 text-emerald-300 rounded-lg font-mono text-[11px] font-semibold">
+                  A(7,3) = 7! / 4! = 210 ordenações distintas
                 </div>
-                <div>
-                  <label id="seq-raz-label" class="block text-[11px] font-medium text-slate-600 mb-1">Razão (<span
-                      class="math-font">r</span>)</label>
-                  <input type="number" id="seq-raz" value="3"
-                    class="w-full px-2 py-1.5 rounded border border-slate-300 text-sm font-mono">
-                </div>
-                <div>
-                  <label class="block text-[11px] font-medium text-slate-600 mb-1">Posição (<span
-                      class="math-font">n</span>)</label>
-                  <input type="number" id="seq-n" value="10" min="1" max="50"
-                    class="w-full px-2 py-1.5 rounded border border-slate-300 text-sm font-mono">
-                </div>
-              </div>
-
-              <!-- Resultados da Sequência -->
-              <div class="bg-white p-4 rounded-lg border border-slate-200 space-y-2 mb-4">
-                <div class="flex justify-between items-center text-xs">
-                  <span class="text-slate-500">Termo Geral (<span class="math-font"
-                      id="seq-term-label">a₁₀</span>):</span>
-                  <span id="seq-res-an" class="font-mono font-bold text-base text-slate-900">29</span>
-                </div>
-                <div class="flex justify-between items-center text-xs border-t border-slate-100 pt-2">
-                  <span class="text-slate-500">Soma dos Primeiros <span class="math-font">n</span> Termos (<span
-                      class="math-font" id="seq-sum-label">S₁₀</span>):</span>
-                  <span id="seq-res-sn" class="font-mono font-bold text-base text-emerald-700">155</span>
-                </div>
-              </div>
-
-              <!-- Termos Gerados -->
-              <div class="text-xs text-slate-500">
-                <span class="font-medium block mb-1">Primeiros termos:</span>
-                <div id="seq-preview"
-                  class="font-mono text-[11px] p-2 bg-slate-100 rounded text-slate-700 overflow-x-auto whitespace-nowrap">
-                  2, 5, 8, 11, 14, 17, 20, 23, 26, 29...
+                <div class="p-3 bg-blue-50/70 border border-blue-100 rounded text-xs text-blue-900">
+                  <strong>Relação Fundamental:</strong> O Arranjo é sempre <span id="comb-ratio"
+                    class="font-bold">6</span>× maior que a Combinação (<span id="comb-formula" class="math-font">p! =
+                    3! = 6</span> ordens repetidas).
                 </div>
               </div>
             </div>
 
-            <div class="mt-4 text-[11px] text-slate-500 italic">
-              *Na UNEB, problemas de PG frequentemente envolvem crescimento populacional ou decaimento percentual
-              sucessivo.
+            <!-- Calculadora de Progressões PA / PG -->
+            <div class="border border-slate-200 rounded-xl p-5 bg-slate-50/50 flex flex-col justify-between space-y-4">
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <h4 class="font-semibold text-slate-900 text-sm">Laboratório de PA & PG</h4>
+                  <div class="inline-flex rounded-md shadow-sm text-xs" role="group">
+                    <button type="button" id="tab-pa" aria-pressed="true"
+                      class="px-3 py-1 font-medium bg-uneb-primary text-white rounded-l-lg border border-uneb-primary cursor-pointer">
+                      PA
+                    </button>
+                    <button type="button" id="tab-pg" aria-pressed="false"
+                      class="px-3 py-1 font-medium bg-white text-slate-700 hover:bg-slate-100 rounded-r-lg border border-slate-300 cursor-pointer">
+                      PG
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Inputs da Sequência -->
+                <div class="grid grid-cols-3 gap-3 mb-4">
+                  <div>
+                    <label for="seq-a1" class="block text-[11px] font-medium text-slate-600 mb-1">1º Termo (<span
+                        class="math-font">a₁</span>)</label>
+                    <input type="number" id="seq-a1" value="2"
+                      class="w-full px-2 py-1.5 rounded border border-slate-300 text-sm font-mono bg-white">
+                  </div>
+                  <div>
+                    <label for="seq-raz" id="seq-raz-label" class="block text-[11px] font-medium text-slate-600 mb-1">Razão (r)</label>
+                    <input type="number" id="seq-raz" value="3"
+                      class="w-full px-2 py-1.5 rounded border border-slate-300 text-sm font-mono bg-white">
+                  </div>
+                  <div>
+                    <label for="seq-n" class="block text-[11px] font-medium text-slate-600 mb-1">Posição (<span
+                        class="math-font">n</span>)</label>
+                    <input type="number" id="seq-n" value="10" min="1" max="50"
+                      class="w-full px-2 py-1.5 rounded border border-slate-300 text-sm font-mono bg-white">
+                  </div>
+                </div>
+
+                <!-- Resultados da Sequência -->
+                <div class="bg-white p-4 rounded-lg border border-slate-200 space-y-2 mb-3">
+                  <div class="flex justify-between items-center text-xs">
+                    <span class="text-slate-600">Termo Geral (<span class="math-font"
+                        id="seq-term-label">a₁₀</span>):</span>
+                    <span id="seq-res-an" class="font-mono font-bold text-base text-slate-900">29</span>
+                  </div>
+                  <div class="flex justify-between items-center text-xs border-t border-slate-100 pt-2">
+                    <span class="text-slate-600">Soma dos Primeiros <span class="math-font">n</span> Termos (<span
+                        class="math-font" id="seq-sum-label">S₁₀</span>):</span>
+                    <span id="seq-res-sn" class="font-mono font-bold text-base text-emerald-700">155</span>
+                  </div>
+                </div>
+
+                <!-- Barras Proporcionais PA vs PG -->
+                <div data-lab-extra class="space-y-2">
+                  <span class="text-[11px] font-semibold text-slate-600 block">Escala visual dos termos (linear vs. exponencial):</span>
+                  <div id="seq-visual-bars" class="flex items-end gap-1.5 bg-white p-2.5 rounded-lg border border-slate-200"></div>
+                </div>
+
+                <!-- Termos Gerados -->
+                <div class="text-xs text-slate-600 mt-3">
+                  <span class="font-medium block mb-1">Primeiros termos:</span>
+                  <div id="seq-preview"
+                    class="font-mono text-[11px] p-2 bg-slate-100 rounded text-slate-700 overflow-x-auto whitespace-nowrap">
+                    2, 5, 8, 11, 14, 17, 20, 23, 26, 29...
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
+          <div data-lab-extra class="teacher-note hidden p-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-900 text-xs">
+            <strong>Nota Pedagógica para Aula (Eixo 2):</strong> Oriente a turma com a pergunta-chave: <em>"A ordem dos
+              elementos gera um agrupamento diferente?"</em> Alterne entre Arranjo e Combinação no simulador mantendo N e P fixos para provar a divisão por <span class="math-font font-semibold">p!</span>.
+          </div>
+
+          <div data-lab-footer class="flex justify-end pt-3 border-t border-slate-100">
+            <button type="button" data-advance-stage="pratica"
+              class="px-4 py-2 rounded-lg text-xs font-bold bg-uneb-primary text-white hover:bg-blue-900 transition-colors cursor-pointer">
+              Avançar para Prática Rápida →
+            </button>
+          </div>
         </div>
 
-        <!-- Nota de Professor Eixo 2 -->
-        <div
-          class="teacher-note hidden mx-6 mb-6 p-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-900 text-xs">
-          <strong>Nota Pedagógica para Aula (Eixo 2):</strong> Oriente a turma com a pergunta-chave: <em>"A ordem dos
-            elementos gera um agrupamento diferente?"</em> Se SIM (como senhas, pódios ou placas), trata-se de
-          <strong>Arranjo</strong>; se NÃO (como comissões, sorteios de grupos ou jogos), trata-se de
-          <strong>Combinação</strong>. Em PG, reforce que a razão $q > 1$ modela crescimento exponencial comumente
-          associado a juros compostos.
-        </div>
-
+        <!-- ETAPA 3: PRÁTICA RÁPIDA -->
+        <div data-stage="pratica" class="hidden p-6 pt-3"></div>
       </section>
 
       <!-- EIXO 3: LABORATÓRIO GRÁFICO DE FUNÇÕES (ÁLGEBRA) -->
-      <section class="bg-white rounded-xl border border-uneb-border shadow-sm overflow-hidden">
-        <div class="bg-slate-100/80 px-6 py-4 border-b border-uneb-border flex items-center justify-between">
-          <div class="flex items-center gap-3">
+      <section id="mod-algebra" class="bg-white rounded-xl border border-uneb-border shadow-sm overflow-hidden">
+        <div class="bg-slate-100/80 px-6 py-4 border-b border-uneb-border flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-3 min-w-0">
             <span
-              class="w-7 h-7 rounded-full bg-uneb-primary text-white font-bold text-xs flex items-center justify-center">3</span>
-            <div>
-              <h3 class="font-serif font-bold text-lg text-slate-900">Eixo 3 — Álgebra: Modulador de Funções Gráficas
-              </h3>
-              <p class="text-xs text-slate-500">Visualização dinâmica de f(x) = ax² + bx + c e curvas exponenciais</p>
+              class="w-7 h-7 shrink-0 rounded-full bg-uneb-primary text-white font-bold text-xs flex items-center justify-center">3</span>
+            <div class="min-w-0">
+              <h3 class="font-serif font-bold text-lg text-slate-900">Eixo 3 — Álgebra: Modulador de Funções Gráficas</h3>
+              <p class="text-xs text-slate-600">Visualização dinâmica de f(x) = ax² + bx + c, vértice e raízes reais</p>
             </div>
           </div>
-          <button data-comp-module="mod-algebra" id="btn-comp-mod-algebra"
-            class="px-3 py-1.5 rounded text-xs font-medium border border-slate-300 hover:border-emerald-500 hover:text-emerald-700 bg-white transition-colors">
+          <button type="button" data-comp-module="mod-algebra" id="btn-comp-mod-algebra" aria-pressed="false"
+            class="px-3 py-1.5 rounded text-xs font-medium border border-slate-300 hover:border-emerald-500 hover:text-emerald-700 bg-white transition-colors shrink-0 cursor-pointer">
             Marcar como Concluído ✓
           </button>
         </div>
 
-        <div class="p-6 grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div data-stage-bar class="px-6 pt-4 pb-2 border-b border-slate-100"></div>
 
-          <!-- Controles dos Parâmetros -->
-          <div class="lg:col-span-5 space-y-5">
-            <div class="flex items-center justify-between">
-              <span class="text-xs uppercase font-mono text-slate-500 font-semibold">Parâmetros da Parábola</span>
-              <button id="btn-reset-quad" class="text-xs text-blue-600 hover:underline">Redefinir</button>
-            </div>
-
-            <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-4">
-              <!-- Coeficiente a -->
-              <div>
-                <div class="flex justify-between text-xs text-slate-700 mb-1">
-                  <label for="slider-quad-a">Coeficiente <strong class="math-font text-blue-700">a</strong>
-                    (concavidade):</label>
-                  <span id="val-quad-a" class="font-mono font-bold">1</span>
-                </div>
-                <input type="range" id="slider-quad-a" min="-4" max="4" step="0.5" value="1"
-                  aria-label="Coeficiente a (concavidade)"
-                  class="w-full h-2 my-1 bg-slate-200 rounded appearance-none cursor-pointer accent-blue-700">
-                <div class="flex justify-between text-[11px] text-slate-500 mt-0.5">
-                  <span>-4 (voltada p/ baixo)</span>
-                  <span>0</span>
-                  <span>+4 (voltada p/ cima)</span>
-                </div>
+        <!-- ETAPA 1: CONCEITO VISUAL -->
+        <div data-stage="conceito" class="p-6 space-y-5">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            <div class="lg:col-span-5 space-y-2">
+              <span class="text-[11px] font-bold uppercase tracking-wide text-sky-800">Clique em cada papel da parábola</span>
+              <div class="grid grid-cols-2 gap-2">
+                <button type="button" data-quad-coef="a" aria-pressed="true"
+                  class="px-3 py-1.5 rounded-lg text-xs font-bold bg-sky-600 text-white shadow-sm cursor-pointer transition-all">
+                  Coeficiente a
+                </button>
+                <button type="button" data-quad-coef="b" aria-pressed="false"
+                  class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-white text-slate-700 border border-slate-200 hover:border-sky-300 cursor-pointer transition-all">
+                  Coeficiente b
+                </button>
+                <button type="button" data-quad-coef="c" aria-pressed="false"
+                  class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-white text-slate-700 border border-slate-200 hover:border-sky-300 cursor-pointer transition-all">
+                  Coeficiente c
+                </button>
+                <button type="button" data-quad-coef="delta" aria-pressed="false"
+                  class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-white text-slate-700 border border-slate-200 hover:border-sky-300 cursor-pointer transition-all">
+                  Discriminante Δ
+                </button>
               </div>
-
-              <!-- Coeficiente b -->
-              <div>
-                <div class="flex justify-between text-xs text-slate-700 mb-1">
-                  <label for="slider-quad-b">Coeficiente <strong class="math-font text-blue-700">b</strong> (inclinação
-                    no eixo Y):</label>
-                  <span id="val-quad-b" class="font-mono font-bold">-2</span>
-                </div>
-                <input type="range" id="slider-quad-b" min="-6" max="6" step="0.5" value="-2"
-                  aria-label="Coeficiente b (inclinação no eixo Y)"
-                  class="w-full h-2 my-1 bg-slate-200 rounded appearance-none cursor-pointer accent-blue-700">
-              </div>
-
-              <!-- Coeficiente c -->
-              <div>
-                <div class="flex justify-between text-xs text-slate-700 mb-1">
-                  <label for="slider-quad-c">Coeficiente <strong class="math-font text-blue-700">c</strong> (interseção
-                    com eixo Y):</label>
-                  <span id="val-quad-c" class="font-mono font-bold">-3</span>
-                </div>
-                <input type="range" id="slider-quad-c" min="-6" max="6" step="0.5" value="-3"
-                  aria-label="Coeficiente c (interseção com eixo Y)"
-                  class="w-full h-2 my-1 bg-slate-200 rounded appearance-none cursor-pointer accent-blue-700">
+              <div class="p-3 bg-blue-50 border border-blue-200 rounded-lg text-xs text-blue-950 font-mono space-y-1">
+                <div><strong>Vértice:</strong> Xᵥ = -b / (2a)  |  Yᵥ = -Δ / (4a)</div>
+                <div><strong>Raízes:</strong> x = (-b ± √Δ) / (2a)</div>
               </div>
             </div>
 
-            <!-- Dados Analíticos da Função -->
-            <div class="p-4 bg-white rounded-xl border border-slate-200 shadow-sm space-y-2 text-xs">
-              <div class="flex justify-between">
-                <span class="text-slate-500">Equação Atual:</span>
-                <span id="label-quad-eq" class="font-mono font-bold text-slate-900">f(x) = 1x² - 2x - 3</span>
-              </div>
-              <div class="flex justify-between border-t border-slate-100 pt-2">
-                <span class="text-slate-500">Discriminante (<span class="math-font">Δ = b² - 4ac</span>):</span>
-                <span id="label-quad-delta" class="font-mono font-bold text-blue-700">16</span>
-              </div>
-              <div class="flex justify-between border-t border-slate-100 pt-2">
-                <span class="text-slate-500">Raízes Reais:</span>
-                <span id="label-quad-roots" class="font-mono font-bold text-emerald-700">x₁ = -1, x₂ = 3</span>
-              </div>
-              <div class="flex justify-between border-t border-slate-100 pt-2">
-                <span class="text-slate-500">Vértice (<span class="math-font">Xᵥ, Yᵥ</span>):</span>
-                <span id="label-quad-vert" class="font-mono font-bold text-slate-800">(1, -4) [Mínimo]</span>
-              </div>
+            <div class="lg:col-span-7 bg-slate-50 border border-slate-200 rounded-xl p-5 space-y-2.5">
+              <h4 id="quad-concept-title" class="font-serif font-bold text-base text-slate-900">Coeficiente a (Concavidade)</h4>
+              <p id="quad-concept-desc" class="text-xs sm:text-sm text-slate-700 leading-relaxed"></p>
             </div>
           </div>
 
-          <!-- Canvas Gráfico Nativo -->
-          <div class="lg:col-span-7 flex flex-col items-center">
-            <div class="w-full bg-slate-900 rounded-xl p-3 shadow-inner border border-slate-800 relative">
-              <div class="flex justify-between items-center text-slate-400 text-xs px-2 mb-2 font-mono">
-                <span>Plano Cartesiano [Resolução Vetorial Nativa]</span>
-                <span class="text-emerald-400">Escala 1:1</span>
+          <div class="flex justify-end pt-2 border-t border-slate-100">
+            <button type="button" data-advance-stage="laboratorio"
+              class="px-4 py-2 rounded-lg text-xs font-bold bg-uneb-primary text-white hover:bg-blue-900 transition-colors cursor-pointer">
+              Ir para o Laboratório Vivo →
+            </button>
+          </div>
+        </div>
+
+        <!-- ETAPA 2 (E MISSÃO DA ETAPA 3): WORKBENCH COMPARTILHADO -->
+        <div data-workbench class="hidden p-6 space-y-6">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+            <!-- Controles dos Parâmetros -->
+            <div class="lg:col-span-5 space-y-4">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <span class="text-xs uppercase font-mono text-slate-600 font-semibold">Parâmetros da Parábola</span>
+                <button type="button" id="btn-reset-quad" class="text-xs text-blue-700 hover:underline font-medium cursor-pointer">Redefinir</button>
               </div>
-              <div class="w-full h-72 sm:h-80 relative flex items-center justify-center">
-                <canvas id="canvas-algebra" width="550" height="320"
-                  class="w-full h-full rounded bg-slate-950"></canvas>
+
+              <div data-lab-extra class="flex flex-wrap gap-1.5">
+                <button type="button" data-quad-preset="duas" class="px-2.5 py-1 rounded text-[11px] font-mono bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100 cursor-pointer">2 Raízes (Δ&gt;0)</button>
+                <button type="button" data-quad-preset="dupla" class="px-2.5 py-1 rounded text-[11px] font-mono bg-blue-50 text-blue-800 border border-blue-200 hover:bg-blue-100 cursor-pointer">Raiz Dupla (Δ=0)</button>
+                <button type="button" data-quad-preset="sem" class="px-2.5 py-1 rounded text-[11px] font-mono bg-rose-50 text-rose-800 border border-rose-200 hover:bg-rose-100 cursor-pointer">Sem Raiz (Δ&lt;0)</button>
+                <button type="button" data-quad-preset="maximo" class="px-2.5 py-1 rounded text-[11px] font-mono bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100 cursor-pointer">Máximo (a&lt;0)</button>
+              </div>
+
+              <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-4">
+                <div>
+                  <div class="flex justify-between text-xs text-slate-700 mb-1">
+                    <label for="slider-quad-a">Coeficiente <strong class="math-font text-blue-700">a</strong> (concavidade):</label>
+                    <span id="val-quad-a" class="font-mono font-bold">1</span>
+                  </div>
+                  <input type="range" id="slider-quad-a" min="-4" max="4" step="0.5" value="1"
+                    aria-label="Coeficiente a (concavidade)"
+                    class="w-full h-2 my-1 bg-slate-200 rounded appearance-none cursor-pointer accent-blue-700">
+                  <div class="flex justify-between text-[11px] text-slate-500 mt-0.5">
+                    <span>-4 (p/ baixo)</span>
+                    <span>0</span>
+                    <span>+4 (p/ cima)</span>
+                  </div>
+                </div>
+
+                <div>
+                  <div class="flex justify-between text-xs text-slate-700 mb-1">
+                    <label for="slider-quad-b">Coeficiente <strong class="math-font text-blue-700">b</strong> (inclinação no eixo Y):</label>
+                    <span id="val-quad-b" class="font-mono font-bold">-2</span>
+                  </div>
+                  <input type="range" id="slider-quad-b" min="-6" max="6" step="0.5" value="-2"
+                    aria-label="Coeficiente b (inclinação no eixo Y)"
+                    class="w-full h-2 my-1 bg-slate-200 rounded appearance-none cursor-pointer accent-blue-700">
+                </div>
+
+                <div>
+                  <div class="flex justify-between text-xs text-slate-700 mb-1">
+                    <label for="slider-quad-c">Coeficiente <strong class="math-font text-blue-700">c</strong> (corte no eixo Y):</label>
+                    <span id="val-quad-c" class="font-mono font-bold">-3</span>
+                  </div>
+                  <input type="range" id="slider-quad-c" min="-6" max="6" step="0.5" value="-3"
+                    aria-label="Coeficiente c (interseção com eixo Y)"
+                    class="w-full h-2 my-1 bg-slate-200 rounded appearance-none cursor-pointer accent-blue-700">
+                </div>
+              </div>
+
+              <!-- Dados Analíticos -->
+              <div class="p-4 bg-white rounded-xl border border-slate-200 shadow-sm space-y-2 text-xs">
+                <div class="flex justify-between">
+                  <span class="text-slate-500">Equação Atual:</span>
+                  <span id="label-quad-eq" class="font-mono font-bold text-slate-900">f(x) = x² - 2x - 3</span>
+                </div>
+                <div class="flex justify-between border-t border-slate-100 pt-2">
+                  <span class="text-slate-500">Discriminante (<span class="math-font">Δ = b² - 4ac</span>):</span>
+                  <span id="label-quad-delta" class="font-mono font-bold text-blue-700">16.00</span>
+                </div>
+                <div class="flex justify-between border-t border-slate-100 pt-2">
+                  <span class="text-slate-500">Raízes Reais:</span>
+                  <span id="label-quad-roots" class="font-mono font-bold text-emerald-700">x₁ = -1.00, x₂ = 3.00</span>
+                </div>
+                <div class="flex justify-between border-t border-slate-100 pt-2">
+                  <span class="text-slate-500">Vértice (<span class="math-font">Xᵥ, Yᵥ</span>):</span>
+                  <span id="label-quad-vert" class="font-mono font-bold text-slate-800">(1.00, -4.00) [Mínimo]</span>
+                </div>
               </div>
             </div>
-            <p class="text-xs text-slate-500 mt-2 text-center">
-              Pontos destacados: <span class="text-amber-500 font-bold">• Vértice</span> e <span
-                class="text-emerald-500 font-bold">• Raízes Reais</span>.
-            </p>
+
+            <!-- Canvas Gráfico Nativo -->
+            <div class="lg:col-span-7 flex flex-col items-center space-y-3">
+              <div class="w-full bg-slate-900 rounded-xl p-3 shadow-inner border border-slate-800 relative">
+                <div class="flex justify-between items-center text-slate-400 text-xs px-2 mb-2 font-mono">
+                  <span>Plano Cartesiano + Eixo de Simetria</span>
+                  <span class="text-emerald-400">Vértice • Raízes • (0, c)</span>
+                </div>
+                <div class="w-full h-72 sm:h-80 relative flex items-center justify-center">
+                  <canvas id="canvas-algebra" width="550" height="320" role="img"
+                    aria-label="Gráfico cartesiano interativo da função quadrática f(x) = ax² + bx + c"
+                    class="w-full h-full rounded bg-slate-950"></canvas>
+                </div>
+              </div>
+              <div data-lab-extra id="quad-bhaskara-steps"
+                class="w-full p-2.5 rounded-lg bg-slate-900 text-sky-300 font-mono text-[11px] font-semibold">
+              </div>
+              <p class="text-xs text-slate-600 text-center">
+                Destaques no gráfico: <span class="text-amber-700 font-bold">• Vértice V(xᵥ, yᵥ)</span>, <span
+                  class="text-emerald-700 font-bold">• Raízes</span> e <span class="text-purple-700 font-bold">• Corte Y (0, c)</span>.
+              </p>
+            </div>
           </div>
 
+          <div data-lab-extra class="teacher-note hidden p-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-900 text-xs">
+            <strong>Dica de Projeção UNEB (Eixo 3):</strong> Mostre o eixo de simetria tracejado passando em <span class="math-font font-semibold">Xᵥ</span>: as raízes ficam sempre equidistantes dele! Use os botões de cenário acima para demonstrar Δ &gt; 0, Δ = 0 e Δ &lt; 0 em segundos.
+          </div>
+
+          <div data-lab-footer class="flex justify-end pt-3 border-t border-slate-100">
+            <button type="button" data-advance-stage="pratica"
+              class="px-4 py-2 rounded-lg text-xs font-bold bg-uneb-primary text-white hover:bg-blue-900 transition-colors cursor-pointer">
+              Avançar para Prática Rápida →
+            </button>
+          </div>
         </div>
 
-        <!-- Nota de Professor Eixo 3 -->
-        <div
-          class="teacher-note hidden mx-6 mb-6 p-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-900 text-xs">
-          <strong>Dica de Projeção UNEB (Eixo 3):</strong> Mostre a diferença entre $X_v = -b/(2a)$ (ponto de
-          máximo/mínimo, ex: quantidade de itens a produzir) e $Y_v = -\Delta/(4a)$ (valor do lucro máximo ou custo
-          mínimo). Quando $a = 0$, a concavidade desaparece e a função degenera para a reta afim $f(x) = bx + c$.
-        </div>
+        <!-- ETAPA 3: PRÁTICA RÁPIDA -->
+        <div data-stage="pratica" class="hidden p-6 pt-3"></div>
       </section>
 
     </div>
@@ -621,370 +875,542 @@
       </section>
 
       <!-- EIXO 4: CÍRCULO TRIGONOMÉTRICO & GEOMETRIA -->
-      <section class="bg-white rounded-xl border border-uneb-border shadow-sm overflow-hidden">
-        <div class="bg-slate-100/80 px-6 py-4 border-b border-uneb-border flex items-center justify-between">
-          <div class="flex items-center gap-3">
+      <section id="mod-trig" class="bg-white rounded-xl border border-uneb-border shadow-sm overflow-hidden">
+        <div class="bg-slate-100/80 px-6 py-4 border-b border-uneb-border flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-3 min-w-0">
             <span
-              class="w-7 h-7 rounded-full bg-uneb-primary text-white font-bold text-xs flex items-center justify-center">4</span>
-            <div>
+              class="w-7 h-7 shrink-0 rounded-full bg-uneb-primary text-white font-bold text-xs flex items-center justify-center">4</span>
+            <div class="min-w-0">
               <h3 class="font-serif font-bold text-lg text-slate-900">Eixo 4 — Geometria & Círculo Trigonométrico</h3>
-              <p class="text-xs text-slate-500">Projeções de Seno e Cosseno nos 4 quadrantes e arcos notáveis</p>
+              <p class="text-xs text-slate-600">Projeções de Seno e Cosseno nos 4 quadrantes e arcos notáveis</p>
             </div>
           </div>
-          <button data-comp-module="mod-trig" id="btn-comp-mod-trig"
-            class="px-3 py-1.5 rounded text-xs font-medium border border-slate-300 hover:border-emerald-500 hover:text-emerald-700 bg-white transition-colors">
+          <button type="button" data-comp-module="mod-trig" id="btn-comp-mod-trig" aria-pressed="false"
+            class="px-3 py-1.5 rounded text-xs font-medium border border-slate-300 hover:border-emerald-500 hover:text-emerald-700 bg-white transition-colors shrink-0 cursor-pointer">
             Marcar como Concluído ✓
           </button>
         </div>
 
-        <div class="p-6 grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div data-stage-bar class="px-6 pt-4 pb-2 border-b border-slate-100"></div>
 
-          <!-- Canvas do Círculo Trigonométrico -->
-          <div class="lg:col-span-7 flex flex-col items-center">
-            <div
-              class="w-full bg-slate-950 p-4 rounded-xl border border-slate-800 shadow-inner flex flex-col items-center">
-              <div class="w-full flex justify-between text-slate-400 font-mono text-xs mb-2">
-                <span>Ciclo de Raio Unitário (R = 1)</span>
-                <span id="label-trig-deg" class="text-emerald-400 font-bold">45° (π/4 rad)</span>
+        <!-- ETAPA 1: CONCEITO VISUAL -->
+        <div data-stage="conceito" class="p-6 space-y-5">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            <div class="lg:col-span-5 space-y-2">
+              <span class="text-[11px] font-bold uppercase tracking-wide text-teal-800">Explore os sinais nos 4 quadrantes</span>
+              <div class="grid grid-cols-2 gap-2">
+                <button type="button" data-trig-quad="1" aria-pressed="true"
+                  class="px-3 py-2 rounded-lg text-xs font-bold bg-teal-600 text-white shadow-sm cursor-pointer transition-all">
+                  1º Quadrante (0°–90°)
+                </button>
+                <button type="button" data-trig-quad="2" aria-pressed="false"
+                  class="px-3 py-2 rounded-lg text-xs font-semibold bg-white text-slate-700 border border-slate-200 hover:border-teal-300 cursor-pointer transition-all">
+                  2º Quadrante (90°–180°)
+                </button>
+                <button type="button" data-trig-quad="3" aria-pressed="false"
+                  class="px-3 py-2 rounded-lg text-xs font-semibold bg-white text-slate-700 border border-slate-200 hover:border-teal-300 cursor-pointer transition-all">
+                  3º Quadrante (180°–270°)
+                </button>
+                <button type="button" data-trig-quad="4" aria-pressed="false"
+                  class="px-3 py-2 rounded-lg text-xs font-semibold bg-white text-slate-700 border border-slate-200 hover:border-teal-300 cursor-pointer transition-all">
+                  4º Quadrante (270°–360°)
+                </button>
               </div>
-              <div class="w-full max-w-sm aspect-square relative">
-                <canvas id="canvas-trig" width="360" height="360"
-                  class="w-full h-full rounded cursor-crosshair touch-none"></canvas>
+              <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-lg text-xs text-emerald-950">
+                <strong>Macete Rápido:</strong> "<strong>Sen</strong>o em pé (eixo Y) — <strong>Cos</strong>seno deitado (eixo X)". Relação fundamental: <span class="font-mono font-bold">sen²θ + cos²θ = 1</span>.
               </div>
-              <div class="w-full mt-4">
-                <input type="range" id="slider-trig-angle" min="0" max="360" value="45"
-                  aria-label="Ângulo do círculo trigonométrico em graus"
-                  class="w-full h-2.5 my-1 bg-slate-800 rounded appearance-none cursor-pointer accent-emerald-500">
+            </div>
+
+            <div class="lg:col-span-7 bg-slate-50 border border-slate-200 rounded-xl p-5 space-y-3">
+              <h4 id="trig-quad-title" class="font-serif font-bold text-base text-slate-900">1º Quadrante (0° a 90°)</h4>
+              <div id="trig-quad-signs" class="p-2.5 rounded-lg bg-slate-900 text-teal-300 font-mono text-xs font-bold"></div>
+              <p id="trig-quad-rule" class="text-xs sm:text-sm text-slate-700 leading-relaxed"></p>
+            </div>
+          </div>
+
+          <div class="flex justify-end pt-2 border-t border-slate-100">
+            <button type="button" data-advance-stage="laboratorio"
+              class="px-4 py-2 rounded-lg text-xs font-bold bg-uneb-primary text-white hover:bg-blue-900 transition-colors cursor-pointer">
+              Ir para o Laboratório Vivo →
+            </button>
+          </div>
+        </div>
+
+        <!-- ETAPA 2 (E MISSÃO DA ETAPA 3): WORKBENCH COMPARTILHADO -->
+        <div data-workbench class="hidden p-6 space-y-6">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+            <!-- Canvas do Círculo Trigonométrico -->
+            <div class="lg:col-span-7 flex flex-col items-center">
+              <div
+                class="w-full bg-slate-950 p-4 rounded-xl border border-slate-800 shadow-inner flex flex-col items-center">
+                <div class="w-full flex flex-wrap justify-between gap-2 text-slate-300 font-mono text-xs mb-2">
+                  <span>Ciclo Unitário (R = 1) + Eixo Tangente</span>
+                  <span id="label-trig-deg" class="text-emerald-400 font-bold">45° (π/4 rad)</span>
+                </div>
+                <div class="w-full max-w-sm aspect-square relative">
+                  <canvas id="canvas-trig" width="360" height="360" role="img"
+                    aria-label="Círculo trigonométrico unitário interativo com projeções de seno e cosseno"
+                    class="w-full h-full rounded cursor-crosshair touch-none"></canvas>
+                </div>
+                <div class="w-full mt-4">
+                  <input type="range" id="slider-trig-angle" min="0" max="360" value="45"
+                    aria-label="Ângulo do círculo trigonométrico em graus"
+                    class="w-full h-2.5 my-1 bg-slate-800 rounded appearance-none cursor-pointer accent-emerald-500">
+                </div>
+              </div>
+            </div>
+
+            <!-- Valores Analíticos & Teoremas -->
+            <div class="lg:col-span-5 space-y-4 flex flex-col justify-between">
+              <div class="space-y-4">
+                <div class="flex items-center justify-between gap-2">
+                  <h4 class="font-semibold text-slate-900 text-sm">Valores Projetados</h4>
+                  <span id="trig-exact-badge" class="text-[11px] font-mono bg-teal-50 text-teal-800 border border-teal-200 px-2 py-0.5 rounded"></span>
+                </div>
+
+                <!-- Cards Seno e Cosseno -->
+                <div class="grid grid-cols-2 gap-3">
+                  <div class="p-3 rounded-lg bg-emerald-50 border border-emerald-200">
+                    <div class="text-[11px] font-semibold text-emerald-800 uppercase">Seno (Eixo Vertical)</div>
+                    <div id="val-trig-sin" class="text-base sm:text-lg font-mono font-bold text-emerald-700 mt-1">√2/2 (+0.707)</div>
+                    <div class="text-[10px] text-emerald-600 mt-1">Projeção em Y</div>
+                  </div>
+
+                  <div class="p-3 rounded-lg bg-blue-50 border border-blue-200">
+                    <div class="text-[11px] font-semibold text-blue-800 uppercase">Cosseno (Horizontal)</div>
+                    <div id="val-trig-cos" class="text-base sm:text-lg font-mono font-bold text-blue-700 mt-1">√2/2 (+0.707)</div>
+                    <div class="text-[10px] text-blue-600 mt-1">Projeção em X</div>
+                  </div>
+                </div>
+
+                <!-- Relação Fundamental & Tangente -->
+                <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg text-xs space-y-1 font-mono">
+                  <div id="trig-identity-check" class="text-slate-900 font-bold">sen²(θ) + cos²(θ) = 1.000</div>
+                  <div class="text-slate-600 text-[11px] mt-1">Tangente (x = 1): <span id="val-trig-tan"
+                      class="font-bold text-amber-700">1 (+1.00)</span></div>
+                </div>
+
+                <!-- Atalhos de Arcos Notáveis -->
+                <div>
+                  <span class="text-xs text-slate-600 block mb-2 font-medium">Arcos Notáveis & Simétricos UNEB:</span>
+                  <div class="flex flex-wrap gap-1.5">
+                    <button type="button" data-trig-angle="0" class="px-2.5 py-1.5 text-xs rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono cursor-pointer">0°</button>
+                    <button type="button" data-trig-angle="30" class="px-2.5 py-1.5 text-xs rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono cursor-pointer">30°</button>
+                    <button type="button" data-trig-angle="45" class="px-2.5 py-1.5 text-xs rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono cursor-pointer">45°</button>
+                    <button type="button" data-trig-angle="60" class="px-2.5 py-1.5 text-xs rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono cursor-pointer">60°</button>
+                    <button type="button" data-trig-angle="90" class="px-2.5 py-1.5 text-xs rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono cursor-pointer">90°</button>
+                    <button type="button" data-trig-angle="120" class="px-2.5 py-1.5 text-xs rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono cursor-pointer">120°</button>
+                    <button type="button" data-trig-angle="150" class="px-2.5 py-1.5 text-xs rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono cursor-pointer">150°</button>
+                    <button type="button" data-trig-angle="180" class="px-2.5 py-1.5 text-xs rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono cursor-pointer">180°</button>
+                    <button type="button" data-trig-angle="270" class="px-2.5 py-1.5 text-xs rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono cursor-pointer">270°</button>
+                  </div>
+                </div>
+              </div>
+
+              <div data-lab-extra class="p-3 bg-amber-50/70 border border-amber-200 rounded text-xs text-amber-950">
+                <strong class="block mb-1 font-semibold">Geometria Espacial UNEB:</strong>
+                Volume de Prisma/Cilindro = <span class="math-font">V = A<sub>b</sub> · h</span>. Em Cone ou Pirâmide, divida por 3!
               </div>
             </div>
           </div>
 
-          <!-- Valores Analíticos & Teoremas -->
-          <div class="lg:col-span-5 space-y-4 flex flex-col justify-between">
-            <div>
-              <h4 class="font-semibold text-slate-900 text-sm mb-3">Valores Projetados</h4>
-
-              <!-- Cards Seno e Cosseno -->
-              <div class="grid grid-cols-2 gap-3 mb-4">
-                <div class="p-3 rounded-lg bg-emerald-50 border border-emerald-200">
-                  <div class="text-[11px] font-semibold text-emerald-800 uppercase">Seno (Eixo Vertical)</div>
-                  <div id="val-trig-sin" class="text-xl font-mono font-bold text-emerald-700 mt-1">+0.707</div>
-                  <div class="text-[10px] text-emerald-600 mt-1">Projeção em Y</div>
-                </div>
-
-                <div class="p-3 rounded-lg bg-blue-50 border border-blue-200">
-                  <div class="text-[11px] font-semibold text-blue-800 uppercase">Cosseno (Eixo Horizontal)</div>
-                  <div id="val-trig-cos" class="text-xl font-mono font-bold text-blue-700 mt-1">+0.707</div>
-                  <div class="text-[10px] text-blue-600 mt-1">Projeção em X</div>
-                </div>
-              </div>
-
-              <!-- Relação Fundamental -->
-              <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg text-xs space-y-1 font-mono">
-                <div class="text-slate-500">Relação Fundamental:</div>
-                <div class="text-slate-900 font-bold">sen²(θ) + cos²(θ) = 1.000</div>
-                <div class="text-slate-500 text-[11px] mt-1">Tangente: <span id="val-trig-tan"
-                    class="font-bold text-slate-800">1.000</span></div>
-              </div>
-
-              <!-- Atalhos de Arcos Notáveis -->
-              <div class="mt-4">
-                <span class="text-xs text-slate-500 block mb-2 font-medium">Arcos Notáveis para o Vestibular:</span>
-                <div class="flex flex-wrap gap-2">
-                  <button data-trig-angle="0"
-                    class="px-3 py-1.5 min-h-[32px] text-xs rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono">0°</button>
-                  <button data-trig-angle="30"
-                    class="px-3 py-1.5 min-h-[32px] text-xs rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono">30°</button>
-                  <button data-trig-angle="45"
-                    class="px-3 py-1.5 min-h-[32px] text-xs rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono">45°</button>
-                  <button data-trig-angle="60"
-                    class="px-3 py-1.5 min-h-[32px] text-xs rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono">60°</button>
-                  <button data-trig-angle="90"
-                    class="px-3 py-1.5 min-h-[32px] text-xs rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono">90°</button>
-                  <button data-trig-angle="180"
-                    class="px-3 py-1.5 min-h-[32px] text-xs rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono">180°</button>
-                  <button data-trig-angle="270"
-                    class="px-3 py-1.5 min-h-[32px] text-xs rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono">270°</button>
-                </div>
-              </div>
-            </div>
-
-            <!-- Calculadora rápida de Volume -->
-            <div class="p-3 bg-amber-50/70 border border-amber-200 rounded text-xs text-amber-950">
-              <strong class="block mb-1 font-semibold">Cilindro & Prisma (Frequente na UNEB):</strong>
-              Volume = Área da Base × Altura (<span class="math-font">V = A_b · h</span>). Se for cone ou pirâmide,
-              divide por 3!
-            </div>
+          <div data-lab-extra class="teacher-note hidden p-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-900 text-xs">
+            <strong>Macete de Trigonometria para Sala (Eixo 4):</strong> Clique em 30° e depois em 150° para mostrar visualmente que ambos compartilham a mesma altura vertical (<span class="math-font font-semibold">sen = +1/2</span>) com cossenos opostos (<span class="math-font font-semibold">±√3/2</span>).
           </div>
 
+          <div data-lab-footer class="flex justify-end pt-3 border-t border-slate-100">
+            <button type="button" data-advance-stage="pratica"
+              class="px-4 py-2 rounded-lg text-xs font-bold bg-uneb-primary text-white hover:bg-blue-900 transition-colors cursor-pointer">
+              Avançar para Prática Rápida →
+            </button>
+          </div>
         </div>
 
-        <!-- Nota de Professor Eixo 4 -->
-        <div
-          class="teacher-note hidden mx-6 mb-6 p-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-900 text-xs">
-          <strong>Macete de Trigonometria para Sala (Eixo 4):</strong> Relembre os sinais dos quadrantes com a turma
-          ("SETAC": Seno é vertical, Cosseno é horizontal). Destaque a redução ao 1º quadrante: $\text{sen}(180^\circ -
-          \theta) = \text{sen}(\theta)$, mas $\cos(180^\circ - \theta) = -\cos(\theta)$. Em 90° e 270°, o cosseno é zero
-          e a tangente é indefinida.
-        </div>
+        <!-- ETAPA 3: PRÁTICA RÁPIDA -->
+        <div data-stage="pratica" class="hidden p-6 pt-3"></div>
       </section>
 
       <!-- EIXO 5: MATEMÁTICA FINANCEIRA & COMPARADOR DE JUROS -->
-      <section class="bg-white rounded-xl border border-uneb-border shadow-sm overflow-hidden">
-        <div class="bg-slate-100/80 px-6 py-4 border-b border-uneb-border flex items-center justify-between">
-          <div class="flex items-center gap-3">
+      <section id="mod-financas" class="bg-white rounded-xl border border-uneb-border shadow-sm overflow-hidden">
+        <div class="bg-slate-100/80 px-6 py-4 border-b border-uneb-border flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-3 min-w-0">
             <span
-              class="w-7 h-7 rounded-full bg-uneb-primary text-white font-bold text-xs flex items-center justify-center">5</span>
-            <div>
-              <h3 class="font-serif font-bold text-lg text-slate-900">Eixo 5 — Matemática Financeira: Simples vs.
-                Composto</h3>
-              <p class="text-xs text-slate-500">Crescimento Linear (PA) versus Crescimento Exponencial (PG)</p>
+              class="w-7 h-7 shrink-0 rounded-full bg-uneb-primary text-white font-bold text-xs flex items-center justify-center">5</span>
+            <div class="min-w-0">
+              <h3 class="font-serif font-bold text-lg text-slate-900">Eixo 5 — Matemática Financeira: Simples vs. Composto</h3>
+              <p class="text-xs text-slate-600">Crescimento Linear (PA) versus Crescimento Exponencial (PG)</p>
             </div>
           </div>
-          <button data-comp-module="mod-financas" id="btn-comp-mod-financas"
-            class="px-3 py-1.5 rounded text-xs font-medium border border-slate-300 hover:border-emerald-500 hover:text-emerald-700 bg-white transition-colors">
+          <button type="button" data-comp-module="mod-financas" id="btn-comp-mod-financas" aria-pressed="false"
+            class="px-3 py-1.5 rounded text-xs font-medium border border-slate-300 hover:border-emerald-500 hover:text-emerald-700 bg-white transition-colors shrink-0 cursor-pointer">
             Marcar como Concluído ✓
           </button>
         </div>
 
-        <div class="p-6 grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div data-stage-bar class="px-6 pt-4 pb-2 border-b border-slate-100"></div>
 
-          <!-- Controles de Simulação Financeira -->
-          <div class="lg:col-span-5 space-y-4">
-            <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
-              <div>
-                <label class="block text-xs font-medium text-slate-700 mb-1">Capital Inicial (C)</label>
-                <div class="relative">
-                  <span class="absolute left-3 top-2 text-xs text-slate-400">R$</span>
-                  <input type="number" id="fin-capital" value="1000" step="100"
-                    class="w-full pl-9 pr-3 py-1.5 rounded border border-slate-300 text-sm font-mono">
-                </div>
-              </div>
-
-              <div>
-                <div class="flex justify-between text-xs text-slate-700 mb-1">
-                  <span>Taxa de Juros ao período (i):</span>
-                  <strong id="label-fin-rate" class="font-mono text-blue-700">10%</strong>
-                </div>
-                <input type="range" id="fin-taxa" min="1" max="30" value="10"
-                  class="w-full h-1.5 bg-slate-200 rounded appearance-none cursor-pointer accent-blue-700">
-              </div>
-
-              <div>
-                <div class="flex justify-between text-xs text-slate-700 mb-1">
-                  <span>Tempo em períodos (t):</span>
-                  <strong id="label-fin-time" class="font-mono text-blue-700">6 períodos</strong>
-                </div>
-                <input type="range" id="fin-tempo" min="1" max="15" value="6"
-                  class="w-full h-1.5 bg-slate-200 rounded appearance-none cursor-pointer accent-blue-700">
-              </div>
-            </div>
-
-            <!-- Resumo Analítico dos Montantes -->
-            <div class="grid grid-cols-2 gap-3 text-xs">
-              <div class="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                <span class="text-blue-700 font-semibold uppercase block text-[10px]">Juros Simples (Linear)</span>
-                <span id="fin-res-simple" class="text-base font-bold font-mono text-blue-900 block mt-1">R$
-                  1.600,00</span>
-                <span class="text-[10px] text-slate-500 font-mono">M = C · (1 + i · t)</span>
-              </div>
-              <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-lg">
-                <span class="text-emerald-700 font-semibold uppercase block text-[10px]">Juros Compostos
-                  (Exponencial)</span>
-                <span id="fin-res-comp" class="text-base font-bold font-mono text-emerald-900 block mt-1">R$
-                  1.771,56</span>
-                <span class="text-[10px] text-slate-500 font-mono">M = C · (1 + i)ᵗ</span>
-              </div>
-            </div>
-
-            <div class="text-xs text-slate-600 bg-white p-3 rounded-lg border border-slate-200">
-              Diferença acumulada pelo "efeito juros sobre juros": <strong id="fin-res-diff"
-                class="text-slate-900 font-mono font-bold">R$ 171,56</strong> a mais no regime composto.
-            </div>
-          </div>
-
-          <!-- Gráfico Comparativo Canvas -->
-          <div class="lg:col-span-7 flex flex-col items-center">
-            <div class="w-full bg-slate-900 rounded-xl p-3 shadow-inner border border-slate-800">
-              <div class="flex justify-between items-center text-slate-400 text-xs px-2 mb-2 font-mono">
-                <span>Curva de Evolução do Montante</span>
-                <div class="flex gap-4">
-                  <span class="flex items-center gap-1 text-blue-400"><span
-                      class="w-3 h-0.5 bg-blue-400 inline-block"></span> Simples</span>
-                  <span class="flex items-center gap-1 text-emerald-400"><span
-                      class="w-3 h-0.5 bg-emerald-400 inline-block"></span> Composto</span>
-                </div>
-              </div>
-              <div class="w-full h-64 sm:h-72">
-                <canvas id="canvas-finance" width="540" height="280"
-                  class="w-full h-full rounded bg-slate-950"></canvas>
-              </div>
-            </div>
-            <p class="text-xs text-slate-500 mt-2 text-center">
-              Perceba graficamente como o Juros Simples é uma reta (PA) e o Composto é uma curva convexa (PG).
-            </p>
-          </div>
-
-        </div>
-
-        <!-- Nota de Professor Eixo 5 -->
-        <div
-          class="teacher-note hidden mx-6 mb-6 p-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-900 text-xs">
-          <strong>Ponto Crítico Pedagógico (Eixo 5):</strong> Enfatize que para $t = 1$ período, tanto Juros Simples
-          quanto Compostos produzem exatamente o mesmo montante ($M_1 = C(1+i)$). A partir de $t > 1$, o regime composto
-          acelera exponencialmente ("juros sobre juros"). Se $t < 1$ (fração de período), o juro simples é
-            matematicamente maior que o composto. </div>
-      </section>
-
-      <!-- EIXO 6: TRATAMENTO DA INFORMAÇÃO & ESTATÍSTICA (DIRETAMENTE DO CADERNO) -->
-      <section class="bg-white rounded-xl border border-uneb-border shadow-sm overflow-hidden">
-        <div class="bg-slate-100/80 px-6 py-4 border-b border-uneb-border flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <span
-              class="w-7 h-7 rounded-full bg-uneb-primary text-white font-bold text-xs flex items-center justify-center">6</span>
-            <div>
-              <h3 class="font-serif font-bold text-lg text-slate-900">Eixo 6 — Tratamento da Informação & Análise
-                Descritiva</h3>
-              <p class="text-xs text-slate-500">Regra de Sturges, amplitudes de classe e leitura gráfica (Caderno
-                Didático UNEB)</p>
-            </div>
-          </div>
-          <button data-comp-module="mod-estatistica" id="btn-comp-mod-estatistica"
-            class="px-3 py-1.5 rounded text-xs font-medium border border-slate-300 hover:border-emerald-500 hover:text-emerald-700 bg-white transition-colors">
-            Marcar como Concluído ✓
-          </button>
-        </div>
-
-        <div class="p-6 grid grid-cols-1 lg:grid-cols-12 gap-8">
-
-          <!-- Calculadora de Sturges (Exclusivo do Material) -->
-          <div class="lg:col-span-5 space-y-4">
-            <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
-              <h4 class="font-semibold text-slate-900 text-sm mb-1 flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-uneb-accent"></span>
-                Calculadora de Sturges & Intervalo de Classe
-              </h4>
-              <p class="text-xs text-slate-500 mb-4">
-                Utilizado para definir o agrupamento estatístico em tabelas de distribuição de frequência.
-              </p>
-
-              <div class="space-y-3 text-xs">
-                <div>
-                  <label class="block font-medium text-slate-700 mb-1">Tamanho da Amostra (<span
-                      class="math-font">n</span>):</label>
-                  <input type="number" id="sturges-n" value="100" min="4" max="10000"
-                    class="w-full px-3 py-1.5 rounded border border-slate-300 font-mono text-sm">
-                </div>
-                <div>
-                  <label class="block font-medium text-slate-700 mb-1">Amplitude Total da Amostra (<span
-                      class="math-font">AA = X_max - X_min</span>):</label>
-                  <input type="number" id="sturges-aa" value="48" min="1"
-                    class="w-full px-3 py-1.5 rounded border border-slate-300 font-mono text-sm">
-                </div>
-              </div>
-
-              <!-- Resultados de Sturges -->
-              <div class="mt-4 pt-3 border-t border-slate-200 space-y-2 text-xs">
-                <div class="flex justify-between items-center">
-                  <span class="text-slate-600">Número de Classes (<span class="math-font">i = 1 + 3,3 · log
-                      n</span>):</span>
-                  <span id="sturges-res-i"
-                    class="font-mono font-bold text-slate-900 bg-white px-2 py-0.5 rounded border border-slate-200">7.60
-                    ≈ 8 classes</span>
-                </div>
-                <div class="flex justify-between items-center">
-                  <span class="text-slate-600">Amplitude do Intervalo (<span class="math-font">h ≥ AA /
-                      i</span>):</span>
-                  <span id="sturges-res-h"
-                    class="font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">h
-                    = 6.00</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Dica do Caderno sobre Excel -->
-            <div class="p-3 bg-blue-50 border border-blue-200 rounded text-xs text-blue-900">
-              <strong>Nota do Caderno (Apêndice A):</strong> No Excel, quando os rótulos textuais forem longos, opte
-              pelo gráfico de <strong>barras horizontais</strong> em vez de colunas verticais para evitar sobreposição
-              no eixo X.
-            </div>
-          </div>
-
-          <!-- Laboratório de Estatística Descritiva Instantâneo -->
-          <div class="lg:col-span-7 space-y-4">
-            <div>
-              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-1.5">
-                <label class="block text-xs font-semibold text-slate-800">
-                  Conjunto de Dados (ROL ou Amostra):
-                </label>
-                <div class="flex flex-wrap gap-1 text-[11px]">
-                  <button type="button" data-stat-preset="quick"
-                    class="px-2 py-0.5 rounded bg-slate-200 hover:bg-slate-300 text-slate-800 font-mono transition-colors">Amostra
-                    Rápida</button>
-                  <button type="button" data-stat-preset="rat"
-                    class="px-2 py-0.5 rounded bg-blue-100 hover:bg-blue-200 text-blue-900 font-mono transition-colors">50
-                    Ratos (UPT)</button>
-                  <button type="button" data-stat-preset="fans"
-                    class="px-2 py-0.5 rounded bg-emerald-100 hover:bg-emerald-200 text-emerald-900 font-mono transition-colors">Ventiladores
-                    (20d)</button>
-                  <button type="button" data-stat-preset="ufsc"
-                    class="px-2 py-0.5 rounded bg-amber-100 hover:bg-amber-200 text-amber-900 font-mono transition-colors">Cursos
-                    UFSC</button>
-                </div>
-              </div>
-              <div class="flex gap-2">
-                <input type="text" id="stat-input-data" value="15, 22, 22, 28, 35, 40, 42, 50, 50, 50, 62"
-                  class="flex-1 px-3 py-1.5 text-xs font-mono rounded border border-slate-300"
-                  placeholder="ex: 10, 15, 20, 25">
-                <button id="btn-calc-stats"
-                  class="px-4 py-1.5 bg-uneb-primary text-white text-xs font-medium rounded hover:bg-blue-900 transition-colors">
-                  Calcular
+        <!-- ETAPA 1: CONCEITO VISUAL -->
+        <div data-stage="conceito" class="p-6 space-y-5">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            <div class="lg:col-span-5 space-y-2">
+              <span class="text-[11px] font-bold uppercase tracking-wide text-amber-800">Selecione um tópico de prova</span>
+              <div class="grid grid-cols-1 gap-2">
+                <button type="button" data-fin-concept="regimes" aria-pressed="true"
+                  class="px-3 py-2 rounded-lg text-xs font-bold bg-amber-600 text-white shadow-sm cursor-pointer transition-all text-left">
+                  1. Simples (PA) vs. Compostos (PG)
+                </button>
+                <button type="button" data-fin-concept="avista" aria-pressed="false"
+                  class="px-3 py-2 rounded-lg text-xs font-semibold bg-white text-slate-700 border border-slate-200 hover:border-amber-300 cursor-pointer transition-all text-left">
+                  2. Desconto À Vista vs. Juros no Parcelado
+                </button>
+                <button type="button" data-fin-concept="sucessivos" aria-pressed="false"
+                  class="px-3 py-2 rounded-lg text-xs font-semibold bg-white text-slate-700 border border-slate-200 hover:border-amber-300 cursor-pointer transition-all text-left">
+                  3. Aumentos e Descontos Sucessivos
                 </button>
               </div>
             </div>
 
-            <!-- Cards com Medidas Resumidas -->
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-center text-xs">
-              <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
-                <div class="text-[10px] text-slate-500 uppercase font-mono">Média (x̄)</div>
-                <div id="stat-res-media" class="font-mono font-bold text-slate-900 text-sm mt-0.5">37.64</div>
+            <div class="lg:col-span-7 bg-slate-50 border border-slate-200 rounded-xl p-5 space-y-3">
+              <h4 id="fin-concept-title" class="font-serif font-bold text-base text-slate-900"></h4>
+              <div id="fin-concept-formula" class="p-3 rounded-lg bg-slate-900 text-amber-300 font-mono text-xs font-bold"></div>
+              <p id="fin-concept-desc" class="text-xs sm:text-sm text-slate-700 leading-relaxed"></p>
+            </div>
+          </div>
+
+          <div class="flex justify-end pt-2 border-t border-slate-100">
+            <button type="button" data-advance-stage="laboratorio"
+              class="px-4 py-2 rounded-lg text-xs font-bold bg-uneb-primary text-white hover:bg-blue-900 transition-colors cursor-pointer">
+              Ir para o Laboratório Vivo →
+            </button>
+          </div>
+        </div>
+
+        <!-- ETAPA 2 (E MISSÃO DA ETAPA 3): WORKBENCH COMPARTILHADO -->
+        <div data-workbench class="hidden p-6 space-y-6">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+            <!-- Controles -->
+            <div class="lg:col-span-5 space-y-4">
+              <div data-lab-extra class="flex flex-wrap gap-1.5">
+                <button type="button" data-fin-preset="curto" class="px-2.5 py-1 rounded text-[11px] font-mono bg-blue-50 text-blue-800 border border-blue-200 hover:bg-blue-100 cursor-pointer">Curto Prazo (1k • 10% • 3m)</button>
+                <button type="button" data-fin-preset="poupanca" class="px-2.5 py-1 rounded text-[11px] font-mono bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100 cursor-pointer">Poupança (5k • 1% • 12m)</button>
+                <button type="button" data-fin-preset="cartao" class="px-2.5 py-1 rounded text-[11px] font-mono bg-rose-50 text-rose-800 border border-rose-200 hover:bg-rose-100 cursor-pointer">Rotativo (1.5k • 12% • 6m)</button>
               </div>
-              <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
-                <div class="text-[10px] text-slate-500 uppercase font-mono">Mediana (Md)</div>
-                <div id="stat-res-mediana" class="font-mono font-bold text-slate-900 text-sm mt-0.5">40.00</div>
+
+              <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
+                <div>
+                  <label for="fin-capital" class="block text-xs font-medium text-slate-700 mb-1">Capital Inicial (C)</label>
+                  <div class="relative">
+                    <span class="absolute left-3 top-2 text-xs text-slate-600">R$</span>
+                    <input type="number" id="fin-capital" value="1000" step="100" min="0"
+                      class="w-full pl-9 pr-3 py-1.5 rounded border border-slate-300 text-sm font-mono bg-white">
+                  </div>
+                </div>
+
+                <div>
+                  <div class="flex justify-between text-xs text-slate-700 mb-1">
+                    <label for="fin-taxa">Taxa de Juros ao período (i):</label>
+                    <strong id="label-fin-rate" class="font-mono text-blue-700">10.0% ao período</strong>
+                  </div>
+                  <input type="range" id="fin-taxa" min="0" max="30" value="10"
+                    class="w-full h-1.5 bg-slate-200 rounded appearance-none cursor-pointer accent-blue-700">
+                </div>
+
+                <div>
+                  <div class="flex justify-between text-xs text-slate-700 mb-1">
+                    <label for="fin-tempo">Tempo em períodos (t):</label>
+                    <strong id="label-fin-time" class="font-mono text-blue-700">6 períodos</strong>
+                  </div>
+                  <input type="range" id="fin-tempo" min="1" max="15" value="6"
+                    class="w-full h-1.5 bg-slate-200 rounded appearance-none cursor-pointer accent-blue-700">
+                </div>
               </div>
-              <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
-                <div class="text-[10px] text-slate-500 uppercase font-mono">Moda (Mo)</div>
-                <div id="stat-res-moda" class="font-mono font-bold text-slate-900 text-sm mt-0.5">50</div>
+
+              <!-- Resumo Analítico dos Montantes -->
+              <div class="grid grid-cols-2 gap-3 text-xs">
+                <div class="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                  <span class="text-blue-700 font-semibold uppercase block text-[10px]">Juros Simples (Linear)</span>
+                  <span id="fin-res-simple" class="text-base font-bold font-mono text-blue-900 block mt-1">R$ 1.600,00</span>
+                  <span class="text-[10px] text-slate-600 font-mono">M = C · (1 + i · t)</span>
+                </div>
+                <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-lg">
+                  <span class="text-emerald-700 font-semibold uppercase block text-[10px]">Juros Compostos (PG)</span>
+                  <span id="fin-res-comp" class="text-base font-bold font-mono text-emerald-900 block mt-1">R$ 1.771,56</span>
+                  <span class="text-[10px] text-slate-600 font-mono">M = C · (1 + i)ᵗ</span>
+                </div>
               </div>
-              <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
-                <div class="text-[10px] text-slate-500 uppercase font-mono">Desvio Padrão (s)</div>
-                <div id="stat-res-desvio" class="font-mono font-bold text-emerald-700 text-sm mt-0.5">14.88</div>
+
+              <div class="text-xs text-slate-600 bg-white p-3 rounded-lg border border-slate-200">
+                Diferença acumulada pelo "efeito juros sobre juros": <strong id="fin-res-diff"
+                  class="text-slate-900 font-mono font-bold">R$ 171,56</strong> a mais no composto.
+              </div>
+
+              <div data-lab-extra id="fin-formula-steps"
+                class="p-2.5 rounded-lg bg-slate-900 text-emerald-300 font-mono text-[11px] font-semibold">
               </div>
             </div>
 
-            <!-- Gráfico de Frequências em Canvas -->
-            <div class="bg-slate-900 rounded-xl p-3 border border-slate-800">
-              <div class="text-slate-400 text-xs font-mono mb-2 flex justify-between">
-                <span>Distribuição de Frequências (Histograma por Classes de Sturges)</span>
-                <span id="stat-count-items" class="text-emerald-400">11 elementos</span>
+            <!-- Gráfico Comparativo Canvas + Tabela de Evolução -->
+            <div class="lg:col-span-7 space-y-4">
+              <div class="w-full bg-slate-900 rounded-xl p-3 shadow-inner border border-slate-800">
+                <div class="flex justify-between items-center text-slate-400 text-xs px-2 mb-2 font-mono">
+                  <span>Curva de Evolução do Montante</span>
+                  <div class="flex gap-4">
+                    <span class="flex items-center gap-1 text-blue-400"><span class="w-3 h-0.5 bg-blue-400 inline-block"></span> Simples</span>
+                    <span class="flex items-center gap-1 text-emerald-400"><span class="w-3 h-0.5 bg-emerald-400 inline-block"></span> Composto</span>
+                  </div>
+                </div>
+                <div class="w-full h-56 sm:h-64">
+                  <canvas id="canvas-finance" width="540" height="260" role="img"
+                    aria-label="Gráfico comparativo de evolução entre juros simples e juros compostos"
+                    class="w-full h-full rounded bg-slate-950"></canvas>
+                </div>
               </div>
-              <div class="w-full h-48 sm:h-52">
-                <canvas id="canvas-stat" width="500" height="200" class="w-full h-full rounded bg-slate-950"></canvas>
+
+              <div data-lab-extra class="overflow-x-auto bg-white rounded-lg border border-slate-200">
+                <table class="w-full text-xs">
+                  <thead class="bg-slate-100 text-slate-700 font-mono text-[11px]">
+                    <tr>
+                      <th class="py-1.5 px-2 text-left">Período</th>
+                      <th class="py-1.5 px-2 text-right">Simples</th>
+                      <th class="py-1.5 px-2 text-right">Composto</th>
+                      <th class="py-1.5 px-2 text-right">Diferença</th>
+                    </tr>
+                  </thead>
+                  <tbody id="fin-evolution-rows"></tbody>
+                </table>
               </div>
             </div>
           </div>
 
+          <div data-lab-extra class="teacher-note hidden p-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-900 text-xs">
+            <strong>Ponto Crítico Pedagógico (Eixo 5):</strong> Use a tabela de evolução ao lado para provar que em <span class="math-font font-semibold">t = 1</span> ambos empatam, e apenas de <span class="math-font font-semibold">t ≥ 2</span> em diante nasce o efeito composto.
+          </div>
+
+          <div data-lab-footer class="flex justify-end pt-3 border-t border-slate-100">
+            <button type="button" data-advance-stage="pratica"
+              class="px-4 py-2 rounded-lg text-xs font-bold bg-uneb-primary text-white hover:bg-blue-900 transition-colors cursor-pointer">
+              Avançar para Prática Rápida →
+            </button>
+          </div>
         </div>
 
-        <!-- Nota de Professor Eixo 6 -->
-        <div
-          class="teacher-note hidden mx-6 mb-6 p-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-900 text-xs">
-          <strong>Aplicação do Caderno UNEB (Eixo 6):</strong> A Regra de Sturges $i = 1 + 3,3 \cdot \log_{10}(n)$
-          estabelece a quantidade ideal de faixas de valores para a distribuição de frequências sem agrupar demais nem
-          dispersar os dados. No vestibular, a UNEB costuma pedir a amplitude $h \ge AA / i$ ou a leitura da frequência
-          acumulada.
+        <!-- ETAPA 3: PRÁTICA RÁPIDA -->
+        <div data-stage="pratica" class="hidden p-6 pt-3"></div>
+      </section>
+
+      <!-- EIXO 6: TRATAMENTO DA INFORMAÇÃO & ESTATÍSTICA -->
+      <section id="mod-estatistica" class="bg-white rounded-xl border border-uneb-border shadow-sm overflow-hidden">
+        <div class="bg-slate-100/80 px-6 py-4 border-b border-uneb-border flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-3 min-w-0">
+            <span
+              class="w-7 h-7 shrink-0 rounded-full bg-uneb-primary text-white font-bold text-xs flex items-center justify-center">6</span>
+            <div class="min-w-0">
+              <h3 class="font-serif font-bold text-lg text-slate-900">Eixo 6 — Tratamento da Informação & Análise Descritiva</h3>
+              <p class="text-xs text-slate-600">Regra de Sturges, ROL, medidas centrais e leitura gráfica (Apêndice A UNEB)</p>
+            </div>
+          </div>
+          <button type="button" data-comp-module="mod-estatistica" id="btn-comp-mod-estatistica" aria-pressed="false"
+            class="px-3 py-1.5 rounded text-xs font-medium border border-slate-300 hover:border-emerald-500 hover:text-emerald-700 bg-white transition-colors shrink-0 cursor-pointer">
+            Marcar como Concluído ✓
+          </button>
         </div>
+
+        <div data-stage-bar class="px-6 pt-4 pb-2 border-b border-slate-100"></div>
+
+        <!-- ETAPA 1: CONCEITO VISUAL -->
+        <div data-stage="conceito" class="p-6 space-y-5">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            <div class="lg:col-span-6 space-y-3">
+              <span class="text-[11px] font-bold uppercase tracking-wide text-sky-800">Tendência Central: Média, Mediana e Moda</span>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
+                <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg">
+                  <div class="font-bold text-slate-900 mb-1">Média (x̄)</div>
+                  <p class="text-[11px] text-slate-600">Soma tudo e divide por n. É sensível a valores extremos (outliers).</p>
+                </div>
+                <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-lg">
+                  <div class="font-bold text-emerald-900 mb-1">Mediana (Md)</div>
+                  <p class="text-[11px] text-emerald-800">Primeiro ORDENE (ROL)! Se n par, faça a média dos 2 termos do meio.</p>
+                </div>
+                <div class="p-3 bg-sky-50 border border-sky-200 rounded-lg">
+                  <div class="font-bold text-sky-900 mb-1">Moda (Mo)</div>
+                  <p class="text-[11px] text-sky-800">Valor de maior frequência (mais repetido). Se nenhum repete: Amodal.</p>
+                </div>
+              </div>
+              <div class="p-3 bg-blue-50 border border-blue-200 rounded-lg text-xs text-blue-900">
+                <strong>Regra de Sturges:</strong> <span class="font-mono font-bold">i = 1 + 3,3 · log₁₀(n)</span> define o nº ideal de classes e <span class="font-mono font-bold">h ≥ AA / i</span> a largura de cada faixa.
+              </div>
+            </div>
+
+            <div class="lg:col-span-6 space-y-3 bg-slate-50 p-4 rounded-xl border border-slate-200">
+              <span class="text-[11px] font-bold uppercase tracking-wide text-slate-700 block">Seletor de Gráficos (Apêndice A Excel / UNEB)</span>
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+                <button type="button" data-stat-chart="hist" aria-pressed="true"
+                  class="px-3 py-2 rounded-lg text-xs font-bold bg-sky-600 text-white shadow-sm cursor-pointer transition-all text-left">Histograma</button>
+                <button type="button" data-stat-chart="barra" aria-pressed="false"
+                  class="px-3 py-2 rounded-lg text-xs font-semibold bg-white text-slate-700 border border-slate-200 hover:border-sky-300 cursor-pointer transition-all text-left">Colunas/Barras</button>
+                <button type="button" data-stat-chart="linha" aria-pressed="false"
+                  class="px-3 py-2 rounded-lg text-xs font-semibold bg-white text-slate-700 border border-slate-200 hover:border-sky-300 cursor-pointer transition-all text-left">Linhas</button>
+                <button type="button" data-stat-chart="setor" aria-pressed="false"
+                  class="px-3 py-2 rounded-lg text-xs font-semibold bg-white text-slate-700 border border-slate-200 hover:border-sky-300 cursor-pointer transition-all text-left">Setores</button>
+              </div>
+              <div class="bg-white p-3.5 rounded-lg border border-slate-200 space-y-1">
+                <h4 id="stat-chart-title" class="font-serif font-bold text-sm text-slate-900"></h4>
+                <p id="stat-chart-desc" class="text-xs text-slate-700 leading-relaxed"></p>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex justify-end pt-2 border-t border-slate-100">
+            <button type="button" data-advance-stage="laboratorio"
+              class="px-4 py-2 rounded-lg text-xs font-bold bg-uneb-primary text-white hover:bg-blue-900 transition-colors cursor-pointer">
+              Ir para o Laboratório Vivo →
+            </button>
+          </div>
+        </div>
+
+        <!-- ETAPA 2 (E MISSÃO DA ETAPA 3): WORKBENCH COMPARTILHADO -->
+        <div data-workbench class="hidden p-6 space-y-6">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+            <!-- Calculadora de Sturges & Tabela de Frequência -->
+            <div class="lg:col-span-5 space-y-4">
+              <div data-lab-extra class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                <h4 class="font-semibold text-slate-900 text-sm mb-1 flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-uneb-accent"></span>
+                  Calculadora de Sturges & Classe
+                </h4>
+                <p class="text-xs text-slate-600 mb-3">
+                  Define quantas faixas (<span class="math-font">i</span>) e qual amplitude (<span class="math-font">h</span>) estruturam a tabela.
+                </p>
+
+                <div class="grid grid-cols-2 gap-3 text-xs">
+                  <div>
+                    <label for="sturges-n" class="block font-medium text-slate-700 mb-1">Amostra (<span class="math-font">n</span>):</label>
+                    <input type="number" id="sturges-n" value="100" min="2" max="10000"
+                      class="w-full px-3 py-1.5 rounded border border-slate-300 font-mono text-sm bg-white">
+                  </div>
+                  <div>
+                    <label for="sturges-aa" class="block font-medium text-slate-700 mb-1">Amplitude (<span class="math-font">AA</span>):</label>
+                    <input type="number" id="sturges-aa" value="48" min="0.1" step="any"
+                      class="w-full px-3 py-1.5 rounded border border-slate-300 font-mono text-sm bg-white">
+                  </div>
+                </div>
+
+                <div class="mt-3 pt-3 border-t border-slate-200 space-y-2 text-xs">
+                  <div class="flex justify-between items-center">
+                    <span class="text-slate-600">Classes (<span class="math-font">1 + 3,3·log n</span>):</span>
+                    <span id="sturges-res-i" class="font-mono font-bold text-slate-900 bg-white px-2 py-0.5 rounded border border-slate-200">7.60 ≈ 8 classes</span>
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <span class="text-slate-600">Largura (<span class="math-font">h ≥ AA / i</span>):</span>
+                    <span id="sturges-res-h" class="font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">h = 6.00</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tabela de Frequência Dinâmica -->
+              <div data-lab-extra class="overflow-x-auto bg-white rounded-xl border border-slate-200">
+                <div class="bg-slate-100 px-3 py-2 border-b border-slate-200 text-xs font-bold text-slate-800">
+                  Distribuição de Frequências da Amostra
+                </div>
+                <table class="w-full text-xs">
+                  <thead class="bg-slate-50 text-slate-600 font-mono text-[11px] border-b border-slate-200">
+                    <tr>
+                      <th class="py-1.5 px-2 text-left">Classe</th>
+                      <th class="py-1.5 px-2 text-right">fi</th>
+                      <th class="py-1.5 px-2 text-right">fr%</th>
+                      <th class="py-1.5 px-2 text-right">Fac</th>
+                    </tr>
+                  </thead>
+                  <tbody id="stat-freq-rows"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Laboratório Descritivo + ROL + Histograma -->
+            <div class="lg:col-span-7 space-y-4">
+              <div>
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-1.5">
+                  <label for="stat-input-data" class="block text-xs font-semibold text-slate-800">
+                    Conjunto de Dados (números separados por vírgula):
+                  </label>
+                  <div class="flex flex-wrap gap-1 text-[11px]">
+                    <button type="button" data-stat-preset="quick" class="px-2 py-0.5 rounded bg-slate-200 hover:bg-slate-300 text-slate-800 font-mono transition-colors cursor-pointer">Amostra Rápida</button>
+                    <button type="button" data-stat-preset="rat" class="px-2 py-0.5 rounded bg-blue-100 hover:bg-blue-200 text-blue-900 font-mono transition-colors cursor-pointer">50 Ratos (UPT)</button>
+                    <button type="button" data-stat-preset="fans" class="px-2 py-0.5 rounded bg-emerald-100 hover:bg-emerald-200 text-emerald-900 font-mono transition-colors cursor-pointer">Ventiladores</button>
+                    <button type="button" data-stat-preset="ufsc" class="px-2 py-0.5 rounded bg-amber-100 hover:bg-amber-200 text-amber-900 font-mono transition-colors cursor-pointer">Cursos UFSC</button>
+                  </div>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-2">
+                  <input type="text" id="stat-input-data" value="15, 22, 22, 28, 35, 40, 42, 50, 50, 50, 62"
+                    class="flex-1 min-w-0 px-3 py-1.5 text-xs font-mono rounded border border-slate-300"
+                    placeholder="ex: 4, 6, 7, 7, 7, 8, 8, 9">
+                  <button type="button" id="btn-calc-stats"
+                    class="px-4 py-1.5 bg-uneb-primary text-white text-xs font-medium rounded hover:bg-blue-900 transition-colors shrink-0 cursor-pointer">
+                    Calcular
+                  </button>
+                </div>
+              </div>
+
+              <!-- Cards com Medidas Resumidas -->
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-center text-xs">
+                <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+                  <div class="text-[10px] text-slate-600 uppercase font-mono">Média (x̄)</div>
+                  <div id="stat-res-media" class="font-mono font-bold text-slate-900 text-sm mt-0.5">37.64</div>
+                </div>
+                <div class="p-2.5 rounded-lg bg-emerald-50 border border-emerald-200">
+                  <div class="text-[10px] text-emerald-700 uppercase font-mono font-bold">Mediana (Md)</div>
+                  <div id="stat-res-mediana" class="font-mono font-bold text-emerald-900 text-sm mt-0.5">40.00</div>
+                </div>
+                <div class="p-2.5 rounded-lg bg-sky-50 border border-sky-200">
+                  <div class="text-[10px] text-sky-700 uppercase font-mono font-bold">Moda (Mo)</div>
+                  <div id="stat-res-moda" class="font-mono font-bold text-sky-900 text-sm mt-0.5">50</div>
+                </div>
+                <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+                  <div class="text-[10px] text-slate-600 uppercase font-mono">Desvio Padrão (s)</div>
+                  <div id="stat-res-desvio" class="font-mono font-bold text-slate-900 text-sm mt-0.5">14.88</div>
+                </div>
+              </div>
+
+              <!-- ROL Visual Ordenado -->
+              <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1.5">
+                <div class="flex flex-wrap items-center justify-between gap-2 text-[11px]">
+                  <span class="font-semibold text-slate-700">ROL Ordenado (destaque: <span class="text-emerald-700 font-bold">Mediana</span> • <span class="text-sky-700 font-bold">Moda</span>):</span>
+                </div>
+                <div id="stat-rol-chips" class="flex flex-wrap gap-1"></div>
+              </div>
+
+              <!-- Gráfico de Frequências em Canvas -->
+              <div class="bg-slate-900 rounded-xl p-3 border border-slate-800">
+                <div class="text-slate-300 text-xs font-mono mb-2 flex justify-between gap-2">
+                  <span>Histograma por Classes de Sturges</span>
+                  <span id="stat-count-items" class="text-emerald-400 shrink-0">11 elementos</span>
+                </div>
+                <div class="w-full h-44 sm:h-48">
+                  <canvas id="canvas-stat" width="500" height="190" role="img"
+                    aria-label="Histograma de distribuição de frequências por classes de Sturges"
+                    class="w-full h-full rounded bg-slate-950"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div data-lab-extra class="teacher-note hidden p-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-900 text-xs">
+            <strong>Aplicação do Caderno UNEB (Eixo 6):</strong> Mostre no ROL ordenado como a posição central define a Mediana (mesmo se mudarmos o maior número da amostra, a Mediana não altera — já a Média sim!). Compare a coluna <span class="font-mono font-bold">Fac</span> na tabela à esquerda.
+          </div>
+
+          <div data-lab-footer class="flex justify-end pt-3 border-t border-slate-100">
+            <button type="button" data-advance-stage="pratica"
+              class="px-4 py-2 rounded-lg text-xs font-bold bg-uneb-primary text-white hover:bg-blue-900 transition-colors cursor-pointer">
+              Avançar para Prática Rápida →
+            </button>
+          </div>
+        </div>
+
+        <!-- ETAPA 3: PRÁTICA RÁPIDA -->
+        <div data-stage="pratica" class="hidden p-6 pt-3"></div>
       </section>
 
     </div>
@@ -1001,7 +1427,7 @@
         <div
           class="relative w-full bg-gradient-to-r from-uneb-primaryDark via-uneb-primary to-slate-900 text-white p-6 sm:p-7 overflow-hidden border-b border-blue-900/40">
           <!-- Elementos gráficos de fundo sutis (linhas geométricas e círculos acadêmicos) -->
-          <svg class="absolute -right-8 -top-8 w-80 h-80 opacity-10 pointer-events-none" viewBox="0 0 200 200"
+          <svg aria-hidden="true" class="absolute -right-8 -top-8 w-80 h-80 opacity-10 pointer-events-none" viewBox="0 0 200 200"
             fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="100" cy="100" r="85" stroke="white" stroke-width="2" stroke-dasharray="6,6" />
             <polygon points="100,15 185,165 15,165" stroke="#f59e0b" stroke-width="2" />
@@ -1030,23 +1456,23 @@
           <div
             class="flex items-center gap-3 bg-slate-50 px-4 py-2.5 rounded-lg border border-slate-200 text-xs self-start lg:self-auto shrink-0">
             <div>
-              <span class="block text-[10px] text-slate-500 font-mono uppercase tracking-wider">Tempo Oficial</span>
+              <span class="block text-[10px] text-slate-600 font-mono uppercase tracking-wider">Tempo Oficial</span>
               <span id="quiz-timer" class="font-mono font-bold text-xl text-slate-800">60:00</span>
             </div>
             <div class="flex flex-col gap-1">
-              <button id="btn-toggle-timer"
-                class="px-2.5 py-1 rounded bg-slate-200 hover:bg-slate-300 font-medium text-[11px] transition-colors">
+              <button type="button" id="btn-toggle-timer" aria-pressed="false"
+                class="px-2.5 py-1 rounded bg-slate-200 hover:bg-slate-300 disabled:opacity-60 disabled:cursor-not-allowed font-medium text-[11px] transition-colors">
                 Pausar
               </button>
             </div>
           </div>
 
           <!-- Seletor de Edição e Modo de Resolução -->
-          <div class="flex flex-col sm:flex-row sm:items-center gap-3 w-full lg:w-auto justify-end">
-            <div class="flex items-center gap-2">
+          <div class="flex flex-col sm:flex-row sm:items-center gap-3 w-full lg:w-auto justify-end min-w-0">
+            <div class="flex flex-col sm:flex-row sm:items-center gap-2 min-w-0 w-full sm:w-auto">
               <label for="quiz-edition-select" class="text-xs font-bold text-slate-700 whitespace-nowrap">Prova:</label>
               <select id="quiz-edition-select"
-                class="text-xs sm:text-sm px-3 py-1.5 rounded-lg border border-slate-300 bg-white font-semibold text-slate-800 focus:ring-2 focus:ring-uneb-primary focus:border-uneb-primary outline-none">
+                class="min-w-0 w-full max-w-full sm:w-auto text-xs sm:text-sm px-3 py-1.5 rounded-lg border border-slate-300 bg-white font-semibold text-slate-800 focus:ring-2 focus:ring-uneb-primary focus:border-uneb-primary outline-none">
                 <option value="uneb_2025" selected>Vestibular Oficial UNEB 2025 (15 Questões - 60 min)</option>
                 <option value="uneb_2024">Vestibular Oficial UNEB 2024 (15 Questões - 60 min)</option>
                 <option value="uneb_2023">Vestibular Oficial UNEB 2023 (15 Questões - 60 min)</option>
@@ -1054,12 +1480,12 @@
               </select>
             </div>
 
-            <div class="flex items-center gap-1.5 bg-slate-100 p-1 rounded-lg text-xs self-start sm:self-auto">
-              <button id="btn-mode-simulado"
+            <div class="flex items-center gap-1.5 bg-slate-100 p-1 rounded-lg text-xs self-start sm:self-auto shrink-0">
+              <button type="button" id="btn-mode-simulado" aria-pressed="true"
                 class="px-3 py-1 rounded font-semibold text-uneb-primary bg-white shadow-sm transition-all">
                 Modo Prova
               </button>
-              <button id="btn-mode-estudo"
+              <button type="button" id="btn-mode-estudo" aria-pressed="false"
                 class="px-3 py-1 rounded font-medium text-slate-600 hover:text-slate-900 transition-all">
                 Modo Estudo
               </button>
@@ -1072,15 +1498,15 @@
 
       <!-- Cartão / Painel Sticky de Navegação de Questões -->
       <section id="quiz-nav-panel"
-        class="bg-white p-3.5 sm:p-4 rounded-xl border border-slate-200 shadow-sm sticky top-14 z-20 transition-all">
-        <div class="flex items-center justify-between gap-2 mb-2.5">
+        class="bg-white p-3.5 sm:p-4 rounded-xl border border-slate-200 shadow-sm lg:sticky lg:top-[68px] z-20 transition-all">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-2.5">
           <div class="flex items-center gap-2">
-            <span class="text-[11px] font-mono font-bold uppercase text-slate-500">Cartão de Questões:</span>
+            <span class="text-[11px] font-mono font-bold uppercase text-slate-600">Cartão de Questões:</span>
             <span id="quiz-progress-text" class="text-xs font-bold text-uneb-primary">0/15 Respondidas</span>
           </div>
           <div class="flex items-center gap-2">
             <span id="quiz-status-pill"
-              class="text-[10px] px-2 py-0.5 rounded font-mono font-bold bg-amber-50 text-amber-700 border border-amber-200">Em
+              class="text-[10px] px-2 py-0.5 rounded font-mono font-bold bg-amber-50 text-amber-800 border border-amber-200">Em
               Andamento</span>
           </div>
         </div>
@@ -1105,9 +1531,9 @@
             Clique no botão ao lado para encerrar o tempo, tabular seus acertos e liberar as resoluções comentadas.
           </p>
         </div>
-        <button id="btn-submit-quiz"
+        <button type="button" id="btn-submit-quiz"
           class="w-full sm:w-auto px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm rounded-lg shadow-sm transition-all flex items-center justify-center gap-2 shrink-0">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg aria-hidden="true" class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
           </svg>
           Entregar Prova & Corrigir
@@ -1130,11 +1556,11 @@
         </div>
 
         <div class="flex flex-wrap items-center gap-3 pt-2">
-          <button id="btn-restart-quiz"
+          <button type="button" id="btn-restart-quiz"
             class="px-4 py-2 bg-uneb-primary text-white text-xs font-semibold rounded hover:bg-blue-900 transition-colors">
             Refazer Esta Prova
           </button>
-          <button id="btn-quiz-scroll-top"
+          <button type="button" id="btn-quiz-scroll-top"
             class="px-4 py-2 bg-slate-100 text-slate-700 text-xs font-semibold rounded hover:bg-slate-200 transition-colors">
             Revisar Questões
           </button>
@@ -1145,24 +1571,48 @@
 
   </main>
 
+  <!-- Diálogo Modal Nativo de Confirmação -->
+  <dialog id="confirm-dialog" aria-labelledby="confirm-dialog-title"
+    class="rounded-xl border border-slate-200 bg-white p-0 shadow-2xl max-w-md w-[calc(100%-2rem)] text-slate-800 backdrop:bg-slate-950/60">
+    <div class="p-5 sm:p-6 space-y-3">
+      <h2 id="confirm-dialog-title" class="font-serif font-bold text-lg text-slate-900">Confirmar ação</h2>
+      <p id="confirm-dialog-message" class="text-sm text-slate-600 leading-relaxed"></p>
+      <form method="dialog" class="flex flex-wrap justify-end gap-2.5 pt-2">
+        <button type="submit" id="confirm-dialog-cancel" value="cancel" autofocus
+          class="px-4 py-2 rounded-lg text-xs font-semibold border border-slate-300 bg-white text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer">
+          Cancelar
+        </button>
+        <button type="submit" id="confirm-dialog-confirm" value="confirm"
+          class="px-4 py-2 rounded-lg text-xs font-semibold bg-uneb-primary text-white hover:bg-blue-900 transition-colors cursor-pointer">
+          Confirmar
+        </button>
+      </form>
+    </div>
+  </dialog>
+
   <!-- ========================================== -->
   <!-- RODAPÉ ACADÊMICO INSTITUCIONAL             -->
   <!-- ========================================== -->
-  <footer class="bg-slate-900 text-slate-400 text-xs py-6 border-t border-slate-800 mt-auto">
+  <footer class="bg-slate-900 text-slate-300 text-xs py-6 border-t border-slate-800 mt-auto">
     <div
       class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
       <div>
-        <p class="font-semibold text-slate-300">Portal Vestibular UNEB • Módulo de Matemática</p>
-        <p class="text-slate-500 text-[11px] mt-0.5">Desenvolvido para ensino remoto e presencial conforme matriz
+        <p class="font-semibold text-slate-200">Portal Vestibular UNEB • Módulo de Matemática</p>
+        <p class="text-slate-300 text-[11px] mt-0.5">Desenvolvido para ensino remoto e presencial conforme matriz
           curricular oficial.</p>
       </div>
-      <div class="flex items-center gap-4 text-slate-400">
+      <div class="flex items-center gap-4 text-slate-300">
         <span class="hover:text-white transition-colors cursor-default">Sem dependências pesadas</span>
         <span>•</span>
         <span class="hover:text-white transition-colors cursor-default">Cálculos 100% Client-side</span>
       </div>
     </div>
   </footer>
+  </div> <!-- /#app-shell -->
+
+  <!-- Mensagem Flutuante / Toast para Avisos Rápidos (Sem alert()) -->
+  <div id="toast-container" role="region" aria-label="Notificações" aria-live="polite"
+    class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
   <script type="module" src="js/app.js"></script>
 </body>

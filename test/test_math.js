@@ -81,3 +81,4 @@ assert.strictEqual(stats.modaText, '20', 'Moda deve ser 20');
 console.log('✔ Eixo 6 (Sturges e Estatística Descritiva): OK');
 
 console.log('\n🎉 TODOS OS TESTES MATEMÁTICOS PASSARAM COM SUCESSO!');
+

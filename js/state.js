@@ -4,12 +4,30 @@
  */
 
 import { BANCO_PROVAS } from './data/banco_questoes.js';
+import { normalizeStudentName } from './utils/session.js';
 
-const APP_STORAGE_KEY = 'uneb_math_2026_v1';
+export const APP_STORAGE_KEY = 'uneb_math_2026_v1';
+
+const MOD_KEYS = [
+  'mod-logica',
+  'mod-numeros',
+  'mod-algebra',
+  'mod-trig',
+  'mod-financas',
+  'mod-estatistica'
+];
+
+function createEmptyModulePractice() {
+  return Object.fromEntries(MOD_KEYS.map((k) => [k, []]));
+}
 
 const defaultState = {
   score: 0,
-  mode: 'student', // 'student' ou 'teacher'
+  mode: 'student', // espelho legado de isTeacherModeActive()
+  sessionRole: null, // null | 'student' | 'teacher'
+  studentName: '',
+  teacherShowAnswers: false,
+  teacherPreviewAsStudent: false,
   selectedEdition: 'uneb_2025',
   quizMode: 'simulado', // 'simulado' ou 'estudo'
   quizAnswersByEdition: {
@@ -32,6 +50,7 @@ const defaultState = {
     'mod-financas': false,
     'mod-estatistica': false
   },
+  modulePractice: createEmptyModulePractice(),
   currentView: 'day1',
   params: {
     sliderN: 7,
@@ -100,20 +119,110 @@ export function saveState() {
   }
 }
 
+export function isTeacherModeActive(stateSlice = appState) {
+  return stateSlice?.sessionRole === 'teacher' && !stateSlice?.teacherPreviewAsStudent;
+}
+
 export function loadState() {
+  const validViews = new Set(['day1', 'day2', 'quiz']);
+  const validQuizModes = new Set(['simulado', 'estudo']);
+  const validRoles = new Set(['student', 'teacher']);
+
+  appState.mode = defaultState.mode;
+  appState.sessionRole = null;
+  appState.studentName = '';
+  appState.teacherShowAnswers = false;
+  appState.teacherPreviewAsStudent = false;
+  appState.currentView = defaultState.currentView;
+  appState.selectedEdition = defaultState.selectedEdition;
+  appState.quizMode = defaultState.quizMode;
+  appState.completedModules = { ...defaultState.completedModules };
+  appState.modulePractice = createEmptyModulePractice();
+  appState.quizAnswersByEdition = Object.fromEntries(Object.keys(BANCO_PROVAS).map(k => [k, {}]));
+  appState.quizSubmittedByEdition = Object.fromEntries(Object.keys(BANCO_PROVAS).map(k => [k, false]));
+  appState.params = { ...defaultState.params };
+
   try {
     const saved = localStorage.getItem(APP_STORAGE_KEY);
     if (saved) {
       const parsed = JSON.parse(saved);
-      if (parsed && typeof parsed === 'object') {
-        appState.mode = parsed.mode === 'teacher' ? 'teacher' : 'student';
-        appState.currentView = parsed.currentView || 'day1';
-        if (parsed.selectedEdition) appState.selectedEdition = parsed.selectedEdition;
-        if (parsed.quizMode) appState.quizMode = parsed.quizMode;
-        if (parsed.completedModules) Object.assign(appState.completedModules, parsed.completedModules);
-        if (parsed.quizAnswersByEdition) Object.assign(appState.quizAnswersByEdition, parsed.quizAnswersByEdition);
-        if (parsed.quizSubmittedByEdition) Object.assign(appState.quizSubmittedByEdition, parsed.quizSubmittedByEdition);
-        if (parsed.params) Object.assign(appState.params, parsed.params);
+      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+        if (validRoles.has(parsed.sessionRole)) {
+          appState.sessionRole = parsed.sessionRole;
+        }
+        appState.studentName = normalizeStudentName(parsed.studentName);
+        if (typeof parsed.teacherShowAnswers === 'boolean') {
+          appState.teacherShowAnswers = parsed.teacherShowAnswers;
+        }
+        if (typeof parsed.teacherPreviewAsStudent === 'boolean') {
+          appState.teacherPreviewAsStudent = parsed.teacherPreviewAsStudent;
+        }
+
+        if (appState.sessionRole !== null) {
+          appState.mode = isTeacherModeActive(appState) ? 'teacher' : 'student';
+        } else {
+          appState.mode = parsed.mode === 'teacher' ? 'teacher' : 'student';
+        }
+
+        if (validViews.has(parsed.currentView)) appState.currentView = parsed.currentView;
+        if (typeof parsed.selectedEdition === 'string' && Object.hasOwn(BANCO_PROVAS, parsed.selectedEdition)) {
+          appState.selectedEdition = parsed.selectedEdition;
+        }
+        if (validQuizModes.has(parsed.quizMode)) appState.quizMode = parsed.quizMode;
+
+        if (parsed.completedModules && typeof parsed.completedModules === 'object' && !Array.isArray(parsed.completedModules)) {
+          for (const modKey of Object.keys(defaultState.completedModules)) {
+            if (typeof parsed.completedModules[modKey] === 'boolean') {
+              appState.completedModules[modKey] = parsed.completedModules[modKey];
+            }
+          }
+        }
+
+        if (parsed.modulePractice && typeof parsed.modulePractice === 'object' && !Array.isArray(parsed.modulePractice)) {
+          for (const modKey of MOD_KEYS) {
+            const rawList = Object.hasOwn(parsed.modulePractice, modKey) ? parsed.modulePractice[modKey] : null;
+            if (Array.isArray(rawList)) {
+              const uniqueValid = [...new Set(rawList.filter((idx) => Number.isInteger(idx) && idx >= 0 && idx < 3))];
+              appState.modulePractice[modKey] = uniqueValid.sort((a, b) => a - b);
+            }
+          }
+        }
+
+        if (parsed.quizAnswersByEdition && typeof parsed.quizAnswersByEdition === 'object' && !Array.isArray(parsed.quizAnswersByEdition)) {
+          for (const edKey of Object.keys(BANCO_PROVAS)) {
+            const rawEd = Object.hasOwn(parsed.quizAnswersByEdition, edKey) ? parsed.quizAnswersByEdition[edKey] : null;
+            if (rawEd && typeof rawEd === 'object' && !Array.isArray(rawEd)) {
+              const cleanEd = {};
+              for (const [qId, ans] of Object.entries(rawEd)) {
+                if (Number.isInteger(ans) && ans >= 0 && ans <= 4) {
+                  cleanEd[qId] = ans;
+                }
+              }
+              appState.quizAnswersByEdition[edKey] = cleanEd;
+            }
+          }
+        }
+
+        if (parsed.quizSubmittedByEdition && typeof parsed.quizSubmittedByEdition === 'object' && !Array.isArray(parsed.quizSubmittedByEdition)) {
+          for (const edKey of Object.keys(BANCO_PROVAS)) {
+            if (typeof parsed.quizSubmittedByEdition[edKey] === 'boolean') {
+              appState.quizSubmittedByEdition[edKey] = parsed.quizSubmittedByEdition[edKey];
+            }
+          }
+        }
+
+        if (parsed.params && typeof parsed.params === 'object' && !Array.isArray(parsed.params)) {
+          for (const paramKey of Object.keys(defaultState.params)) {
+            const val = Object.hasOwn(parsed.params, paramKey) ? parsed.params[paramKey] : undefined;
+            if (paramKey === 'seqType') {
+              if (val === 'pa' || val === 'pg') appState.params.seqType = val;
+            } else if (paramKey === 'statData') {
+              if (typeof val === 'string') appState.params.statData = val;
+            } else if (typeof val === 'number' && Number.isFinite(val)) {
+              appState.params[paramKey] = val;
+            }
+          }
+        }
       }
     }
   } catch (e) {
@@ -124,15 +233,41 @@ export function loadState() {
 
 export function setState(partial, changeKey = 'generic') {
   if (partial && typeof partial === 'object') {
-    if (partial.params) {
-      Object.assign(appState.params, partial.params);
-      delete partial.params;
+    const { params, ...rest } = partial;
+    if (params) {
+      Object.assign(appState.params, params);
     }
-    Object.assign(appState, partial);
+    if ('studentName' in rest) {
+      rest.studentName = normalizeStudentName(rest.studentName);
+    }
+    if ('sessionRole' in rest && rest.sessionRole !== 'student' && rest.sessionRole !== 'teacher') {
+      rest.sessionRole = null;
+    }
+    Object.assign(appState, rest);
+    if ('sessionRole' in rest || 'teacherPreviewAsStudent' in rest) {
+      appState.mode = isTeacherModeActive(appState) ? 'teacher' : 'student';
+    }
   }
   recalculateScore();
   saveState();
   notify(changeKey);
+}
+
+export function completeModuleChallenge(modId, challengeIdx, totalChallenges = 3) {
+  if (!Object.hasOwn(appState.modulePractice, modId)) return false;
+  if (!Number.isInteger(challengeIdx) || challengeIdx < 0 || challengeIdx >= totalChallenges) return false;
+
+  const current = appState.modulePractice[modId] || [];
+  if (!current.includes(challengeIdx)) {
+    appState.modulePractice[modId] = [...current, challengeIdx].sort((a, b) => a - b);
+  }
+  if (appState.modulePractice[modId].length >= totalChallenges) {
+    appState.completedModules[modId] = true;
+  }
+  recalculateScore();
+  saveState();
+  notify('module-practice');
+  return appState.modulePractice[modId].length >= totalChallenges;
 }
 
 export function markModuleComplete(modId) {
@@ -145,26 +280,10 @@ export function markModuleComplete(modId) {
 }
 
 export function resetStudentProgress() {
-  appState.completedModules = {
-    'mod-logica': false,
-    'mod-numeros': false,
-    'mod-algebra': false,
-    'mod-trig': false,
-    'mod-financas': false,
-    'mod-estatistica': false
-  };
-  appState.quizAnswersByEdition = {
-    uneb_2025: {},
-    uneb_2024: {},
-    uneb_2023: {},
-    imersao_fixacao: {}
-  };
-  appState.quizSubmittedByEdition = {
-    uneb_2025: false,
-    uneb_2024: false,
-    uneb_2023: false,
-    imersao_fixacao: false
-  };
+  appState.completedModules = { ...defaultState.completedModules };
+  appState.modulePractice = createEmptyModulePractice();
+  appState.quizAnswersByEdition = Object.fromEntries(Object.keys(BANCO_PROVAS).map(k => [k, {}]));
+  appState.quizSubmittedByEdition = Object.fromEntries(Object.keys(BANCO_PROVAS).map(k => [k, false]));
   recalculateScore();
   saveState();
   notify('reset');
@@ -202,3 +321,4 @@ export function isCurrentQuizSubmitted() {
   if (!appState.quizSubmittedByEdition) appState.quizSubmittedByEdition = {};
   return Boolean(appState.quizSubmittedByEdition[key]);
 }
+

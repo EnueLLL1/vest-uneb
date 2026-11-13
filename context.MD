@@ -2,17 +2,17 @@
 
 ## 1. Visão Geral e Objetivo Pedagógico
 
-Aplicação web educacional interativa (Single-File HTML) voltada para estudantes do Ensino Médio (foco no programa Universidade Para Todos - UPT Bahia e Vestibular UNEB 2026).
+Aplicação web educacional interativa modular em ES Modules voltada para estudantes do Ensino Médio (foco no programa Universidade Para Todos - UPT Bahia e Vestibular UNEB 2026).
 
 - **Formato de Uso Híbrido:** Utilizada presencialmente pelo professor em 2 manhãs de aula (Modo Professor com gabaritos/dicas liberados via projeção/data-show) e pelos alunos no celular/computador (Modo Estudante para experimentação em tempo real e revisão autônoma pós-aula).
-- **Estilo Visual:** Acadêmico Editorial Clássico (fundo creme/papel #FBF9F5, azul institucional UNEB #0F2C59, terracota #C84B31, verde sálvia #1E5128, tipografia serifada Fraunces nos títulos, Plus Jakarta Sans no corpo e JetBrains Mono em fórmulas/dados).
+- **Estilo Visual:** Acadêmico UNEB (`#1e3a8a` primário, `#172554` azul escuro, `#0d9488` teal destaque, `#e2e8f0` bordas), tipografia serifada Merriweather nos títulos/notações matemáticas e Inter no corpo.
 
-## 2. Arquitetura Técnica e Regras de Performance (App Performance Optimizer)
+## 2. Arquitetura Técnica e Regras de Performance
 
-- **Zero Dependências de Gráficos Externos:** Todos os gráficos (parábola, círculo trigonométrico, curvas de juros e histograma) são renderizados em Canvas 2D nativo com suporte a alta densidade de pixels (devicePixelRatio) e eventos pointer/touch.
-- **Single-File Architecture:** HTML5 semântico + Tailwind CSS (via CDN) + JavaScript Vanilla modularizado em um único objeto de estado global.
-- **Zero Layout Shift (CLS = 0):** Todos os elementos `<canvas>` e painéis dinâmicos possuem altura/proporção reservadas.
-- **Persistência Instantânea:** Progresso, XP acumulado, modo de visualização (Aluno/Professor), exercícios concluídos e respostas do simulado salvos no `localStorage` sob a chave `uneb_math_2026_v1`.
+- **Zero Dependências de Gráficos Externos:** Todos os gráficos (parábola, círculo trigonométrico, curvas de juros e histograma) são renderizados em Canvas 2D nativo com suporte a alta densidade de pixels (`devicePixelRatio`) e eventos pointer/touch.
+- **Modular ES Modules + Tailwind CSS Estático:** HTML5 semântico (`index.html`), folha compilada estática (`css/app.css` + `css/custom.css`) para uso 100% offline sem runtime CDN e módulos ES nativos (`js/`), com `tailwind.config.js` e `css/input.css` para recompilação.
+- **Zero Layout Shift:** Contêineres de `<canvas>` e painéis dinâmicos possuem altura/proporção reservadas e `loading="lazy"` nas imagens das questões.
+- **Persistência Instantânea:** Progresso, XP acumulado, modo de visualização (Aluno/Professor), módulos concluídos e respostas dos simulados salvos no `localStorage` sob a chave `uneb_math_2026_v1` com validação na hidratação.
 
 ## 3. Divisão Pedagógica (Os 6 Eixos do Edital UNEB 2026)
 
@@ -42,19 +42,26 @@ Aplicação web educacional interativa (Single-File HTML) voltada para estudante
 
 ## 4. Mapa do Código para Modificações Rápidas
 
-- **Estado e Persistência (`state` / `saveState`):** Controla `currentTab` ('dia1', 'dia2', 'simulado'), `teacherMode` (boolean), `xp` (number), `completedLabs` (array) e `practiceDone` (objeto).
-- **Questões Rápidas por Eixo (`practiceQuestions`):** Objeto indexado de 1 a 6 contendo enunciado, alternativas, índice correto e explicação detalhada para os 6 eixos.
-- **Banco do Simulado (`simuladoQuestions`):** Array de objetos com as questões no padrão UNEB (5 alternativas A–E, tag do eixo, enunciado e resolução passo a passo).
-- **Funções de Renderização Canvas:**
-  - `drawAlgebraCanvas()`: Desenha eixos cartesianos, parábola, raízes e vértice do Eixo 3.
-  - `drawTrigCanvas()`: Desenha ciclo trigonométrico, projeções de seno/cosseno e ângulo interativo do Eixo 4.
-  - `drawFinanceCanvas()`: Desenha comparativo Juros Simples vs. Compostos do Eixo 5.
-  - `drawStatCanvas()`: Desenha histograma de distribuição de frequências do Eixo 6.
+- **`index.html` & `css/` (`app.css`, `input.css`, `custom.css`):** Estrutura semântica (`day1`, `day2`, `quiz`), `<dialog id="confirm-dialog">`, estilos acessíveis e compilação Tailwind v3.
+- **`js/state.js`:** Estado central (`getState`, `setState`, `loadState`, `saveState`, `subscribe`, `recalculateScore`, `markModuleComplete`, `resetStudentProgress`).
+- **`js/app.js`:** Orquestração de inicialização, roteamento de abas (`day1`, `day2`, `quiz`), alternância Aluno/Professor e métricas do cabeçalho.
+- **`js/data/banco_questoes.js`:** Fonte única oficial com as 4 edições (`uneb_2025`, `uneb_2024`, `uneb_2023`, `imersao_fixacao`, 51 questões e 17 figuras em `assets/`).
+- **`js/modules/`:**
+  - `logica.js`: Conectivos P e Q e desafio de equivalência lógica.
+  - `combinatoria.js`: Arranjo vs. Combinação e calculadora de PA/PG.
+  - `parabola.js` (`renderQuadratic`): Eixos cartesianos, parábola, raízes e vértice do Eixo 3.
+  - `trig.js` (`renderTrigCircle`): Ciclo trigonométrico interativo do Eixo 4.
+  - `financas.js` (`renderFinance`): Comparativo Juros Simples vs. Compostos do Eixo 5.
+  - `stats.js` (`renderHistogramCanvas`): Sturges e histograma por classes do Eixo 6.
+  - `quiz.js`: Motor do simulado, cronômetro adaptativo, navegação rápida e relatório por eixo.
+- **`js/utils/`:** `canvas.js` (scaling HiDPI), `toast.js` (região viva acessível) e `confirm.js` (confirmação via `<dialog>`).
+- **Scripts & Testes:** `iniciar.bat` (servidor HTTP local seguro), `verify_banco.js` (integridade do banco e imagens), `test/test_math.js` e `test/test_state.js`.
 
 ## 5. Instruções para Novas Alterações
 
 Ao modificar este projeto:
 
-1. Mantenha toda a lógica autocontida ou modularizada sem introduzir bibliotecas externas pesadas de gráficos.
-2. Preserve a responsividade mobile-first (alvos de toque >= 44px) e o suporte ao Modo Professor (que revela gabaritos comentados e notas de aula em todos os eixos).
-3. Sempre que adicionar novos exercícios ou datasets estatísticos, utilize os dados oficiais do caderno (Editais UNEB, Módulo UPT Bahia, Base UFSC 5434 alunos, Lotes urbanos de Paulo Lopes/SC ou Vendas de ventiladores).
+1. Mantenha a arquitetura modular ES sem introduzir bibliotecas externas pesadas de gráficos.
+2. Preserve a responsividade mobile-first (alvos de toque >= 44px em `pointer: coarse`) e o suporte ao Modo Professor (que revela gabaritos comentados e notas de aula em todos os eixos).
+3. Após alterar classes Tailwind em `index.html` ou `js/`, recompile `css/app.css` com `npx tailwindcss@3 -i css/input.css -o css/app.css --minify`.
+4. Execute `node verify_banco.js`, `node test/test_math.js` e `node test/test_state.js` antes de concluir alterações.

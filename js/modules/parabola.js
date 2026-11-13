@@ -1,10 +1,11 @@
 /**
  * EIXO 3: FUNÇÃO QUADRÁTICA E PARÁBOLA
- * Fórmulas puras de Bhaskara/Vértice e renderizador Canvas 2D.
+ * Explorador visual dos coeficientes, Canvas cartesiano numerado + eixo de simetria e Prática Híbrida.
  */
 
 import { setupCanvasResolution } from '../utils/canvas.js';
 import { getState, saveState } from '../state.js';
+import { setupModuleStage } from '../utils/module-stage.js';
 
 export function calcBhaskara(a, b, c) {
   if (a === 0) {
@@ -57,6 +58,88 @@ export function formatQuadraticEq(a, b, c) {
   return eqText;
 }
 
+const QUAD_CONCEPT_NOTES = {
+  a: {
+    title: 'Coeficiente a (Concavidade)',
+    desc: 'Se a > 0, a parábola tem "boca para cima" e possui ponto de MÍNIMO. Se a < 0, abre para baixo e tem ponto de MÁXIMO. Quanto maior |a|, mais fechada ela fica.'
+  },
+  b: {
+    title: 'Coeficiente b (Inclinação ao cruzar Y)',
+    desc: 'Indica se a parábola cruza o eixo Y subindo (b > 0), descendo (b < 0) ou exatamente no vértice (b = 0). Além disso, move o vértice horizontalmente: xᵥ = -b / (2a).'
+  },
+  c: {
+    title: 'Coeficiente c (Corte no Eixo Y)',
+    desc: 'É sempre a altura onde a parábola corta o eixo vertical: ponto (0, c). Basta fazer x = 0 na fórmula!'
+  },
+  delta: {
+    title: 'Discriminante Δ = b² - 4ac (Quantidade de Raízes)',
+    desc: 'Δ > 0 gera 2 raízes reais (corta X duas vezes). Δ = 0 tangencia X em 1 raiz dupla. Δ < 0 não toca o eixo X.'
+  }
+};
+
+export const PARABOLA_CHALLENGES = [
+  {
+    type: 'lab',
+    prompt: 'Missão no Simulador: Ajuste a, b e c para obter uma parábola com concavidade para cima (a > 0) e vértice exatamente em V(2, -1).',
+    hints: [
+      'Use a = 1 (concavidade para cima). Em seguida calcule b usando xᵥ = -b / (2a) = 2.',
+      'Com a = 1 e xᵥ = 2, temos b = -4. Depois ajuste c = 3 para f(2) = 4 - 8 + 3 = -1.'
+    ],
+    successMessage: 'Excelente! f(x) = x² - 4x + 3 possui concavidade para cima, vértice em (2, -1) e raízes x = 1 e x = 3.',
+    teacherExplanation: 'Mostrar na lousa que qualquer variação proporcional mantém o vértice apenas se respeitar -b/(2a)=2 e yᵥ=-1; nos sliders inteiros, a solução exata é a=1, b=-4, c=3.'
+  },
+  {
+    type: 'mc',
+    prompt: '(Estilo UNEB) O lucro diário de um produtor é modelado por L(x) = -x² + 12x - 20, em que x é a produção em toneladas. Qual quantidade x maximiza o lucro?',
+    options: [
+      '2 toneladas',
+      '6 toneladas',
+      '10 toneladas',
+      '16 toneladas'
+    ],
+    correctIndex: 1,
+    hints: [
+      'Quando a < 0, o máximo ocorre no vértice. Observe se a questão pede o "x" (toneladas) ou o "y" (lucro máximo).',
+      'Calcule xᵥ = -b / (2a) = -12 / (2 · (-1)) = 6.'
+    ],
+    successMessage: 'Correto! A produção ótima ocorre em xᵥ = -12 / (-2) = 6 toneladas (com lucro máximo yᵥ = 16).',
+    teacherExplanation: 'Gabarito: B (6 toneladas). Destacar que D (16) é o lucro máximo (yᵥ), o distrator nº 1 quando o aluno não lê se o enunciado pede xᵥ ou yᵥ.'
+  },
+  {
+    type: 'mc',
+    prompt: 'Em uma função quadrática f(x) = ax² + bx + c, sabendo que a > 0 e Δ < 0, o que podemos afirmar sobre o gráfico?',
+    options: [
+      'Corta o eixo X em dois pontos simétricos.',
+      'Tangencia o eixo X no ponto xᵥ.',
+      'Fica inteiramente acima do eixo X (f(x) > 0 para todo x real).',
+      'Tem ponto de máximo negativo.'
+    ],
+    correctIndex: 2,
+    hints: [
+      'Lembre o significado geométrico de Δ < 0: não existem raízes reais.',
+      'Se não cruza X e a > 0 (abre para cima), toda a curva fica acima do eixo horizontal.'
+    ],
+    successMessage: 'Isso mesmo! Δ < 0 significa zero raízes reais; com a > 0, f(x) é estritamente positiva.',
+    teacherExplanation: 'Gabarito: C. Esse conceito conecta inequação do 2º grau com análise gráfica.'
+  }
+];
+
+export function evaluateParabolaChallenge(idx, ctx = {}) {
+  const ch = PARABOLA_CHALLENGES[idx];
+  if (!ch) return false;
+  if (idx === 0) {
+    const calc = calcBhaskara(Number(ctx.a), Number(ctx.b), Number(ctx.c));
+    return (
+      calc.isQuadratic &&
+      Number(ctx.a) > 0 &&
+      calc.vertex !== null &&
+      Math.abs(calc.vertex.xv - 2) < 1e-6 &&
+      Math.abs(calc.vertex.yv + 1) < 1e-6
+    );
+  }
+  return ctx.selectedOption === ch.correctIndex;
+}
+
 export function renderQuadratic() {
   const elA = document.getElementById('slider-quad-a');
   const elB = document.getElementById('slider-quad-b');
@@ -78,6 +161,7 @@ export function renderQuadratic() {
   const labelDelta = document.getElementById('label-quad-delta');
   const labelVert = document.getElementById('label-quad-vert');
   const labelRoots = document.getElementById('label-quad-roots');
+  const stepBox = document.getElementById('quad-bhaskara-steps');
 
   if (labelEq) labelEq.textContent = formatQuadraticEq(a, b, c);
 
@@ -95,6 +179,9 @@ export function renderQuadratic() {
         labelRoots.textContent = 'Nenhuma raiz real (Δ < 0)';
       }
     }
+    if (stepBox) {
+      stepBox.textContent = `Δ = (${b})² - 4·(${a})·(${c}) = ${calc.delta}  |  xᵥ = -(${b}) / (2·${a}) = ${calc.vertex.xv.toFixed(2)}  |  Corte Y = (0, ${c})`;
+    }
   } else {
     if (labelDelta) labelDelta.textContent = 'Não se aplica (reta afim)';
     if (labelVert) labelVert.textContent = 'Sem vértice (reta afim)';
@@ -106,6 +193,9 @@ export function renderQuadratic() {
       } else {
         labelRoots.textContent = 'Nenhuma raiz (reta horizontal)';
       }
+    }
+    if (stepBox) {
+      stepBox.textContent = 'Com a = 0 a função deixa de ser quadrática e vira função afim (1º grau).';
     }
   }
 
@@ -137,7 +227,7 @@ export function renderQuadratic() {
     ctx.stroke();
   }
 
-  // Eixos principais
+  // Eixos principais + Ticks numéricos
   ctx.strokeStyle = '#475569';
   ctx.lineWidth = 1.5;
   ctx.beginPath();
@@ -146,6 +236,37 @@ export function renderQuadratic() {
   ctx.moveTo(originX, 0);
   ctx.lineTo(originX, h);
   ctx.stroke();
+
+  ctx.fillStyle = '#94a3b8';
+  ctx.font = '10px "JetBrains Mono", monospace';
+  const maxUnitX = Math.floor((w / 2) / scale);
+  for (let u = -maxUnitX; u <= maxUnitX; u += 2) {
+    if (u === 0) continue;
+    const tx = originX + u * scale;
+    ctx.fillText(String(u), tx - 5, originY + 13);
+  }
+  const maxUnitY = Math.floor((h / 2) / scale);
+  for (let u = -maxUnitY; u <= maxUnitY; u += 2) {
+    if (u === 0) continue;
+    const ty = originY - u * scale;
+    ctx.fillText(String(u), originX + 5, ty + 3);
+  }
+
+  // Eixo de simetria x = xv
+  if (calc.isQuadratic && calc.vertex) {
+    const vPx = originX + (calc.vertex.xv * scale);
+    if (vPx >= 0 && vPx <= w) {
+      ctx.save();
+      ctx.setLineDash([4, 4]);
+      ctx.strokeStyle = 'rgba(245, 158, 11, 0.55)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(vPx, 0);
+      ctx.lineTo(vPx, h);
+      ctx.stroke();
+      ctx.restore();
+    }
+  }
 
   // Plot da Curva / Reta
   ctx.beginPath();
@@ -172,6 +293,17 @@ export function renderQuadratic() {
   }
   ctx.stroke();
 
+  // Corte no eixo Y: (0, c)
+  const cPy = originY - (c * scale);
+  if (cPy >= 8 && cPy <= h - 8) {
+    ctx.fillStyle = '#a855f7';
+    ctx.beginPath();
+    ctx.arc(originX, cPy, 4.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#e9d5ff';
+    ctx.fillText(`(0,${c})`, originX + 7, cPy - 4);
+  }
+
   // Vértice se a !== 0
   if (calc.isQuadratic && calc.vertex) {
     const vPx = originX + (calc.vertex.xv * scale);
@@ -179,20 +311,28 @@ export function renderQuadratic() {
     if (vPx >= 0 && vPx <= w && vPy >= 0 && vPy <= h) {
       ctx.fillStyle = '#f59e0b';
       ctx.beginPath();
-      ctx.arc(vPx, vPy, 5, 0, Math.PI * 2);
+      ctx.arc(vPx, vPy, 5.5, 0, Math.PI * 2);
       ctx.fill();
+      ctx.fillStyle = '#fde68a';
+      const vxTxt = Number.isInteger(calc.vertex.xv) ? calc.vertex.xv : calc.vertex.xv.toFixed(1);
+      const vyTxt = Number.isInteger(calc.vertex.yv) ? calc.vertex.yv : calc.vertex.yv.toFixed(1);
+      ctx.fillText(`V(${vxTxt},${vyTxt})`, Math.min(w - 58, vPx + 7), Math.max(12, vPy + (a > 0 ? 15 : -8)));
     }
   }
 
   // Raízes reais no eixo X
   ctx.fillStyle = '#10b981';
-  calc.roots.forEach(r => {
+  calc.roots.forEach((r, idx) => {
     if (r !== null && Number.isFinite(r)) {
       const rPx = originX + (r * scale);
       if (rPx >= 0 && rPx <= w) {
         ctx.beginPath();
         ctx.arc(rPx, originY, 4.5, 0, Math.PI * 2);
         ctx.fill();
+        ctx.fillStyle = '#6ee7b7';
+        const rTxt = Number.isInteger(r) ? r : r.toFixed(1);
+        ctx.fillText(`x${idx + 1}=${rTxt}`, Math.min(w - 38, rPx + 4), originY - 8);
+        ctx.fillStyle = '#10b981';
       }
     }
   });
@@ -214,6 +354,43 @@ export function resetQuadFunction() {
   renderQuadratic();
 }
 
+function selectQuadConcept(key) {
+  const note = QUAD_CONCEPT_NOTES[key];
+  if (!note) return;
+
+  document.querySelectorAll('[data-quad-coef]').forEach((btn) => {
+    const active = btn.getAttribute('data-quad-coef') === key;
+    btn.setAttribute('aria-pressed', String(active));
+    btn.className = active
+      ? 'px-3 py-1.5 rounded-lg text-xs font-bold bg-sky-600 text-white shadow-sm cursor-pointer transition-all'
+      : 'px-3 py-1.5 rounded-lg text-xs font-semibold bg-white text-slate-700 border border-slate-200 hover:border-sky-300 cursor-pointer transition-all';
+  });
+
+  const titleEl = document.getElementById('quad-concept-title');
+  const descEl = document.getElementById('quad-concept-desc');
+  if (titleEl) titleEl.textContent = note.title;
+  if (descEl) descEl.textContent = note.desc;
+}
+
+function applyQuadPreset(preset) {
+  const presets = {
+    duas: [1, -2, -3],
+    dupla: [1, -4, 4],
+    sem: [1, 0, 2],
+    maximo: [-1, 4, -1]
+  };
+  const vals = presets[preset];
+  if (!vals) return;
+  const [a, b, c] = vals;
+  const elA = document.getElementById('slider-quad-a');
+  const elB = document.getElementById('slider-quad-b');
+  const elC = document.getElementById('slider-quad-c');
+  if (elA) elA.value = String(a);
+  if (elB) elB.value = String(b);
+  if (elC) elC.value = String(c);
+  renderQuadratic();
+}
+
 export function initParabola() {
   const elA = document.getElementById('slider-quad-a');
   const elB = document.getElementById('slider-quad-b');
@@ -225,5 +402,37 @@ export function initParabola() {
   if (elC) elC.addEventListener('input', renderQuadratic);
   if (btnReset) btnReset.addEventListener('click', resetQuadFunction);
 
+  document.querySelectorAll('[data-quad-coef]').forEach((btn) => {
+    btn.addEventListener('click', () => selectQuadConcept(btn.getAttribute('data-quad-coef')));
+  });
+  selectQuadConcept('a');
+
+  document.querySelectorAll('[data-quad-preset]').forEach((btn) => {
+    btn.addEventListener('click', () => applyQuadPreset(btn.getAttribute('data-quad-preset')));
+  });
+
   renderQuadratic();
+
+  setupModuleStage({
+    modId: 'mod-algebra',
+    challenges: PARABOLA_CHALLENGES,
+    evaluateChallenge: evaluateParabolaChallenge,
+    getLabContext: () => ({
+      a: parseFloat(document.getElementById('slider-quad-a')?.value || '1'),
+      b: parseFloat(document.getElementById('slider-quad-b')?.value || '-2'),
+      c: parseFloat(document.getElementById('slider-quad-c')?.value || '-3')
+    }),
+    onApplySolution: (idx) => {
+      if (idx === 0) {
+        const elA = document.getElementById('slider-quad-a');
+        const elB = document.getElementById('slider-quad-b');
+        const elC = document.getElementById('slider-quad-c');
+        if (elA) elA.value = '1';
+        if (elB) elB.value = '-4';
+        if (elC) elC.value = '3';
+        renderQuadratic();
+      }
+    },
+    onShowWorkbench: renderQuadratic
+  });
 }

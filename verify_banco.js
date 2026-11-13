@@ -1,14 +1,17 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-console.log('Testing banco_questoes_uneb.js integrity...\n');
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+console.log('Testing js/data/banco_questoes.js integrity...\n');
 
 let BANCO;
 try {
-  BANCO = require('./banco_questoes_uneb.js');
+  ({ BANCO_PROVAS: BANCO } = await import('./js/data/banco_questoes.js'));
   console.log('✔ Syntax and loading: OK');
 } catch (err) {
-  console.error('✖ Error loading banco_questoes_uneb.js:', err);
+  console.error('✖ Error loading js/data/banco_questoes.js:', err);
   process.exit(1);
 }
 

@@ -1,4 +1,31 @@
 /* Estilos complementares e tipografia acadêmica UNEB */
+:root {
+  --target-size: 24px;
+}
+
+@media (pointer: coarse) {
+  :root {
+    --target-size: 44px;
+  }
+}
+
+body {
+  overflow-wrap: anywhere;
+}
+
+h1, h2, h3 {
+  text-wrap: balance;
+}
+
+p, li {
+  text-wrap: pretty;
+}
+
+img, video {
+  max-inline-size: 100%;
+  block-size: auto;
+}
+
 canvas {
   image-rendering: auto;
 }
@@ -6,4 +33,61 @@ canvas {
 .math-font {
   font-family: 'Merriweather', serif;
   font-style: italic;
+}
+
+/* Alvos interativos acessíveis (WCAG 2.5.5 / 2.5.8) */
+:where(button, select, input:not([type="checkbox"], [type="radio"], [type="range"]), [role="button"]) {
+  min-block-size: var(--target-size);
+  min-inline-size: var(--target-size);
+}
+
+:where(a:any-link, button, input, select):focus-visible {
+  outline: 2px solid #0d9488;
+  outline-offset: 2px;
+}
+
+/* Barra de progresso nativa estilizada */
+progress#metric-progress-bar {
+  appearance: none;
+  border: 0 solid;
+  overflow: clip;
+  border-radius: 1e5px;
+  background: #334155;
+  box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.25);
+}
+
+progress#metric-progress-bar::-webkit-progress-bar {
+  background: transparent;
+}
+
+progress#metric-progress-bar::-webkit-progress-value {
+  background: #34d399;
+  border-radius: 1e5px;
+  transition: inline-size 0.3s ease;
+}
+
+progress#metric-progress-bar::-moz-progress-bar {
+  background: #34d399;
+  border-radius: 1e5px;
+}
+
+/* Diálogo modal nativo sem scroll leak na página */
+dialog:modal {
+  overscroll-behavior: contain;
+  margin: auto;
+}
+
+dialog::backdrop {
+  overflow: hidden;
+  overscroll-behavior: contain;
+  background: rgb(15 23 42 / 0.6);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

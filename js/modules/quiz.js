@@ -9,14 +9,17 @@ import {
   getCurrentQuizData,
   getAnswersForCurrentEdition,
   isCurrentQuizSubmitted,
-  recalculateScore,
+  isTeacherModeActive,
+  subscribe,
   setState
 } from '../state.js';
 import { showToast } from '../utils/toast.js';
+import { confirmAction } from '../utils/confirm.js';
 
 let timerSeconds = 60 * 60;
 let timerInterval = null;
 let timerRunning = true;
+const teacherQuestionOverrides = new Map();
 
 function escapeHtml(str) {
   if (typeof str !== 'string') return '';
@@ -37,6 +40,31 @@ export function updateTimerDisplay() {
   }
 }
 
+export function syncTimerForCurrentEdition() {
+  const quizData = getCurrentQuizData();
+  const isSubmitted = isCurrentQuizSubmitted();
+  const btnTimer = document.getElementById('btn-toggle-timer');
+
+  if (isSubmitted) {
+    timerSeconds = 0;
+    timerRunning = false;
+    if (btnTimer) {
+      btnTimer.textContent = 'Finalizado';
+      btnTimer.disabled = true;
+      btnTimer.setAttribute('aria-pressed', 'false');
+    }
+  } else {
+    timerSeconds = (quizData.timeMinutes || 60) * 60;
+    timerRunning = true;
+    if (btnTimer) {
+      btnTimer.textContent = 'Pausar';
+      btnTimer.disabled = false;
+      btnTimer.setAttribute('aria-pressed', 'false');
+    }
+  }
+  updateTimerDisplay();
+}
+
 export function startTimer() {
   if (timerInterval) return;
   updateTimerDisplay();
@@ -46,8 +74,10 @@ export function startTimer() {
     if (timerSeconds <= 0) {
       clearInterval(timerInterval);
       timerInterval = null;
-      showToast('Tempo limite esgotado! Entregando prova automaticamente.');
-      submitQuiz();
+      if (!isCurrentQuizSubmitted()) {
+        showToast('Tempo limite esgotado! Entregando prova automaticamente.');
+        submitQuiz({ skipConfirm: true });
+      }
       return;
     }
     timerSeconds--;
@@ -56,9 +86,13 @@ export function startTimer() {
 }
 
 export function toggleQuizTimer() {
+  if (isCurrentQuizSubmitted() || timerSeconds <= 0) return;
   timerRunning = !timerRunning;
   const btn = document.getElementById('btn-toggle-timer');
-  if (btn) btn.textContent = timerRunning ? 'Pausar' : 'Retomar';
+  if (btn) {
+    btn.textContent = timerRunning ? 'Pausar' : 'Retomar';
+    btn.setAttribute('aria-pressed', String(!timerRunning));
+  }
 }
 
 export function scrollToQuestion(qId) {
@@ -75,22 +109,34 @@ export function scrollQuizToTop() {
   }
 }
 
+function syncQuizModeButtons(mode) {
+  const btnSimulado = document.getElementById('btn-mode-simulado');
+  const btnEstudo = document.getElementById('btn-mode-estudo');
+  const isSimulado = mode !== 'estudo';
+
+  if (btnSimulado) {
+    btnSimulado.className = isSimulado
+      ? 'px-3 py-1 rounded font-semibold text-uneb-primary bg-white shadow-sm transition-all'
+      : 'px-3 py-1 rounded font-medium text-slate-600 hover:text-slate-900 transition-all';
+    btnSimulado.setAttribute('aria-pressed', String(isSimulado));
+  }
+  if (btnEstudo) {
+    btnEstudo.className = !isSimulado
+      ? 'px-3 py-1 rounded font-semibold text-uneb-primary bg-white shadow-sm transition-all'
+      : 'px-3 py-1 rounded font-medium text-slate-600 hover:text-slate-900 transition-all';
+    btnEstudo.setAttribute('aria-pressed', String(!isSimulado));
+  }
+}
+
 export function changeQuizEdition(editionKey) {
   const state = getState();
   state.selectedEdition = editionKey;
   const quizData = getCurrentQuizData();
 
-  const isSubmitted = isCurrentQuizSubmitted();
-  const btnTimer = document.getElementById('btn-toggle-timer');
-  if (!isSubmitted) {
-    timerSeconds = (quizData.timeMinutes || 60) * 60;
-    timerRunning = true;
-    if (btnTimer) btnTimer.textContent = 'Pausar';
-  } else {
-    timerRunning = false;
-    if (btnTimer) btnTimer.textContent = 'Finalizado';
+  syncTimerForCurrentEdition();
+  if (!isCurrentQuizSubmitted() && !timerInterval && state.currentView === 'quiz') {
+    startTimer();
   }
-  updateTimerDisplay();
 
   const titleEl = document.getElementById('quiz-edition-title');
   const descEl = document.getElementById('quiz-edition-desc');
@@ -108,24 +154,11 @@ export function changeQuizEdition(editionKey) {
 export function setQuizMode(mode) {
   const state = getState();
   state.quizMode = mode;
-  const btnSimulado = document.getElementById('btn-mode-simulado');
-  const btnEstudo = document.getElementById('btn-mode-estudo');
+  syncQuizModeButtons(mode);
 
   if (mode === 'simulado') {
-    if (btnSimulado) {
-      btnSimulado.className = 'px-3 py-1 rounded font-semibold text-uneb-primary bg-white shadow-sm transition-all';
-    }
-    if (btnEstudo) {
-      btnEstudo.className = 'px-3 py-1 rounded font-medium text-slate-600 hover:text-slate-900 transition-all';
-    }
     showToast('Modo Prova ativado: respostas salvas e gabarito ao finalizar.');
   } else {
-    if (btnEstudo) {
-      btnEstudo.className = 'px-3 py-1 rounded font-semibold text-uneb-primary bg-white shadow-sm transition-all';
-    }
-    if (btnSimulado) {
-      btnSimulado.className = 'px-3 py-1 rounded font-medium text-slate-600 hover:text-slate-900 transition-all';
-    }
     showToast('Modo Estudo ativado: resolução e feedback imediatos ao marcar.');
   }
 
@@ -147,7 +180,7 @@ export function renderQuizQuestions() {
   const state = getState();
   const quizData = getCurrentQuizData();
   const currentAnswers = getAnswersForCurrentEdition();
-  const isTeacher = state.mode === 'teacher';
+  const isTeacher = isTeacherModeActive(state);
   const isSubmitted = isCurrentQuizSubmitted();
   const isStudyMode = state.quizMode === 'estudo';
 
@@ -162,14 +195,21 @@ export function renderQuizQuestions() {
   const answeredCount = answeredKeys.length;
   const totalCount = quizData.questions.length;
 
+  syncQuizModeButtons(state.quizMode);
+
+  const navQuizBadge = document.getElementById('nav-quiz-badge');
+  if (navQuizBadge) {
+    navQuizBadge.textContent = `${totalCount} ${totalCount === 1 ? 'Questão' : 'Questões'}`;
+  }
+
   if (progressText) {
     progressText.textContent = `${answeredCount}/${totalCount} Respondidas`;
   }
 
   if (statusPill) {
     if (isTeacher) {
-      statusPill.textContent = 'Modo Professor';
-      statusPill.className = 'text-[10px] px-2 py-0.5 rounded font-mono font-bold bg-purple-100 text-purple-800 border border-purple-200';
+      statusPill.textContent = state.teacherShowAnswers ? 'Lousa: Gabarito Visível' : 'Sessão Docente';
+      statusPill.className = 'text-[10px] px-2 py-0.5 rounded font-mono font-bold bg-amber-100 text-amber-900 border border-amber-300';
     } else if (isSubmitted) {
       statusPill.textContent = 'Prova Entregue';
       statusPill.className = 'text-[10px] px-2 py-0.5 rounded font-mono font-bold bg-emerald-100 text-emerald-800 border border-emerald-200';
@@ -194,22 +234,29 @@ export function renderQuizQuestions() {
     const isAnswered = currentAnswers[q.id] !== undefined;
     const selectedOpt = currentAnswers[q.id];
     const isCorrect = isAnswered && (q.isCancelled || selectedOpt === q.correct);
+    const overrideKey = `${quizData.id}:${q.id}`;
+    const showTeacherBoard = isTeacher && (
+      teacherQuestionOverrides.has(overrideKey)
+        ? teacherQuestionOverrides.get(overrideKey)
+        : Boolean(state.teacherShowAnswers)
+    );
 
     // Botão na grade de navegação rápida
     if (navGrid) {
       const navBtn = document.createElement('button');
       navBtn.type = 'button';
       navBtn.setAttribute('data-nav-qid', q.id);
+      navBtn.setAttribute('aria-label', `Questão ${idx + 1}`);
       navBtn.title = `Questão ${idx + 1} (${q.axis})${q.isCancelled ? ' - Anulada' : ''}`;
 
-      let navBtnClass = 'w-7 h-7 sm:w-8 sm:h-8 rounded text-xs font-mono font-bold transition-all flex items-center justify-center border ';
+      let navBtnClass = 'w-8 h-8 rounded text-xs font-mono font-bold transition-all flex items-center justify-center border ';
       if (isTeacher || isSubmitted || isStudyMode) {
         if (isAnswered) {
           navBtnClass += isCorrect
             ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm'
             : 'bg-rose-500 text-white border-rose-500 shadow-sm';
         } else {
-          navBtnClass += 'bg-slate-100 text-slate-500 border-slate-200 hover:border-slate-400';
+          navBtnClass += 'bg-slate-100 text-slate-600 border-slate-300 hover:border-slate-400';
         }
       } else {
         if (isAnswered) {
@@ -225,19 +272,19 @@ export function renderQuizQuestions() {
 
     // Card da questão
     const qCard = document.createElement('div');
-    qCard.className = 'bg-white p-5 sm:p-6 rounded-xl border border-slate-200 shadow-sm scroll-mt-36';
+    qCard.className = 'bg-white p-5 sm:p-6 rounded-xl border border-slate-200 shadow-sm scroll-mt-48 sm:scroll-mt-40';
     qCard.id = `quiz-card-${q.id}`;
 
     let optionsHtml = '';
     q.options.forEach((opt, oIdx) => {
       let btnClass = 'w-full text-left p-3 rounded-lg border text-xs sm:text-sm transition-all flex items-start gap-2.5 ';
-      const showAnswerFeedback = isTeacher || isSubmitted || isStudyMode;
+      const showAnswerFeedback = isSubmitted || isStudyMode;
 
       if (isTeacher) {
-        if (q.isCancelled || oIdx === q.correct) {
+        if (showTeacherBoard && (q.isCancelled || oIdx === q.correct)) {
           btnClass += 'bg-emerald-50 border-emerald-500 text-emerald-950 font-semibold ring-2 ring-emerald-400';
         } else {
-          btnClass += 'bg-slate-50 border-slate-200 text-slate-500';
+          btnClass += 'bg-white border-slate-200 text-slate-800';
         }
       } else if (showAnswerFeedback && isAnswered) {
         if (q.isCancelled) {
@@ -263,7 +310,7 @@ export function renderQuizQuestions() {
 
       const disabledAttr = (isTeacher || isSubmitted || (isStudyMode && isAnswered) || timerSeconds <= 0) ? 'disabled' : '';
       let badgeTeacher = '';
-      if (isTeacher) {
+      if (showTeacherBoard) {
         if (q.isCancelled) {
           badgeTeacher = '<span class="ml-auto px-1.5 py-0.5 rounded text-[10px] bg-amber-600 text-white font-mono uppercase font-bold shrink-0">Anulada</span>';
         } else if (oIdx === q.correct) {
@@ -285,23 +332,17 @@ export function renderQuizQuestions() {
       `;
     });
 
-    const showResolution = isTeacher || isSubmitted || (isStudyMode && isAnswered);
+    const showResolution = showTeacherBoard || isSubmitted || (isStudyMode && isAnswered);
+    const teacherCardBtnHtml = isTeacher
+      ? `<button type="button" data-teacher-q-toggle="${q.id}" class="text-[11px] font-semibold px-2.5 py-1 rounded border transition-colors cursor-pointer ${showTeacherBoard ? 'bg-amber-100 text-amber-900 border-amber-300 hover:bg-amber-200' : 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200'}">${showTeacherBoard ? 'Ocultar Resolução' : 'Mostrar Resolução'}</button>`
+      : '';
 
     let figureHtml = '';
-    if (q.figureSvg) {
+    if (q.figureImg) {
       figureHtml = `
         <div class="my-4 p-3.5 bg-slate-50/90 rounded-xl border border-slate-200 flex flex-col items-center justify-center">
-          <div class="w-full max-w-md overflow-x-auto flex justify-center py-1">
-            ${q.figureSvg}
-          </div>
-          ${q.figureCaption ? `<p class="mt-2.5 text-[11px] font-mono text-slate-500 text-center italic">${escapeHtml(q.figureCaption)}</p>` : ''}
-        </div>
-      `;
-    } else if (q.figureImg) {
-      figureHtml = `
-        <div class="my-4 p-3.5 bg-slate-50/90 rounded-xl border border-slate-200 flex flex-col items-center justify-center">
-          <img src="${q.figureImg}" alt="${escapeHtml(q.figureCaption || 'Figura de apoio')}" class="max-w-full h-auto rounded-lg shadow-sm max-h-72 object-contain" />
-          ${q.figureCaption ? `<p class="mt-2.5 text-[11px] font-mono text-slate-500 text-center italic">${escapeHtml(q.figureCaption)}</p>` : ''}
+          <img src="${escapeHtml(q.figureImg)}" alt="${escapeHtml(q.figureCaption || 'Figura de apoio')}" loading="lazy" decoding="async" class="max-w-full h-auto rounded-lg shadow-sm max-h-72 object-contain" />
+          ${q.figureCaption ? `<p class="mt-2.5 text-[11px] font-mono text-slate-600 text-center italic">${escapeHtml(q.figureCaption)}</p>` : ''}
         </div>
       `;
     }
@@ -311,12 +352,15 @@ export function renderQuizQuestions() {
       : '';
 
     qCard.innerHTML = `
-      <div class="flex items-center justify-between mb-3 border-b border-slate-100 pb-2">
+      <div class="flex flex-wrap items-center justify-between gap-2 mb-3 border-b border-slate-100 pb-2">
         <div class="flex items-center gap-2">
           <span class="text-xs font-mono font-semibold uppercase text-uneb-primary">${escapeHtml(q.axis)}</span>
           ${badgeCancelled}
         </div>
-        <span class="text-xs px-2 py-0.5 rounded bg-slate-100 text-slate-600 font-mono font-semibold">Questão ${idx + 1} de ${totalCount}</span>
+        <div class="flex items-center gap-2">
+          ${teacherCardBtnHtml}
+          <span class="text-xs px-2 py-0.5 rounded bg-slate-100 text-slate-600 font-mono font-semibold">Questão ${idx + 1} de ${totalCount}</span>
+        </div>
       </div>
       <h4 class="font-serif font-bold text-slate-900 text-sm sm:text-base mb-3 leading-relaxed whitespace-pre-line">${escapeHtml(q.question)}</h4>
       ${figureHtml}
@@ -360,21 +404,27 @@ export function answerQuizQuestion(qId, selectedIdx) {
     }
   }
 
-  recalculateScore();
-  saveState();
+  setState(null, 'quiz-answer');
   renderQuizQuestions();
 }
 
-export function submitQuiz() {
+export async function submitQuiz({ skipConfirm = false } = {}) {
+  if (isCurrentQuizSubmitted()) return;
+
   const state = getState();
   const quizData = getCurrentQuizData();
   const currentAnswers = getAnswersForCurrentEdition();
   const totalCount = quizData.questions.length;
   const answeredCount = Object.keys(currentAnswers).length;
 
-  if (answeredCount < totalCount) {
-    const confirmar = confirm(`Você respondeu ${answeredCount} de ${totalCount} questões. Deseja realmente finalizar e entregar a prova agora?`);
-    if (!confirmar) return;
+  if (!skipConfirm && timerSeconds > 0 && answeredCount < totalCount) {
+    const confirmed = await confirmAction({
+      title: 'Entregar simulado agora?',
+      message: `Você respondeu ${answeredCount} de ${totalCount} questões. Deseja realmente finalizar e entregar a prova?`,
+      confirmText: 'Entregar prova',
+      cancelText: 'Continuar respondendo'
+    });
+    if (!confirmed) return;
   }
 
   if (!state.quizSubmittedByEdition) state.quizSubmittedByEdition = {};
@@ -382,10 +432,13 @@ export function submitQuiz() {
 
   timerRunning = false;
   const btnTimer = document.getElementById('btn-toggle-timer');
-  if (btnTimer) btnTimer.textContent = 'Finalizado';
+  if (btnTimer) {
+    btnTimer.textContent = 'Finalizado';
+    btnTimer.disabled = true;
+    btnTimer.setAttribute('aria-pressed', 'false');
+  }
 
-  recalculateScore();
-  saveState();
+  setState(null, 'quiz-submit');
   renderQuizQuestions();
 
   const resCard = document.getElementById('quiz-result-card');
@@ -436,8 +489,12 @@ export function checkQuizCompletion() {
     resCard.classList.remove('hidden');
 
     if (resSummary) {
+      const state = getState();
+      const studentPrefix = state.studentName
+        ? `Desempenho de <strong>${escapeHtml(state.studentName)}</strong>: acertou `
+        : 'Você acertou ';
       resSummary.innerHTML = `
-        Você acertou <strong>${correctCount} de ${totalCount} questões</strong> (${pct}% de aproveitamento) nesta edição oficial da UNEB.
+        ${studentPrefix}<strong>${correctCount} de ${totalCount} questões</strong> (${pct}% de aproveitamento) nesta edição oficial da UNEB.
       `;
     }
 
@@ -481,19 +538,13 @@ export function restartQuiz() {
   }
 
   const quizData = getCurrentQuizData();
-  timerSeconds = (quizData.timeMinutes || 60) * 60;
-  updateTimerDisplay();
+  syncTimerForCurrentEdition();
 
-  recalculateScore();
-  saveState();
+  setState(null, 'quiz-restart');
   renderQuizQuestions();
 
   const resCard = document.getElementById('quiz-result-card');
   if (resCard) resCard.classList.add('hidden');
-
-  timerRunning = true;
-  const btn = document.getElementById('btn-toggle-timer');
-  if (btn) btn.textContent = 'Pausar';
 
   if (!timerInterval && state.currentView === 'quiz') {
     startTimer();
@@ -506,6 +557,20 @@ export function initQuiz() {
   const questionsContainer = document.getElementById('quiz-questions-container');
   if (questionsContainer) {
     questionsContainer.addEventListener('click', (e) => {
+      const teacherToggleBtn = e.target.closest('button[data-teacher-q-toggle]');
+      if (teacherToggleBtn) {
+        const qId = parseInt(teacherToggleBtn.getAttribute('data-teacher-q-toggle'), 10);
+        const state = getState();
+        const quizData = getCurrentQuizData();
+        const overrideKey = `${quizData.id}:${qId}`;
+        const curShown = teacherQuestionOverrides.has(overrideKey)
+          ? teacherQuestionOverrides.get(overrideKey)
+          : Boolean(state.teacherShowAnswers);
+        teacherQuestionOverrides.set(overrideKey, !curShown);
+        renderQuizQuestions();
+        return;
+      }
+
       const btn = e.target.closest('button[data-q-id][data-opt-idx]');
       if (!btn || btn.disabled) return;
       const qId = parseInt(btn.getAttribute('data-q-id'), 10);
@@ -513,6 +578,13 @@ export function initQuiz() {
       answerQuizQuestion(qId, optIdx);
     });
   }
+
+  subscribe((_, changeKey) => {
+    if (changeKey === 'teacher-answers' || changeKey === 'session' || changeKey === 'mode') {
+      teacherQuestionOverrides.clear();
+      renderQuizQuestions();
+    }
+  });
 
   // Delegação de eventos no painel de navegação rápida
   const navGrid = document.getElementById('quiz-nav-grid');
@@ -540,7 +612,7 @@ export function initQuiz() {
   if (btnTimer) btnTimer.addEventListener('click', toggleQuizTimer);
 
   const btnSubmit = document.getElementById('btn-submit-quiz');
-  if (btnSubmit) btnSubmit.addEventListener('click', submitQuiz);
+  if (btnSubmit) btnSubmit.addEventListener('click', () => submitQuiz());
 
   const btnRestart = document.getElementById('btn-restart-quiz');
   if (btnRestart) btnRestart.addEventListener('click', restartQuiz);
@@ -548,5 +620,7 @@ export function initQuiz() {
   const btnScrollTop = document.getElementById('btn-quiz-scroll-top');
   if (btnScrollTop) btnScrollTop.addEventListener('click', scrollQuizToTop);
 
+  syncTimerForCurrentEdition();
   renderQuizQuestions();
 }
+

@@ -1,9 +1,10 @@
 /**
  * EIXO 2: NÚMEROS, SEQUÊNCIAS (PA/PG) & ANÁLISE COMBINATÓRIA
- * Fórmulas puras testáveis e interface interativa com sliders.
+ * Explorador visual Ordem vs Grupo, fórmulas puras testáveis e Prática Híbrida.
  */
 
 import { getState, saveState } from '../state.js';
+import { setupModuleStage } from '../utils/module-stage.js';
 
 export function factorial(k) {
   if (k <= 1) return 1;
@@ -49,7 +50,125 @@ export function calcPG(a1, q, n) {
   return { an, sn, terms };
 }
 
+export const COMB_CHALLENGES = [
+  {
+    type: 'lab',
+    prompt: 'Missão no Simulador: Queremos formar uma comissão de 2 representantes (P = 2) entre 6 estudantes (N = 6). Escolha o tipo correto (Ordem NÃO importa vs Ordem importa) e configure os sliders para obter o total de comissões.',
+    hints: [
+      'Em uma comissão sem cargos distintos, {Ana, Beto} é o mesmo grupo que {Beto, Ana} — portanto use Combinação.',
+      'Clique em "Ordem NÃO importa (Combinação)" e ajuste N = 6 e P = 2 para encontrar C(6,2) = 15.'
+    ],
+    successMessage: 'Exato! Como não há hierarquia na comissão, usamos Combinação: C(6,2) = 30 / 2! = 15 grupos.',
+    teacherExplanation: 'Reforçar em aula: quando a pergunta diz "comissão, equipe, duplas, subconjuntos", a ordem dos escolhidos não cria novos grupos (divide por p!).'
+  },
+  {
+    type: 'mc',
+    prompt: '(Estilo UNEB) Quantos anagramas distintos podem ser formados com todas as letras da palavra SALVADOR?',
+    options: [
+      '40.320',
+      '20.160',
+      '10.080',
+      '5.040'
+    ],
+    correctIndex: 1,
+    hints: [
+      'Conte o total de letras (8) e observe se alguma letra se repete.',
+      'A letra "A" aparece 2 vezes: calcule 8! / 2! = 40.320 / 2.'
+    ],
+    successMessage: 'Correto! 8 letras com repetição de "A" (2 vezes) geram 8! / 2! = 20.160 anagramas.',
+    teacherExplanation: 'Gabarito: B (20.160). Permutação com repetição é recorrente na UNEB; alunos costumam marcar 40.320 (8!) ao esquecer do 2!.'
+  },
+  {
+    type: 'mc',
+    prompt: 'Em uma cultura de laboratório, o número de bactérias dobra a cada hora. Partindo de 3 indivíduos (a₁ = 3), qual será o 5º termo dessa progressão?',
+    options: [
+      '15',
+      '32',
+      '48',
+      '96'
+    ],
+    correctIndex: 2,
+    hints: [
+      'Crescer multiplicando por um fator constante (dobrar: q = 2) define uma PG, não uma PA.',
+      'Use a₅ = a₁ · q^(5-1) = 3 · 2⁴ = 3 · 16.'
+    ],
+    successMessage: 'Muito bem! PG com a₁ = 3 e q = 2 resulta em a₅ = 3 · 2⁴ = 48 bactérias.',
+    teacherExplanation: 'Gabarito: C (48). Mostrar na lousa que o 5º termo só multiplica a razão 4 vezes (n - 1), evitando o erro de calcular 3 · 2⁵ = 96.'
+  }
+];
+
+export function evaluateCombChallenge(idx, ctx = {}) {
+  const ch = COMB_CHALLENGES[idx];
+  if (!ch) return false;
+  if (idx === 0) {
+    return ctx.n === 6 && ctx.p === 2 && ctx.isCombinationMode === true;
+  }
+  return ctx.selectedOption === ch.correctIndex;
+}
+
 let currentSeqType = 'pa';
+let isCombinationMode = false;
+
+function renderSeqVisualBars(terms) {
+  const barsContainer = document.getElementById('seq-visual-bars');
+  if (!barsContainer) return;
+  while (barsContainer.firstChild) barsContainer.removeChild(barsContainer.firstChild);
+
+  const slice = terms.slice(0, 8);
+  const absMax = Math.max(1, ...slice.map((v) => Math.abs(v)));
+
+  slice.forEach((val, i) => {
+    const col = document.createElement('div');
+    col.className = 'flex-1 flex flex-col items-center gap-1 min-w-[24px]';
+
+    const pct = Math.max(10, Math.round((Math.abs(val) / absMax) * 100));
+    const barWrap = document.createElement('div');
+    barWrap.className = 'w-full h-16 flex items-end justify-center bg-slate-100 rounded p-0.5';
+
+    const bar = document.createElement('div');
+    bar.className = currentSeqType === 'pa'
+      ? 'w-full rounded-sm bg-uneb-primary transition-all duration-300'
+      : 'w-full rounded-sm bg-emerald-600 transition-all duration-300';
+    bar.style.height = `${pct}%`;
+
+    const lbl = document.createElement('span');
+    lbl.className = 'text-[10px] font-mono text-slate-600 truncate max-w-full';
+    lbl.textContent = `a${i + 1}`;
+
+    barWrap.appendChild(bar);
+    col.append(barWrap, lbl);
+    barsContainer.appendChild(col);
+  });
+}
+
+function updateOrderModeUI() {
+  const btnArr = document.getElementById('comb-mode-arr');
+  const btnComb = document.getElementById('comb-mode-comb');
+  const cardArr = document.getElementById('card-arranjo');
+  const cardComb = document.getElementById('card-combinacao');
+
+  if (btnArr && btnComb) {
+    btnArr.setAttribute('aria-pressed', String(!isCombinationMode));
+    btnComb.setAttribute('aria-pressed', String(isCombinationMode));
+    btnArr.className = !isCombinationMode
+      ? 'px-3 py-1.5 rounded-lg text-xs font-bold bg-indigo-600 text-white shadow-sm cursor-pointer transition-all'
+      : 'px-3 py-1.5 rounded-lg text-xs font-medium bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 cursor-pointer transition-all';
+    btnComb.className = isCombinationMode
+      ? 'px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 text-white shadow-sm cursor-pointer transition-all'
+      : 'px-3 py-1.5 rounded-lg text-xs font-medium bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 cursor-pointer transition-all';
+  }
+
+  if (cardArr) {
+    cardArr.className = !isCombinationMode
+      ? 'bg-indigo-50 p-3 rounded-lg border-2 border-indigo-500 text-center ring-2 ring-indigo-200 transition-all'
+      : 'bg-indigo-50/40 p-3 rounded-lg border border-indigo-200 text-center opacity-70 transition-all';
+  }
+  if (cardComb) {
+    cardComb.className = isCombinationMode
+      ? 'bg-emerald-50 p-3 rounded-lg border-2 border-emerald-500 text-center ring-2 ring-emerald-200 transition-all'
+      : 'bg-emerald-50/40 p-3 rounded-lg border border-emerald-200 text-center opacity-70 transition-all';
+  }
+}
 
 export function updateCombinatorics() {
   const sliderN = document.getElementById('slider-n');
@@ -76,11 +195,19 @@ export function updateCombinatorics() {
   const resComb = document.getElementById('res-combinacao');
   const combRatio = document.getElementById('comb-ratio');
   const combFormula = document.getElementById('comb-formula');
+  const stepBox = document.getElementById('comb-step-formula');
 
   if (resArranjo) resArranjo.textContent = arranjo.toLocaleString('pt-BR');
   if (resComb) resComb.textContent = combinacao.toLocaleString('pt-BR');
   if (combRatio) combRatio.textContent = factorial(p);
   if (combFormula) combFormula.textContent = `p! = ${p}! = ${factorial(p)}`;
+  if (stepBox) {
+    stepBox.textContent = isCombinationMode
+      ? `C(${n},${p}) = ${n}! / (${p}! · ${n - p}!) = ${arranjo} / ${factorial(p)} = ${combinacao}`
+      : `A(${n},${p}) = ${n}! / (${n - p})! = ${arranjo} ordenações distintas`;
+  }
+
+  updateOrderModeUI();
 
   const state = getState();
   state.params.sliderN = n;
@@ -96,13 +223,17 @@ export function setSeqType(type) {
 
   if (tabPa && tabPg && label) {
     if (type === 'pa') {
-      tabPa.className = 'px-3 py-1 font-medium bg-uneb-primary text-white rounded-l-lg border border-uneb-primary';
-      tabPg.className = 'px-3 py-1 font-medium bg-white text-slate-700 hover:bg-slate-100 rounded-r-lg border border-slate-300';
-      label.innerHTML = 'Razão (<span class="math-font">r</span>)';
+      tabPa.className = 'px-3 py-1 font-medium bg-uneb-primary text-white rounded-l-lg border border-uneb-primary cursor-pointer';
+      tabPg.className = 'px-3 py-1 font-medium bg-white text-slate-700 hover:bg-slate-100 rounded-r-lg border border-slate-300 cursor-pointer';
+      tabPa.setAttribute('aria-pressed', 'true');
+      tabPg.setAttribute('aria-pressed', 'false');
+      label.textContent = 'Razão (r)';
     } else {
-      tabPg.className = 'px-3 py-1 font-medium bg-uneb-primary text-white rounded-r-lg border border-uneb-primary';
-      tabPa.className = 'px-3 py-1 font-medium bg-white text-slate-700 hover:bg-slate-100 rounded-l-lg border border-slate-300';
-      label.innerHTML = 'Razão (<span class="math-font">q</span>)';
+      tabPg.className = 'px-3 py-1 font-medium bg-uneb-primary text-white rounded-r-lg border border-uneb-primary cursor-pointer';
+      tabPa.className = 'px-3 py-1 font-medium bg-white text-slate-700 hover:bg-slate-100 rounded-l-lg border border-slate-300 cursor-pointer';
+      tabPg.setAttribute('aria-pressed', 'true');
+      tabPa.setAttribute('aria-pressed', 'false');
+      label.textContent = 'Razão (q)';
     }
   }
   const state = getState();
@@ -135,6 +266,8 @@ export function calculateSequence() {
   if (resSn) resSn.textContent = Number.isFinite(result.sn) ? result.sn.toLocaleString('pt-BR', { maximumFractionDigits: 4 }) : 'Infinito/Indefinido';
   if (preview) preview.textContent = result.terms.join(', ') + (n > result.terms.length ? '...' : '');
 
+  renderSeqVisualBars(result.terms);
+
   const state = getState();
   state.params.seqA1 = a1;
   state.params.seqRaz = r;
@@ -148,6 +281,21 @@ export function initCombinatoria() {
   const sliderP = document.getElementById('slider-p');
   if (sliderN) sliderN.addEventListener('input', updateCombinatorics);
   if (sliderP) sliderP.addEventListener('input', updateCombinatorics);
+
+  const btnArr = document.getElementById('comb-mode-arr');
+  const btnComb = document.getElementById('comb-mode-comb');
+  if (btnArr) {
+    btnArr.addEventListener('click', () => {
+      isCombinationMode = false;
+      updateCombinatorics();
+    });
+  }
+  if (btnComb) {
+    btnComb.addEventListener('click', () => {
+      isCombinationMode = true;
+      updateCombinatorics();
+    });
+  }
 
   const tabPa = document.getElementById('tab-pa');
   const tabPg = document.getElementById('tab-pg');
@@ -163,4 +311,25 @@ export function initCombinatoria() {
 
   updateCombinatorics();
   calculateSequence();
+
+  setupModuleStage({
+    modId: 'mod-numeros',
+    challenges: COMB_CHALLENGES,
+    evaluateChallenge: evaluateCombChallenge,
+    getLabContext: () => ({
+      n: parseInt(document.getElementById('slider-n')?.value || '7', 10),
+      p: parseInt(document.getElementById('slider-p')?.value || '3', 10),
+      isCombinationMode
+    }),
+    onApplySolution: (idx) => {
+      if (idx === 0) {
+        const sN = document.getElementById('slider-n');
+        const sP = document.getElementById('slider-p');
+        if (sN) sN.value = '6';
+        if (sP) sP.value = '2';
+        isCombinationMode = true;
+        updateCombinatorics();
+      }
+    }
+  });
 }

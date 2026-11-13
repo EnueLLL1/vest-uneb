@@ -800,12 +800,6 @@ const BANCO_PROVAS_DATA = {
   }
 };
 
-if (typeof window !== 'undefined') {
-  window.BANCO_PROVAS = BANCO_PROVAS_DATA;
-}
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = BANCO_PROVAS_DATA;
-}
 
 export const BANCO_PROVAS = BANCO_PROVAS_DATA;
 export default BANCO_PROVAS_DATA;

@@ -1,0 +1,17 @@
+# Ignore PDFs (provas antigas e cadernos de 10MB+)
+*.pdf
+
+# Ignore markdown documents and test scripts
+*.md
+test/
+verify_banco.js
+iniciar.bat
+portal_vestibular_uneb_imers_o_matem_tica_em_2_dias.html
+
+# Ignore dependencies and tool configs
+node_modules/
+.gemini/
+.idea/
+.vscode/
+*.log
+*.tmp
