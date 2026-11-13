@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 320" width="1200" height="320" role="img" aria-label="Portal Vestibular UNEB - Imersão Matemática em 2 Dias">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B3B78" />
+      <stop offset="55%" stop-color="#0A2B58" />
+      <stop offset="100%" stop-color="#0F172A" />
+    </linearGradient>
+    <linearGradient id="accentLine" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#34D399" />
+      <stop offset="50%" stop-color="#38BDF8" />
+      <stop offset="100%" stop-color="#FBBF24" />
+    </linearGradient>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#FFFFFF" stroke-opacity="0.06" stroke-width="1" />
+    </pattern>
+    <clipPath id="cardClip">
+      <rect width="1200" height="320" rx="20" />
+    </clipPath>
+  </defs>
+
+  <g clip-path="url(#cardClip)">
+    <!-- Fundo e grade matemática -->
+    <rect width="1200" height="320" fill="url(#bg)" />
+    <rect width="1200" height="320" fill="url(#grid)" />
+
+    <!-- Brilhos sutis -->
+    <circle cx="1020" cy="80" r="190" fill="#38BDF8" fill-opacity="0.08" />
+    <circle cx="160" cy="290" r="160" fill="#10B981" fill-opacity="0.08" />
+
+    <!-- Ilustração matemática vetorial à direita (parábola + círculo trigonométrico + barras) -->
+    <g transform="translate(835, 36)" opacity="0.92">
+      <rect x="0" y="0" width="315" height="248" rx="16" fill="#081C3A" fill-opacity="0.72" stroke="#60A5FA" stroke-opacity="0.28" stroke-width="1.5" />
+      <!-- Eixos -->
+      <line x1="28" y1="165" x2="288" y2="165" stroke="#94A3B8" stroke-opacity="0.35" stroke-width="1.2" />
+      <line x1="158" y1="24" x2="158" y2="224" stroke="#94A3B8" stroke-opacity="0.35" stroke-width="1.2" />
+      <!-- Círculo trigonométrico -->
+      <circle cx="158" cy="124" r="64" fill="none" stroke="#38BDF8" stroke-opacity="0.35" stroke-width="1.5" stroke-dasharray="4 4" />
+      <!-- Parábola f(x) -->
+      <path d="M 52 52 Q 158 265 264 52" fill="none" stroke="url(#accentLine)" stroke-width="3.5" stroke-linecap="round" />
+      <!-- Pontos notáveis -->
+      <circle cx="96" cy="116" r="5" fill="#34D399" />
+      <circle cx="158" cy="158" r="5.5" fill="#FBBF24" />
+      <circle cx="220" cy="116" r="5" fill="#38BDF8" />
+      <!-- Mini gráfico de barras (Painel da Turma) -->
+      <rect x="34" y="198" width="22" height="26" rx="4" fill="#34D399" fill-opacity="0.85" />
+      <rect x="64" y="186" width="22" height="38" rx="4" fill="#38BDF8" fill-opacity="0.85" />
+      <rect x="94" y="206" width="22" height="18" rx="4" fill="#FBBF24" fill-opacity="0.85" />
+      <text x="194" y="218" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13" font-weight="700" fill="#93C5FD">f(x) = ax² + bx + c</text>
+    </g>
+
+    <!-- Barra lateral de destaque -->
+    <rect x="56" y="48" width="5" height="224" rx="2.5" fill="url(#accentLine)" />
+
+    <!-- Badge superior -->
+    <rect x="80" y="48" width="318" height="30" rx="15" fill="#1E3A8A" stroke="#34D399" stroke-opacity="0.55" stroke-width="1" />
+    <circle cx="98" cy="63" r="4.5" fill="#34D399" />
+    <text x="112" y="68" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="12.5" font-weight="700" letter-spacing="0.8" fill="#A7F3D0">IMERSÃO MATEMÁTICA • EDITAL UNEB</text>
+
+    <!-- Título e subtítulo -->
+    <text x="80" y="136" font-family="Georgia, Merriweather, serif" font-size="46" font-weight="700" fill="#FFFFFF">Portal Vestibular UNEB</text>
+    <text x="80" y="176" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="19" font-weight="400" fill="#CBD5E1">
+      Simuladores interativos em 3 estágios, 51 questões oficiais (2023–2025)
+    </text>
+    <text x="80" y="202" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="19" font-weight="400" fill="#CBD5E1">
+      e diagnóstico de turma em tempo real com fallback offline.
+    </text>
+
+    <!-- Chips informativos no rodapé do banner -->
+    <g transform="translate(80, 234)">
+      <rect x="0" y="0" width="138" height="32" rx="8" fill="#FFFFFF" fill-opacity="0.1" stroke="#FFFFFF" stroke-opacity="0.18" />
+      <text x="69" y="21" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="600" fill="#F8FAFC">6 Eixos em 2 Dias</text>
+
+      <rect x="150" y="0" width="176" height="32" rx="8" fill="#FFFFFF" fill-opacity="0.1" stroke="#FFFFFF" stroke-opacity="0.18" />
+      <text x="238" y="21" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="600" fill="#F8FAFC">Sessão Aluno vs Docente</text>
+
+      <rect x="338" y="0" width="188" height="32" rx="8" fill="#FFFFFF" fill-opacity="0.1" stroke="#FFFFFF" stroke-opacity="0.18" />
+      <text x="432" y="21" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="600" fill="#F8FAFC">Supabase + Código UNEB1</text>
+    </g>
+  </g>
+</svg>

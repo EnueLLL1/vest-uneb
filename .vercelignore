@@ -1,12 +1,12 @@
-# Ignore PDFs (provas antigas e cadernos de 10MB+)
+# Ignore documentation, PDFs, context and GitHub showcase assets
 *.pdf
-
-# Ignore markdown documents and test scripts
 *.md
+docs/
+.github/
+LICENSE
 test/
 verify_banco.js
 iniciar.bat
-portal_vestibular_uneb_imers_o_matem_tica_em_2_dias.html
 
 # Ignore dependencies and tool configs
 node_modules/
