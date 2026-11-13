@@ -14,7 +14,12 @@ import {
   resetStudentProgress,
   isTeacherModeActive
 } from './state.js';
-import { validateTeacherCode, normalizeStudentName } from './utils/session.js';
+import { validateTeacherCode, normalizeStudentName, normalizeClassCode } from './utils/session.js';
+import {
+  buildStudentDiagnosticPayload,
+  encodeStudentReportCode,
+  syncStudentToCloud
+} from './utils/classroom.js';
 import { showToast } from './utils/toast.js';
 import { confirmAction } from './utils/confirm.js';
 import { initLogic } from './modules/logica.js';
@@ -23,9 +28,18 @@ import { initParabola, renderQuadratic } from './modules/parabola.js';
 import { initTrigonometria, renderTrigCircle, setTrigAngle } from './modules/trig.js';
 import { initFinancas, renderFinance } from './modules/financas.js';
 import { initStats, calculateStatistics } from './modules/stats.js';
-import { initQuiz, renderQuizQuestions, startTimer, syncTimerForCurrentEdition } from './modules/quiz.js';
+import {
+  initQuiz,
+  renderQuizQuestions,
+  startTimer,
+  syncTimerForCurrentEdition,
+  changeQuizEdition,
+  scrollToQuestion
+} from './modules/quiz.js';
+import { initTurma, renderTurmaDashboard, refreshTurmaData } from './modules/turma.js';
 
 let resizeTimer = null;
+let cloudSyncTimer = null;
 
 function debounceResize() {
   clearTimeout(resizeTimer);
@@ -79,9 +93,10 @@ export function updateMetricUI() {
 
 export function switchView(viewName, save = true) {
   const state = getState();
-  state.currentView = viewName;
+  const safeView = (viewName === 'turma' && !isTeacherModeActive(state)) ? 'day1' : viewName;
+  state.currentView = safeView;
 
-  ['day1', 'day2', 'quiz'].forEach(id => {
+  ['day1', 'day2', 'quiz', 'turma'].forEach(id => {
     const viewEl = document.getElementById(`view-${id}`);
     const navEl = document.getElementById(`nav-${id}`);
     if (viewEl) viewEl.classList.add('hidden');
@@ -92,8 +107,8 @@ export function switchView(viewName, save = true) {
     }
   });
 
-  const activeView = document.getElementById(`view-${viewName}`);
-  const activeNav = document.getElementById(`nav-${viewName}`);
+  const activeView = document.getElementById(`view-${safeView}`);
+  const activeNav = document.getElementById(`nav-${safeView}`);
   if (activeView) activeView.classList.remove('hidden');
   if (activeNav) {
     activeNav.classList.add('bg-uneb-accent', 'text-white');
@@ -104,15 +119,18 @@ export function switchView(viewName, save = true) {
   if (save) saveState();
 
   requestAnimationFrame(() => {
-    if (viewName === 'day1') {
+    if (safeView === 'day1') {
       renderQuadratic();
-    } else if (viewName === 'day2') {
+    } else if (safeView === 'day2') {
       renderTrigCircle();
       renderFinance();
       calculateStatistics();
-    } else if (viewName === 'quiz') {
+    } else if (safeView === 'quiz') {
       renderQuizQuestions();
       startTimer();
+    } else if (safeView === 'turma') {
+      renderTurmaDashboard();
+      refreshTurmaData({ silent: true });
     }
   });
 }
@@ -138,6 +156,8 @@ export function applySessionUI() {
   const teacherPanel = document.getElementById('teacher-header-panel');
   const previewBanner = document.getElementById('teacher-preview-banner');
   const studentBadge = document.getElementById('student-name-badge');
+  const btnShareReport = document.getElementById('btn-student-share-report');
+  const navTurma = document.getElementById('nav-turma');
   const btnReset = document.getElementById('btn-reset-progress');
   const btnToggleAnswers = document.getElementById('btn-teacher-toggle-answers');
 
@@ -151,6 +171,10 @@ export function applySessionUI() {
   if (!hasSession) {
     const inputName = document.getElementById('gate-student-name');
     if (inputName) inputName.value = state.studentName || '';
+    const inputClass = document.getElementById('gate-student-class');
+    if (inputClass) inputClass.value = state.classCode || 'UNEB-A';
+    const errStudent = document.getElementById('gate-student-error');
+    if (errStudent) errStudent.classList.add('hidden');
     const errEl = document.getElementById('gate-teacher-error');
     if (errEl) errEl.classList.add('hidden');
     return;
@@ -158,15 +182,22 @@ export function applySessionUI() {
 
   if (studentPanel) studentPanel.classList.toggle('hidden', isTeacher);
   if (teacherPanel) teacherPanel.classList.toggle('hidden', !isTeacher);
+  if (navTurma) navTurma.classList.toggle('hidden', !isTeacher);
+  if (btnShareReport) btnShareReport.classList.toggle('hidden', isTeacher || isPreviewingStudent);
   if (previewBanner) previewBanner.classList.toggle('hidden', !isPreviewingStudent);
   if (btnReset) btnReset.classList.toggle('hidden', isPreviewingStudent);
 
+  if (!isTeacher && state.currentView === 'turma') {
+    switchView('day1', false);
+  }
+
   if (studentBadge) {
+    const cls = state.classCode || 'UNEB-A';
     studentBadge.textContent = isPreviewingStudent
       ? 'Prévia: Estudante'
       : state.studentName
-        ? `Olá, ${state.studentName}`
-        : 'Sessão Estudante';
+        ? `Olá, ${state.studentName} • ${cls}`
+        : `Sessão Estudante • ${cls}`;
   }
 
   if (btnToggleAnswers) {
@@ -186,17 +217,47 @@ export function applySessionUI() {
   redrawActiveCanvases();
 }
 
-export function enterStudentSession(rawName = '') {
+function scheduleCloudSync(immediate = false) {
+  const st = getState();
+  if (st.sessionRole !== 'student' || !st.studentName) return;
+  clearTimeout(cloudSyncTimer);
+  if (immediate) {
+    syncStudentToCloud(st);
+    return;
+  }
+  cloudSyncTimer = setTimeout(() => {
+    const latest = getState();
+    if (latest.sessionRole === 'student' && latest.studentName) {
+      syncStudentToCloud(latest);
+    }
+  }, 1000);
+}
+
+export function enterStudentSession(rawName = '', rawClassCode = 'UNEB-A') {
   const cleanName = normalizeStudentName(rawName);
+  const errEl = document.getElementById('gate-student-error');
+  if (!cleanName) {
+    if (errEl) {
+      errEl.textContent = 'Informe seu nome para o professor acompanhar seu desempenho.';
+      errEl.classList.remove('hidden');
+    }
+    return false;
+  }
+  if (errEl) errEl.classList.add('hidden');
+
+  const cleanClass = normalizeClassCode(rawClassCode);
   setState({
     sessionRole: 'student',
     studentName: cleanName,
+    classCode: cleanClass,
     teacherShowAnswers: false,
     teacherPreviewAsStudent: false
   }, 'session');
   applySessionUI();
-  switchView(getState().currentView || 'day1', false);
-  showToast(cleanName ? `Bem-vindo(a), ${cleanName}! Sessão de Estudante iniciada.` : 'Sessão de Estudante iniciada.');
+  switchView(getState().currentView === 'turma' ? 'day1' : (getState().currentView || 'day1'), false);
+  scheduleCloudSync(true);
+  showToast(`Bem-vindo(a), ${cleanName} (${cleanClass})! Sessão de Estudante iniciada.`);
+  return true;
 }
 
 export function enterTeacherSession(code) {
@@ -297,12 +358,57 @@ function setupGlobalListeners() {
   const studentForm = document.getElementById('gate-student-form');
   const btnEnterStudent = document.getElementById('btn-enter-student');
   const inputStudentName = document.getElementById('gate-student-name');
+  const inputStudentClass = document.getElementById('gate-student-class');
   const submitStudent = (e) => {
     e?.preventDefault();
-    enterStudentSession(inputStudentName?.value || '');
+    enterStudentSession(inputStudentName?.value || '', inputStudentClass?.value || 'UNEB-A');
   };
   if (studentForm) studentForm.addEventListener('submit', submitStudent);
   else if (btnEnterStudent) btnEnterStudent.addEventListener('click', submitStudent);
+
+  // Modal de Envio & Código Offline (Estudante)
+  const btnShareReport = document.getElementById('btn-student-share-report');
+  const reportDialog = document.getElementById('report-code-dialog');
+  const reportOutput = document.getElementById('report-code-output');
+  const reportStatus = document.getElementById('report-code-cloud-status');
+  const btnCopyReport = document.getElementById('btn-copy-report-code');
+
+  if (btnShareReport && reportDialog) {
+    btnShareReport.addEventListener('click', async () => {
+      const payload = buildStudentDiagnosticPayload(getState());
+      const code = encodeStudentReportCode(payload);
+      if (reportOutput) reportOutput.value = code;
+      if (reportStatus) {
+        reportStatus.textContent = 'Enviando dados para o Painel da Turma na nuvem...';
+        reportStatus.className = 'text-xs font-semibold px-3 py-2 rounded-lg bg-blue-50 text-blue-900';
+      }
+      if (typeof reportDialog.showModal === 'function') reportDialog.showModal();
+      else reportDialog.setAttribute('open', 'true');
+
+      const res = await syncStudentToCloud(getState());
+      if (reportStatus) {
+        if (res.ok) {
+          reportStatus.textContent = `Enviado ao vivo para a turma ${payload.class_code}! O professor já vê seu progresso na lousa.`;
+          reportStatus.className = 'text-xs font-semibold px-3 py-2 rounded-lg bg-emerald-50 text-emerald-900 border border-emerald-200';
+        } else {
+          reportStatus.textContent = 'Sem internet para envio automático. Copie o código UNEB1 abaixo e envie ao professor.';
+          reportStatus.className = 'text-xs font-semibold px-3 py-2 rounded-lg bg-amber-50 text-amber-900 border border-amber-200';
+        }
+      }
+    });
+  }
+
+  if (btnCopyReport && reportOutput) {
+    btnCopyReport.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(reportOutput.value);
+        showToast('Código UNEB1 copiado! Basta enviar ou colar para o professor.');
+      } catch {
+        reportOutput.select();
+        showToast('Selecione e copie o código manualmente na caixa acima.');
+      }
+    });
+  }
 
   const teacherForm = document.getElementById('gate-teacher-form');
   const inputTeacherCode = document.getElementById('gate-teacher-code');
@@ -354,9 +460,11 @@ function setupGlobalListeners() {
   const navDay1 = document.getElementById('nav-day1');
   const navDay2 = document.getElementById('nav-day2');
   const navQuiz = document.getElementById('nav-quiz');
+  const navTurma = document.getElementById('nav-turma');
   if (navDay1) navDay1.addEventListener('click', () => switchView('day1'));
   if (navDay2) navDay2.addEventListener('click', () => switchView('day2'));
   if (navQuiz) navQuiz.addEventListener('click', () => switchView('quiz'));
+  if (navTurma) navTurma.addEventListener('click', () => switchView('turma'));
 
   // Botões de conclusão dos módulos
   document.querySelectorAll('[data-comp-module]').forEach(btn => {
@@ -382,9 +490,19 @@ document.addEventListener('DOMContentLoaded', () => {
   recalculateScore();
   updateMetricUI();
 
-  // Inscrição reativa para métricas
-  subscribe(() => {
+  // Inscrição reativa para métricas e envio automático para a turma
+  subscribe((_, changeKey) => {
     updateMetricUI();
+    if (
+      changeKey === 'module-practice' ||
+      changeKey === 'module-attempt' ||
+      changeKey === 'module-completed' ||
+      changeKey === 'quiz-answer'
+    ) {
+      scheduleCloudSync(false);
+    } else if (changeKey === 'quiz-submit') {
+      scheduleCloudSync(true);
+    }
   });
 
   setupGlobalListeners();
@@ -397,6 +515,21 @@ document.addEventListener('DOMContentLoaded', () => {
   initFinancas();
   initStats();
   initQuiz();
+  initTurma({
+    onOpenModule: (view, modId) => {
+      switchView(view);
+      requestAnimationFrame(() => {
+        document.getElementById(modId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    },
+    onOpenQuizQuestion: (editionKey, questionId) => {
+      changeQuizEdition(editionKey);
+      switchView('quiz');
+      requestAnimationFrame(() => {
+        scrollToQuestion(questionId);
+      });
+    }
+  });
 
   const state = getState();
   applySessionUI();

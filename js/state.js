@@ -4,7 +4,7 @@
  */
 
 import { BANCO_PROVAS } from './data/banco_questoes.js';
-import { normalizeStudentName } from './utils/session.js';
+import { DEFAULT_CLASS_CODE, normalizeStudentName, normalizeClassCode } from './utils/session.js';
 
 export const APP_STORAGE_KEY = 'uneb_math_2026_v1';
 
@@ -21,11 +21,16 @@ function createEmptyModulePractice() {
   return Object.fromEntries(MOD_KEYS.map((k) => [k, []]));
 }
 
+function createEmptyModuleAttempts() {
+  return Object.fromEntries(MOD_KEYS.map((k) => [k, [0, 0, 0]]));
+}
+
 const defaultState = {
   score: 0,
   mode: 'student', // espelho legado de isTeacherModeActive()
   sessionRole: null, // null | 'student' | 'teacher'
   studentName: '',
+  classCode: DEFAULT_CLASS_CODE,
   teacherShowAnswers: false,
   teacherPreviewAsStudent: false,
   selectedEdition: 'uneb_2025',
@@ -51,6 +56,7 @@ const defaultState = {
     'mod-estatistica': false
   },
   modulePractice: createEmptyModulePractice(),
+  moduleAttempts: createEmptyModuleAttempts(),
   currentView: 'day1',
   params: {
     sliderN: 7,
@@ -124,13 +130,14 @@ export function isTeacherModeActive(stateSlice = appState) {
 }
 
 export function loadState() {
-  const validViews = new Set(['day1', 'day2', 'quiz']);
+  const validViews = new Set(['day1', 'day2', 'quiz', 'turma']);
   const validQuizModes = new Set(['simulado', 'estudo']);
   const validRoles = new Set(['student', 'teacher']);
 
   appState.mode = defaultState.mode;
   appState.sessionRole = null;
   appState.studentName = '';
+  appState.classCode = DEFAULT_CLASS_CODE;
   appState.teacherShowAnswers = false;
   appState.teacherPreviewAsStudent = false;
   appState.currentView = defaultState.currentView;
@@ -138,6 +145,7 @@ export function loadState() {
   appState.quizMode = defaultState.quizMode;
   appState.completedModules = { ...defaultState.completedModules };
   appState.modulePractice = createEmptyModulePractice();
+  appState.moduleAttempts = createEmptyModuleAttempts();
   appState.quizAnswersByEdition = Object.fromEntries(Object.keys(BANCO_PROVAS).map(k => [k, {}]));
   appState.quizSubmittedByEdition = Object.fromEntries(Object.keys(BANCO_PROVAS).map(k => [k, false]));
   appState.params = { ...defaultState.params };
@@ -151,6 +159,9 @@ export function loadState() {
           appState.sessionRole = parsed.sessionRole;
         }
         appState.studentName = normalizeStudentName(parsed.studentName);
+        if (typeof parsed.classCode === 'string') {
+          appState.classCode = normalizeClassCode(parsed.classCode);
+        }
         if (typeof parsed.teacherShowAnswers === 'boolean') {
           appState.teacherShowAnswers = parsed.teacherShowAnswers;
         }
@@ -164,7 +175,11 @@ export function loadState() {
           appState.mode = parsed.mode === 'teacher' ? 'teacher' : 'student';
         }
 
-        if (validViews.has(parsed.currentView)) appState.currentView = parsed.currentView;
+        if (validViews.has(parsed.currentView)) {
+          appState.currentView = (parsed.currentView === 'turma' && !isTeacherModeActive(appState))
+            ? 'day1'
+            : parsed.currentView;
+        }
         if (typeof parsed.selectedEdition === 'string' && Object.hasOwn(BANCO_PROVAS, parsed.selectedEdition)) {
           appState.selectedEdition = parsed.selectedEdition;
         }
@@ -184,6 +199,18 @@ export function loadState() {
             if (Array.isArray(rawList)) {
               const uniqueValid = [...new Set(rawList.filter((idx) => Number.isInteger(idx) && idx >= 0 && idx < 3))];
               appState.modulePractice[modKey] = uniqueValid.sort((a, b) => a - b);
+            }
+          }
+        }
+
+        if (parsed.moduleAttempts && typeof parsed.moduleAttempts === 'object' && !Array.isArray(parsed.moduleAttempts)) {
+          for (const modKey of MOD_KEYS) {
+            const rawArr = Object.hasOwn(parsed.moduleAttempts, modKey) ? parsed.moduleAttempts[modKey] : null;
+            if (Array.isArray(rawArr)) {
+              appState.moduleAttempts[modKey] = [0, 1, 2].map((i) => {
+                const v = rawArr[i];
+                return Number.isInteger(v) && v >= 0 && v <= 999 ? v : 0;
+              });
             }
           }
         }
@@ -240,6 +267,9 @@ export function setState(partial, changeKey = 'generic') {
     if ('studentName' in rest) {
       rest.studentName = normalizeStudentName(rest.studentName);
     }
+    if ('classCode' in rest) {
+      rest.classCode = normalizeClassCode(rest.classCode);
+    }
     if ('sessionRole' in rest && rest.sessionRole !== 'student' && rest.sessionRole !== 'teacher') {
       rest.sessionRole = null;
     }
@@ -251,6 +281,24 @@ export function setState(partial, changeKey = 'generic') {
   recalculateScore();
   saveState();
   notify(changeKey);
+}
+
+export function recordModuleAttempt(modId, challengeIdx, isCorrect, totalChallenges = 3) {
+  if (!Object.hasOwn(appState.moduleAttempts, modId)) return false;
+  if (!Number.isInteger(challengeIdx) || challengeIdx < 0 || challengeIdx >= totalChallenges) return false;
+
+  if (isCorrect) {
+    return completeModuleChallenge(modId, challengeIdx, totalChallenges);
+  }
+
+  const currentArr = Array.isArray(appState.moduleAttempts[modId])
+    ? [...appState.moduleAttempts[modId]]
+    : [0, 0, 0];
+  currentArr[challengeIdx] = Math.min(999, (currentArr[challengeIdx] || 0) + 1);
+  appState.moduleAttempts[modId] = currentArr;
+  saveState();
+  notify('module-attempt');
+  return false;
 }
 
 export function completeModuleChallenge(modId, challengeIdx, totalChallenges = 3) {
@@ -282,6 +330,7 @@ export function markModuleComplete(modId) {
 export function resetStudentProgress() {
   appState.completedModules = { ...defaultState.completedModules };
   appState.modulePractice = createEmptyModulePractice();
+  appState.moduleAttempts = createEmptyModuleAttempts();
   appState.quizAnswersByEdition = Object.fromEntries(Object.keys(BANCO_PROVAS).map(k => [k, {}]));
   appState.quizSubmittedByEdition = Object.fromEntries(Object.keys(BANCO_PROVAS).map(k => [k, false]));
   recalculateScore();

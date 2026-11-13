@@ -53,13 +53,24 @@
             </p>
           </div>
           <form id="gate-student-form" class="space-y-3">
-            <div>
-              <label for="gate-student-name" class="block text-xs font-medium text-slate-700 mb-1">
-                Seu nome (opcional)
-              </label>
-              <input type="text" id="gate-student-name" maxlength="40" placeholder="Ex.: Maria Clara"
-                class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-uneb-primary">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+              <div class="sm:col-span-2">
+                <label for="gate-student-name" class="block text-xs font-medium text-slate-700 mb-1">
+                  Seu nome completo <span class="text-rose-600">*</span>
+                </label>
+                <input type="text" id="gate-student-name" maxlength="40" required placeholder="Ex.: Maria Clara"
+                  aria-describedby="gate-student-error"
+                  class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-uneb-primary">
+              </div>
+              <div>
+                <label for="gate-student-class" class="block text-xs font-medium text-slate-700 mb-1">
+                  Código da Turma
+                </label>
+                <input type="text" id="gate-student-class" maxlength="20" value="UNEB-A" placeholder="UNEB-A"
+                  class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm font-mono uppercase text-slate-900 focus:outline-none focus:ring-2 focus:ring-uneb-primary">
+              </div>
             </div>
+            <p id="gate-student-error" role="alert" class="hidden text-xs text-rose-600 font-medium"></p>
             <button type="submit" id="btn-enter-student"
               class="w-full py-2.5 px-4 rounded-lg bg-uneb-primary hover:bg-blue-900 text-white font-bold text-sm transition-colors shadow cursor-pointer">
               Entrar como Aluno →
@@ -119,7 +130,7 @@
         class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col md:flex-row items-center justify-between gap-4">
 
         <!-- Marca Institucional -->
-        <div class="flex items-center gap-3 min-w-0">
+        <div class="flex items-center gap-3 min-w-0 w-full md:w-auto">
           <div
             class="w-10 h-10 shrink-0 rounded bg-white text-uneb-primary flex items-center justify-center font-serif font-bold text-xl shadow-inner border border-blue-200">
             U
@@ -156,6 +167,11 @@
               <span class="block text-[11px] text-emerald-300"><span id="metric-done-count">0</span>/6 módulos</span>
             </div>
           </div>
+
+          <button type="button" id="btn-student-share-report"
+            class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-500 hover:bg-emerald-400 text-slate-950 transition-colors cursor-pointer shadow-sm">
+            Enviar / Código
+          </button>
 
           <button type="button" id="btn-reset-progress"
             class="text-xs text-blue-100 hover:text-rose-200 underline underline-offset-2 transition-colors cursor-pointer">
@@ -222,6 +238,15 @@
         <span id="nav-quiz-badge"
           class="text-[11px] bg-amber-400/20 text-amber-200 border border-amber-400/30 px-1.5 py-0.5 rounded font-mono">15
           Questões</span>
+      </button>
+      <button type="button" id="nav-turma"
+        class="hidden view-tab-btn flex items-center gap-2 px-3 sm:px-4 py-2 rounded-md font-medium text-xs sm:text-sm transition-all text-amber-200 hover:text-white hover:bg-blue-900/50 border border-amber-400/30">
+        <svg class="w-4 h-4 shrink-0" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+        <span>Painel da Turma</span>
+        <span class="text-[10px] bg-amber-400 text-slate-950 px-1.5 py-0.5 rounded font-mono font-bold">Docente</span>
       </button>
     </div>
   </nav>
@@ -1569,7 +1594,147 @@
 
     </div>
 
+    <!-- ========================================== -->
+    <!-- VISUALIZAÇÃO: PAINEL DA TURMA (DOCENTE)    -->
+    <!-- ========================================== -->
+    <div id="view-turma" class="space-y-6 hidden min-w-0">
+      <section class="bg-white p-5 sm:p-6 rounded-xl border border-uneb-border shadow-sm space-y-4 min-w-0">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 min-w-0">
+          <div class="min-w-0">
+            <div class="inline-flex items-center gap-2 text-xs font-semibold uppercase text-amber-700 mb-1 tracking-wider">
+              <span class="w-2 h-2 rounded-full bg-amber-500"></span> Diagnóstico em Tempo Real &amp; Fallback Offline
+            </div>
+            <h2 class="text-2xl font-serif font-bold text-slate-900">Painel Pedagógico da Turma</h2>
+            <p class="text-xs sm:text-sm text-slate-600 mt-1">
+              Identifique rapidamente quais Eixos e questões estão gerando mais erros na turma durante a aula ou após os simulados.
+            </p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2 min-w-0 max-w-full">
+            <span id="turma-sync-status" class="text-xs font-medium text-slate-600 bg-slate-100 border border-slate-200 px-3 py-1 rounded-lg sm:rounded-full max-w-full break-words">
+              Pronto para sincronizar
+            </span>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-end gap-2.5 pt-2 border-t border-slate-100">
+          <div>
+            <label for="turma-class-input" class="block text-[11px] font-bold text-slate-700 mb-1">
+              Filtrar Turma
+            </label>
+            <input type="text" id="turma-class-input" maxlength="20" value="UNEB-A"
+              class="px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-mono font-bold uppercase text-slate-900 w-36 focus:outline-none focus:ring-2 focus:ring-uneb-primary">
+          </div>
+          <button type="button" id="btn-turma-refresh"
+            class="px-3.5 py-2 rounded-lg text-xs font-bold bg-uneb-primary text-white hover:bg-blue-900 transition-colors cursor-pointer">
+            Atualizar Agora
+          </button>
+          <button type="button" id="btn-turma-anonymize" aria-pressed="false"
+            class="px-3.5 py-2 rounded-lg text-xs font-semibold bg-slate-100 text-slate-800 border border-slate-300 hover:bg-slate-200 transition-colors cursor-pointer">
+            Ocultar Nomes na Lousa
+          </button>
+          <button type="button" id="btn-turma-seed-demo"
+            class="px-3.5 py-2 rounded-lg text-xs font-semibold bg-amber-100 text-amber-950 border border-amber-300 hover:bg-amber-200 transition-colors cursor-pointer">
+            Carregar Turma de Teste (5 Alunos)
+          </button>
+          <button type="button" id="btn-turma-clear-local"
+            class="px-3 py-2 rounded-lg text-xs font-medium text-rose-700 hover:bg-rose-50 border border-rose-200 transition-colors cursor-pointer">
+            Limpar Dados Locais
+          </button>
+        </div>
+
+        <!-- KPIs da Turma -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+          <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+            <span class="block text-[11px] font-mono uppercase text-slate-500">Alunos na Turma</span>
+            <strong id="turma-kpi-students" class="text-2xl font-bold text-slate-900">0</strong>
+          </div>
+          <div class="p-3.5 rounded-xl bg-rose-50 border border-rose-200">
+            <span class="block text-[11px] font-mono uppercase text-rose-700">Eixo Mais Crítico</span>
+            <strong id="turma-kpi-weakest" class="text-sm sm:text-base font-bold text-rose-950">Sem dados suficientes</strong>
+          </div>
+          <div class="p-3.5 rounded-xl bg-amber-50 border border-amber-200">
+            <span class="block text-[11px] font-mono uppercase text-amber-800">Erros Acumulados</span>
+            <strong id="turma-kpi-errors" class="text-2xl font-bold text-amber-950">0</strong>
+          </div>
+        </div>
+      </section>
+
+      <!-- Termômetro dos 6 Eixos -->
+      <section class="bg-white p-5 sm:p-6 rounded-xl border border-uneb-border shadow-sm space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h3 class="font-serif font-bold text-lg text-slate-900">Termômetro dos 6 Eixos (do mais crítico ao mais forte)</h3>
+            <p class="text-xs text-slate-600">Calculado a partir dos desafios resolvidos, tentativas com erro nos módulos e questões do simulado.</p>
+          </div>
+        </div>
+        <div id="turma-axes-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+      </section>
+
+      <!-- Top Questões e Desafios com mais erros -->
+      <section class="bg-white p-5 sm:p-6 rounded-xl border border-uneb-border shadow-sm space-y-3">
+        <div>
+          <h3 class="font-serif font-bold text-lg text-slate-900">Top Pontos Críticos para Revisar na Lousa</h3>
+          <p class="text-xs text-slate-600">Questões de provas UNEB e desafios onde a turma mais errou — clique para projetar imediatamente.</p>
+        </div>
+        <div id="turma-top-errors" class="space-y-2.5"></div>
+      </section>
+
+      <!-- Raio-X Individual por Estudante -->
+      <section class="bg-white p-5 sm:p-6 rounded-xl border border-uneb-border shadow-sm space-y-3">
+        <div>
+          <h3 class="font-serif font-bold text-lg text-slate-900">Raio-X Individual por Aluno</h3>
+          <p class="text-xs text-slate-600">Mostra a pontuação, aproveitamento no simulado e exatamente em quais Eixos cada aluno precisa de reforço.</p>
+        </div>
+        <div id="turma-students-list" class="space-y-3"></div>
+      </section>
+
+      <!-- Importação Manual de Códigos Offline UNEB1 -->
+      <section class="bg-white p-5 sm:p-6 rounded-xl border border-uneb-border shadow-sm space-y-3">
+        <div>
+          <h3 class="font-serif font-bold text-base text-slate-900">Importar Códigos Offline (Modo Sem Internet / WhatsApp)</h3>
+          <p class="text-xs text-slate-600">Se algum dispositivo ficar sem rede na sala, o aluno pode clicar em <strong>Enviar / Código</strong> e colar o código <code class="font-mono bg-slate-100 px-1 rounded">UNEB1:...</code>. Você pode colar vários códigos de uma vez aqui.</p>
+        </div>
+        <label for="turma-import-code" class="sr-only">Códigos UNEB1 dos alunos</label>
+        <textarea id="turma-import-code" rows="3" placeholder="Cole aqui um ou vários códigos UNEB1:... enviados pelos alunos"
+          class="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs font-mono text-slate-900 focus:outline-none focus:ring-2 focus:ring-uneb-primary"></textarea>
+        <div class="flex justify-end">
+          <button type="button" id="btn-turma-import-code"
+            class="px-4 py-2 rounded-lg text-xs font-bold bg-slate-900 text-white hover:bg-slate-800 transition-colors cursor-pointer">
+            Importar Código(s) na Turma
+          </button>
+        </div>
+      </section>
+    </div>
+
   </main>
+
+  <!-- Modal de Envio & Código Offline do Aluno -->
+  <dialog id="report-code-dialog" aria-labelledby="report-code-title"
+    class="rounded-xl border border-slate-200 bg-white p-0 shadow-2xl max-w-lg w-[calc(100%-2rem)] text-slate-800 backdrop:bg-slate-950/60">
+    <div class="p-5 sm:p-6 space-y-3">
+      <h2 id="report-code-title" class="font-serif font-bold text-lg text-slate-900">Enviar Diagnóstico ao Professor</h2>
+      <p id="report-code-cloud-status" class="text-xs font-semibold px-3 py-2 rounded-lg bg-slate-100 text-slate-700">
+        Sincronizando com o painel da turma...
+      </p>
+      <div class="space-y-1.5">
+        <label for="report-code-output" class="block text-xs font-medium text-slate-700">
+          Código de backup offline (use se a internet da sala falhar):
+        </label>
+        <textarea id="report-code-output" rows="4" readonly
+          class="w-full px-3 py-2 rounded-lg border border-slate-300 bg-slate-50 text-[11px] font-mono text-slate-800 focus:outline-none"></textarea>
+      </div>
+      <form method="dialog" class="flex flex-wrap justify-end gap-2 pt-2">
+        <button type="button" id="btn-copy-report-code"
+          class="px-4 py-2 rounded-lg text-xs font-bold bg-uneb-primary text-white hover:bg-blue-900 transition-colors cursor-pointer">
+          Copiar Código
+        </button>
+        <button type="submit" value="close"
+          class="px-4 py-2 rounded-lg text-xs font-semibold border border-slate-300 bg-white text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer">
+          Fechar
+        </button>
+      </form>
+    </div>
+  </dialog>
 
   <!-- Diálogo Modal Nativo de Confirmação -->
   <dialog id="confirm-dialog" aria-labelledby="confirm-dialog-title"

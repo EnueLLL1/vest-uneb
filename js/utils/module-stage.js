@@ -3,7 +3,7 @@
  * para todos os 6 Eixos de aprendizagem. Evita duplicação de fluxo e sincroniza Sessão Aluno/Professor.
  */
 
-import { getState, subscribe, completeModuleChallenge, isTeacherModeActive } from '../state.js';
+import { getState, subscribe, completeModuleChallenge, recordModuleAttempt, isTeacherModeActive } from '../state.js';
 import { showToast } from './toast.js';
 
 const STAGE_LABELS = [
@@ -311,6 +311,7 @@ export function setupModuleStage({
         }
       } else {
         attemptsByChallenge[activeChallengeIdx] += 1;
+        recordModuleAttempt(modId, activeChallengeIdx, false, challenges.length);
         const hintList = Array.isArray(challenge.hints) ? challenge.hints : [];
         const hintIdx = Math.min(attemptsByChallenge[activeChallengeIdx] - 1, Math.max(0, hintList.length - 1));
         feedbackByChallenge[activeChallengeIdx] = {
