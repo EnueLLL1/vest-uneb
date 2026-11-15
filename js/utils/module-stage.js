@@ -6,11 +6,52 @@
 import { getState, subscribe, completeModuleChallenge, recordModuleAttempt, isTeacherModeActive } from '../state.js';
 import { showToast } from './toast.js';
 
+const SVG_NS = 'http://www.w3.org/2000/svg';
+
 const STAGE_LABELS = [
-  { id: 'conceito', title: '1. Conceito Visual' },
-  { id: 'laboratorio', title: '2. Laboratório Vivo' },
-  { id: 'pratica', title: '3. Prática Rápida' }
+  {
+    id: 'conceito',
+    title: '1. Conceito Visual',
+    iconPaths: [
+      { d: 'M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z' },
+      { d: 'M15 12a3 3 0 11-6 0 3 3 0 016 0z' }
+    ]
+  },
+  {
+    id: 'laboratorio',
+    title: '2. Laboratório Vivo',
+    iconPaths: [
+      { d: 'M4 6h16M4 12h16M4 18h16M8 4v4M15 10v4M10 16v4' }
+    ]
+  },
+  {
+    id: 'pratica',
+    title: '3. Prática Rápida',
+    iconPaths: [
+      { d: 'M13 10V3L4 14h7v7l9-11h-7z' }
+    ]
+  }
 ];
+
+function createStageIconSvg(iconPaths) {
+  const svg = document.createElementNS(SVG_NS, 'svg');
+  svg.setAttribute('class', 'w-4 h-4 shrink-0');
+  svg.setAttribute('aria-hidden', 'true');
+  svg.setAttribute('fill', 'none');
+  svg.setAttribute('stroke', 'currentColor');
+  svg.setAttribute('viewBox', '0 0 24 24');
+
+  iconPaths.forEach(({ d }) => {
+    const path = document.createElementNS(SVG_NS, 'path');
+    path.setAttribute('stroke-linecap', 'round');
+    path.setAttribute('stroke-linejoin', 'round');
+    path.setAttribute('stroke-width', '2');
+    path.setAttribute('d', d);
+    svg.appendChild(path);
+  });
+
+  return svg;
+}
 
 function clearEl(el) {
   while (el.firstChild) {
@@ -85,6 +126,8 @@ export function setupModuleStage({
       btn.className = isSelected
         ? 'flex-1 shrink-0 min-w-max px-3 py-2 rounded-lg text-xs font-bold bg-white text-uneb-primary shadow-sm border border-slate-200 border-b-2 border-b-uneb-primary transition-all cursor-pointer flex items-center justify-center gap-1.5'
         : 'flex-1 shrink-0 min-w-max px-3 py-2 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-white/60 border border-transparent transition-all cursor-pointer flex items-center justify-center gap-1.5';
+
+      btn.appendChild(createStageIconSvg(stage.iconPaths));
 
       const labelSpan = document.createElement('span');
       labelSpan.textContent = stage.title;

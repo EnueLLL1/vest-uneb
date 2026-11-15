@@ -87,6 +87,12 @@ try {
 } catch {
   jsAppSource = '';
 }
+let jsModuleStageSource = '';
+try {
+  jsModuleStageSource = fs.readFileSync(path.join(ROOT_DIR, 'js', 'utils', 'module-stage.js'), 'utf-8');
+} catch {
+  jsModuleStageSource = '';
+}
 
 // ---------------------------------------------------------------------------
 // Helpers para Análise Estática & Inspeção de Contratos
@@ -621,6 +627,148 @@ if (!selectedTier || selectedTier === 'tier1') {
   runTest('tier1', 'F14', 'T1-F14-05', 'Suite 5 (node test/test_classroom_diagnostics.js) executa com 100% de sucesso', () => {
     const out = execSync('node test/test_classroom_diagnostics.js', { cwd: ROOT_DIR, encoding: 'utf-8' });
     assert.ok(out.includes('All 6 classroom diagnostics tests passed'));
+  });
+
+  // =========================================================================
+  // F15: Auditoria UX/IHC (Feedback Ramon) & Mobile Docente
+  // =========================================================================
+  runTest('tier1', 'F15', 'T1-F15-01', 'css/custom.css usa :where(h1..h6), garante título escuro em .site-header claro, contrasta #ffffff em .bg-uneb-primary e mantém nav unificada no <header>', () => {
+    assert.ok(
+      /:where\(\s*h1\s*,\s*h2\s*,\s*h3\s*,\s*h4\s*,\s*h5\s*,\s*h6\s*\)/i.test(cssCustom),
+      'css/custom.css deve encapsular a tipografia base de headings em :where(h1, h2, h3, h4, h5, h6)'
+    );
+    assert.ok(
+      !/^\s*h1\s*,\s*h2\s*,\s*h3/m.test(cssCustom),
+      'css/custom.css não deve manter regra nua h1, h2, h3... competindo com utilitários de cor'
+    );
+
+    const cssBlocks = Array.from(cssCustom.matchAll(/([^{}]+)\{([^}]*)\}/g));
+    const hasLightHeaderTitle = cssBlocks.some(([, sel, decl]) =>
+      /\.site-brand-title\b/i.test(sel) &&
+      /color\s*:\s*var\(--color-text-primary\)/i.test(decl)
+    );
+    const hasWhitePrimaryRule = cssBlocks.some(([, sel, decl]) =>
+      /\.bg-uneb-primary\b[^,{]*(?:h[1-6]|:(?:where|is)\([^)]*h[1-6])/i.test(sel) &&
+      /color\s*:\s*(?:#ffffff|#fff)\b/i.test(decl)
+    );
+    const hasSquareEmblemRule = cssBlocks.some(([, sel, decl]) =>
+      /\.site-brand-emblem\b/i.test(sel) &&
+      /width\s*:\s*2\.25rem/i.test(decl) &&
+      /height\s*:\s*2\.25rem/i.test(decl)
+    );
+    assert.ok(
+      hasLightHeaderTitle && hasWhitePrimaryRule && hasSquareEmblemRule,
+      'css/custom.css deve definir título escuro em .site-brand-title, emblema quadrado fixo 2.25rem e #ffffff em .bg-uneb-primary'
+    );
+
+    const headerMatch = indexHtml.match(/<header\b[^>]*>[\s\S]*?<\/header>/i);
+    assert.ok(headerMatch, 'Elemento <header> deve existir em index.html');
+    assert.ok(/class=["'][^"']*site-header\b/i.test(headerMatch[0]), '<header> deve usar .site-header');
+    assert.ok(/<nav\b[^>]*aria-label=["']Navegação principal["']/i.test(headerMatch[0]), 'Navegação principal desktop deve ficar unificada dentro de <header>');
+    assert.ok(!/<nav\b[^>]*bg-uneb-primaryDark/i.test(indexHtml), 'Não deve existir segunda faixa escura empilhada <nav class="... bg-uneb-primaryDark">');
+  });
+
+  runTest('tier1', 'F15', 'T1-F15-02', '#teacher-header-panel contém botão #btn-teacher-turma ("Painel da Turma") visível no mobile (< 1024px)', () => {
+    const teacherPanel = getElementBlock('teacher-header-panel', 3500);
+    assert.ok(teacherPanel, '#teacher-header-panel deve existir em index.html');
+    const panelScope = teacherPanel.split('</header>')[0];
+    assert.ok(/id=["']btn-teacher-turma["']/i.test(panelScope), '#teacher-header-panel deve conter #btn-teacher-turma');
+    const btnSnippet = getElementSnippet('btn-teacher-turma');
+    assert.ok(btnSnippet, 'Botão #btn-teacher-turma deve existir em index.html');
+    const btnClass = getAttribute(btnSnippet, 'class') || '';
+    assert.ok(!/(?:^|\s)hidden(?:\s|$)/.test(btnClass), '#btn-teacher-turma não deve estar oculto no mobile (< 1024px)');
+    const btnBlock = getElementBlock('btn-teacher-turma', 500) || '';
+    assert.ok(/Painel da Turma/i.test(btnBlock), '#btn-teacher-turma deve exibir o texto "Painel da Turma"');
+  });
+
+  runTest('tier1', 'F15', 'T1-F15-03', 'js/utils/module-stage.js renderiza ícones <svg indicativos nas 3 abas de renderStageBar()', () => {
+    assert.ok(jsModuleStageSource.length > 0, 'js/utils/module-stage.js deve estar acessível');
+    const renderStart = jsModuleStageSource.indexOf('function renderStageBar');
+    const renderEnd = jsModuleStageSource.indexOf('function renderPanelVisibility');
+    assert.ok(renderStart !== -1 && renderEnd > renderStart, 'renderStageBar() deve existir em js/utils/module-stage.js');
+    const renderBody = jsModuleStageSource.slice(renderStart, renderEnd);
+
+    const svgLiteralCount = (jsModuleStageSource.match(/<svg\b/gi) || []).length;
+    const usesSvgNs = /createElementNS\([^)]*svg/i.test(jsModuleStageSource);
+    const hasThreeStageIcons = svgLiteralCount >= 3 || (usesSvgNs && (jsModuleStageSource.match(/<path\b|\bd\s*:\s*['"`]M/gi) || []).length >= 3);
+    assert.ok(hasThreeStageIcons, 'js/utils/module-stage.js deve definir 3 ícones <svg para as etapas');
+    assert.ok(/svg|icon/i.test(renderBody), 'renderStageBar() deve renderizar o ícone indicativo dentro de cada aba');
+  });
+
+  runTest('tier1', 'F15', 'T1-F15-04', 'index.html contém campo #aulas-quick-filter (data-aulas-quick-filter) e ícones <svg nos chips [data-axis-chip]', () => {
+    assert.ok(hasElementId('aulas-quick-filter'), 'Campo de filtro rápido #aulas-quick-filter deve existir em index.html');
+    const quickFilterSnippet = getElementSnippet('aulas-quick-filter');
+    assert.ok(
+      quickFilterSnippet && /data-aulas-quick-filter/i.test(quickFilterSnippet),
+      '#aulas-quick-filter deve possuir atributo data-aulas-quick-filter'
+    );
+
+    const chipButtons = Array.from(indexHtml.matchAll(/<button\b[^>]*data-axis-chip=["'][^"']+["'][^>]*>([\s\S]*?)<\/button>/gi));
+    assert.ok(chipButtons.length >= 7, 'Devem existir chips [data-axis-chip] nas abas de Aulas');
+    const chipsWithSvg = chipButtons.filter((m) => /<svg\b/i.test(m[1]));
+    assert.strictEqual(
+      chipsWithSvg.length,
+      chipButtons.length,
+      'Todos os chips [data-axis-chip] devem conter ícone <svg indicativo'
+    );
+  });
+
+  runTest('tier1', 'F15', 'T1-F15-05', 'js/app.js usa filterDayModulesByAxis(actualModId), remove listeners duplicados mobile e exclui #btn-hub-continue-class via :not()', () => {
+    const navStart = jsAppSource.indexOf('export function navigateToModule');
+    const navEnd = jsAppSource.indexOf('export function initStudent');
+    assert.ok(navStart !== -1 && navEnd > navStart, 'navigateToModule() deve existir em js/app.js');
+    const navBody = jsAppSource.slice(navStart, navEnd);
+    assert.ok(
+      /filterDayModulesByAxis\(\s*actualModId\s*\)/.test(navBody),
+      'navigateToModule() deve filtrar pelo eixo alvo com filterDayModulesByAxis(actualModId)'
+    );
+    assert.ok(
+      !/filterDayModulesByAxis\(\s*['"]all['"]\s*\)/.test(navBody),
+      'navigateToModule() não deve resetar o filtro para "all"'
+    );
+
+    const hasSeparateMobileIdListeners = /getElementById\(\s*['"]mobile-nav-(?:home|aulas|quiz)['"]\s*\)[\s\S]{0,200}addEventListener/i.test(jsAppSource);
+    const hasMobileTargetViewLoop = /#mobile-bottom-nav\s+\[data-target-view\]/.test(jsAppSource);
+    assert.ok(
+      !(hasSeparateMobileIdListeners && hasMobileTargetViewLoop) && (hasSeparateMobileIdListeners || hasMobileTargetViewLoop),
+      '#mobile-bottom-nav não deve registrar listeners duplicados (mobile-nav-home/aulas/quiz + [data-target-view] juntos)'
+    );
+
+    assert.ok(
+      /#hub-quadro-aula[^'"`]*:not\(\s*#btn-hub-continue-class\s*\)/.test(jsAppSource),
+      'Seletor em #hub-quadro-aula deve excluir #btn-hub-continue-class via :not(#btn-hub-continue-class)'
+    );
+  });
+
+  runTest('tier1', 'F15', 'T1-F15-06', '#teacher-header-panel e #student-header-panel agrupam ações secundárias em popover="auto" sem aria-haspopup/role="menu"', () => {
+    const moreBtn = getElementSnippet('btn-teacher-more') || '';
+    const popoverSnippet = getElementSnippet('teacher-more-popover') || '';
+    const studentBtn = getElementSnippet('btn-student-profile') || '';
+    const studentPopoverSnippet = getElementSnippet('student-profile-popover') || '';
+    const toggleBtn = (getElementBlock('btn-teacher-toggle-answers', 1400) || '').split('</button>')[0];
+
+    assert.ok(moreBtn, '#btn-teacher-more deve existir em #teacher-header-panel');
+    assert.ok(/popovertarget=["']teacher-more-popover["']/i.test(moreBtn), '#btn-teacher-more deve usar popovertarget="teacher-more-popover"');
+    assert.ok(!/aria-haspopup/i.test(moreBtn), '#btn-teacher-more não deve declarar aria-haspopup sem role correspondente');
+
+    assert.ok(popoverSnippet, '#teacher-more-popover deve existir em index.html');
+    assert.ok(/popover=["']auto["']/i.test(popoverSnippet), '#teacher-more-popover deve declarar popover="auto"');
+    assert.ok(!/role=["']menu["']/i.test(popoverSnippet), '#teacher-more-popover segue padrão button-group em popover (sem role="menu")');
+
+    const popBlock = getElementBlock('teacher-more-popover', 2500) || '';
+    assert.ok(/id=["']btn-teacher-preview-student["']/i.test(popBlock), '#btn-teacher-preview-student deve estar agrupado dentro de #teacher-more-popover');
+    assert.ok(/id=["']btn-switch-session-teacher["']/i.test(popBlock), '#btn-switch-session-teacher deve estar agrupado dentro de #teacher-more-popover');
+    assert.ok(!/role=["']menuitem["']/i.test(popBlock), 'Itens do popover docente não devem usar role="menuitem"');
+
+    assert.ok(studentBtn && /popovertarget=["']student-profile-popover["']/i.test(studentBtn) && !/aria-haspopup/i.test(studentBtn), '#btn-student-profile deve usar popovertarget sem aria-haspopup');
+    assert.ok(studentPopoverSnippet && /popover=["']auto["']/i.test(studentPopoverSnippet) && !/role=["']menu["']/i.test(studentPopoverSnippet), '#student-profile-popover deve declarar popover="auto" sem role="menu"');
+    const stPopBlock = getElementBlock('student-profile-popover', 3000) || '';
+    assert.ok(/id=["']btn-reset-progress["']/i.test(stPopBlock) && /id=["']btn-switch-session-student["']/i.test(stPopBlock), 'Ações utilitárias do aluno devem estar agrupadas em #student-profile-popover');
+
+    assert.ok(/<svg\b/i.test(toggleBtn) && /data-answers-label/i.test(toggleBtn), '#btn-teacher-toggle-answers deve preservar ícone <svg e span [data-answers-label]');
+    assert.ok(/querySelector\(\s*['"]\[data-answers-label\]['"]\s*\)/.test(jsAppSource), 'js/app.js deve atualizar [data-answers-label] preservando o SVG');
+    assert.ok(!/btnToggleAnswers\.textContent\s*=\s*visible\s*\?/.test(jsAppSource), 'js/app.js não deve sobrescrever btnToggleAnswers.textContent apagando filhos');
+    assert.ok(cssCustom.includes('@supports (position-area: block-end)') && cssCustom.includes('@supports not (position-area: block-end)'), 'css/custom.css deve incluir positioning anchor com fallback @supports');
   });
 }
 
@@ -1295,7 +1443,7 @@ console.log('\n=================================================================
 console.log('              RESUMO CONSOLIDADO DE EXECUÇÃO E2E');
 console.log('======================================================================');
 if (!selectedTier || selectedTier === 'tier1') {
-  console.log(`  Tier 1 (Cobertura Funcional F1-F14):    ${stats.tier1.passed} / ${stats.tier1.total} aprovados (${stats.tier1.failed} falhas)`);
+  console.log(`  Tier 1 (Cobertura Funcional F1-F15):    ${stats.tier1.passed} / ${stats.tier1.total} aprovados (${stats.tier1.failed} falhas)`);
 }
 if (!selectedTier || selectedTier === 'tier2') {
   console.log(`  Tier 2 (Casos de Borda e Limites):      ${stats.tier2.passed} / ${stats.tier2.total} aprovados (${stats.tier2.failed} falhas)`);

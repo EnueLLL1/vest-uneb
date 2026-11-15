@@ -8,6 +8,11 @@ test/
 verify_banco.js
 iniciar.bat
 
+# Ignore build-time Python / Manim sources, TTS weights & venv (only assets/videos and assets/posters deploy)
+.venv/
+manim_animations/
+piper_models/
+
 # Ignore dependencies and tool configs
 node_modules/
 .gemini/

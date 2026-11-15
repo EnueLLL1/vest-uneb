@@ -74,6 +74,8 @@ export function updateMetricUI() {
   }
   if (elScore) elScore.textContent = state.score;
   if (elDoneCount) elDoneCount.textContent = completedCount;
+  const elHeaderXp = document.getElementById('header-xp-badge');
+  if (elHeaderXp) elHeaderXp.textContent = `${state.score} XP`;
 
   // Métricas do Hub do Estudante (Pilar 3: Minha Progressão e Pilar 1: Status)
   const elHubPercent = document.getElementById('hub-metric-percent');
@@ -98,14 +100,6 @@ export function updateMetricUI() {
     'mod-trig': 'Eixo 4: Trigonometria',
     'mod-financas': 'Eixo 5: Matemática Financeira',
     'mod-estatistica': 'Eixo 6: Estatística & Sturges'
-  };
-  const MODULE_DAYS = {
-    'mod-logica': 'day1',
-    'mod-numeros': 'day1',
-    'mod-algebra': 'day1',
-    'mod-trig': 'day2',
-    'mod-financas': 'day2',
-    'mod-estatistica': 'day2'
   };
   const nextModId = Object.keys(MODULE_NAMES).find(id => !state.completedModules[id]) || 'mod-logica';
   const isAllComplete = completedCount === totalModules;
@@ -147,18 +141,98 @@ const ALL_MODULE_IDS = [
   'mod-estatistica'
 ];
 
-export function filterDayModulesByAxis(activeModId = 'all') {
-  const showAll = !activeModId || activeModId === 'all';
+const MODULE_DAYS = {
+  'mod-logica': 'day1',
+  'mod-numeros': 'day1',
+  'mod-algebra': 'day1',
+  'mod-trig': 'day2',
+  'mod-financas': 'day2',
+  'mod-estatistica': 'day2'
+};
 
+function normalizeSearchText(text = '') {
+  return String(text)
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim();
+}
+
+function clearAulasQuickFilterInputs() {
+  document.querySelectorAll('[data-aulas-quick-filter]').forEach((input) => {
+    input.value = '';
+  });
+}
+
+function updateAxisChipStyles(activeChipId) {
   document.querySelectorAll('[data-axis-chip]').forEach((btn) => {
     const chipId = btn.getAttribute('data-axis-chip');
-    const isActive = showAll ? chipId === 'all' : chipId === activeModId;
+    const isActive = activeChipId !== null && chipId === activeChipId;
     btn.setAttribute('aria-pressed', String(isActive));
     btn.classList.toggle('btn-pill-primary', isActive);
     btn.classList.toggle('font-bold', isActive);
     btn.classList.toggle('btn-pill-secondary', !isActive);
     btn.classList.toggle('font-semibold', !isActive);
   });
+}
+
+function getModuleSearchText(modId) {
+  const modEl = document.getElementById(modId);
+  if (!modEl) return '';
+  const headerText = modEl.firstElementChild?.textContent || '';
+  const conceptText = modEl.querySelector('[data-stage="conceito"]')?.textContent || '';
+  const chipText = document.querySelector(`[data-axis-chip="${modId}"]`)?.textContent || '';
+  return normalizeSearchText(`${headerText} ${conceptText} ${chipText}`);
+}
+
+function applyAulasQuickFilter(rawQuery, sourceInput = null) {
+  document.querySelectorAll('[data-aulas-quick-filter]').forEach((input) => {
+    if (input !== sourceInput) input.value = rawQuery;
+  });
+
+  const query = normalizeSearchText(rawQuery);
+  if (!query) {
+    filterDayModulesByAxis('all');
+    return;
+  }
+
+  const matchedIds = ALL_MODULE_IDS.filter((id) => getModuleSearchText(id).includes(query));
+  const activeDay = getState().currentView === 'day2' ? 'day2' : 'day1';
+  const activeMatches = matchedIds.filter((id) => MODULE_DAYS[id] === activeDay);
+  const otherDay = activeDay === 'day1' ? 'day2' : 'day1';
+  const otherMatches = matchedIds.filter((id) => MODULE_DAYS[id] === otherDay);
+
+  let visibleIds = activeMatches;
+  if (activeMatches.length === 0 && otherMatches.length > 0) {
+    visibleIds = otherMatches;
+    const wasFocused = sourceInput && document.activeElement === sourceInput;
+    switchView(otherDay);
+    if (wasFocused) {
+      const targetInput = document.getElementById(otherDay === 'day2' ? 'aulas-quick-filter-day2' : 'aulas-quick-filter');
+      if (targetInput) {
+        targetInput.focus();
+        const end = targetInput.value.length;
+        targetInput.setSelectionRange?.(end, end);
+      }
+    }
+  }
+
+  const visibleSet = new Set(visibleIds);
+  ALL_MODULE_IDS.forEach((id) => {
+    const modEl = document.getElementById(id);
+    if (modEl) {
+      modEl.classList.toggle('hidden', !visibleSet.has(id));
+    }
+  });
+
+  updateAxisChipStyles(visibleIds.length === 1 ? visibleIds[0] : null);
+  pauseHiddenVideos();
+  redrawActiveCanvases();
+}
+
+export function filterDayModulesByAxis(activeModId = 'all') {
+  const showAll = !activeModId || activeModId === 'all';
+  updateAxisChipStyles(showAll ? 'all' : activeModId);
 
   ALL_MODULE_IDS.forEach((id) => {
     const modEl = document.getElementById(id);
@@ -167,6 +241,7 @@ export function filterDayModulesByAxis(activeModId = 'all') {
     }
   });
 
+  pauseHiddenVideos();
   redrawActiveCanvases();
 }
 
@@ -185,17 +260,10 @@ export function navigateToModule(modId) {
     'mod-financas': 'mod-financas',
     'mod-estatistica': 'mod-estatistica'
   };
-  const MODULE_DAYS = {
-    'mod-logica': 'day1',
-    'mod-numeros': 'day1',
-    'mod-algebra': 'day1',
-    'mod-trig': 'day2',
-    'mod-financas': 'day2',
-    'mod-estatistica': 'day2'
-  };
   const actualModId = MODULE_MAP[modId] || modId;
   const dayView = MODULE_DAYS[actualModId] || 'day1';
-  filterDayModulesByAxis('all');
+  clearAulasQuickFilterInputs();
+  filterDayModulesByAxis(actualModId);
   switchView(dayView);
   requestAnimationFrame(() => {
     const el = document.getElementById(actualModId);
@@ -207,6 +275,46 @@ export function navigateToModule(modId) {
 
 export function initStudent() {
   switchView('home');
+}
+
+function hidePopoverEl(popover) {
+  if (popover && typeof popover.hidePopover === 'function' && popover.matches(':popover-open')) {
+    popover.hidePopover();
+  }
+}
+
+function wireHeaderPopover(triggerId, popoverId) {
+  const trigger = document.getElementById(triggerId);
+  const popover = document.getElementById(popoverId);
+  if (!trigger || !popover) return () => {};
+
+  const positionFallback = () => {
+    if (window.CSS?.supports?.('position-area', 'block-end')) return;
+    const triggerRect = trigger.getBoundingClientRect();
+    const popRect = popover.getBoundingClientRect();
+    const gap = 8;
+    let top = triggerRect.bottom + gap;
+    if (top + popRect.height > window.innerHeight - gap) {
+      top = Math.max(gap, triggerRect.top - popRect.height - gap);
+    }
+    const left = Math.max(gap, Math.min(triggerRect.right - popRect.width, window.innerWidth - popRect.width - gap));
+    popover.style.top = `${top}px`;
+    popover.style.left = `${left}px`;
+    popover.style.right = 'auto';
+  };
+
+  popover.addEventListener('toggle', (event) => {
+    const isOpen = event.newState === 'open';
+    trigger.setAttribute('aria-expanded', String(isOpen));
+    if (isOpen) positionFallback();
+  });
+
+  return () => hidePopoverEl(popover);
+}
+
+function closeStudentUtilMenu() {
+  hidePopoverEl(document.getElementById('student-profile-popover'));
+  hidePopoverEl(document.getElementById('teacher-more-popover'));
 }
 
 export function switchView(viewName, save = true) {
@@ -223,8 +331,6 @@ export function switchView(viewName, save = true) {
     const navEl = document.getElementById(`nav-${id}`);
     if (viewEl) viewEl.classList.add('hidden');
     if (navEl) {
-      navEl.classList.remove('bg-uneb-accent', 'text-white', 'shadow-sm');
-      navEl.classList.add('text-slate-200');
       navEl.removeAttribute('aria-current');
     }
   });
@@ -233,10 +339,17 @@ export function switchView(viewName, save = true) {
   const activeNav = document.getElementById(`nav-${safeView}`);
   if (activeView) activeView.classList.remove('hidden');
   if (activeNav) {
-    activeNav.classList.add('bg-uneb-accent', 'text-white', 'shadow-sm');
-    activeNav.classList.remove('text-slate-200');
     activeNav.setAttribute('aria-current', 'page');
   }
+
+  const btnTeacherTurma = document.getElementById('btn-teacher-turma');
+  if (btnTeacherTurma) {
+    if (safeView === 'turma') btnTeacherTurma.setAttribute('aria-current', 'page');
+    else btnTeacherTurma.removeAttribute('aria-current');
+  }
+
+  pauseHiddenVideos();
+  closeStudentUtilMenu();
 
   // Sincroniza a barra inferior móvel (Mobile Bottom Nav)
   const mobileNavMap = {
@@ -279,6 +392,43 @@ export function switchView(viewName, save = true) {
   });
 }
 
+function pauseOtherVideos(activeVideo) {
+  document.querySelectorAll('video').forEach((other) => {
+    if (other !== activeVideo && !other.paused) {
+      other.pause();
+    }
+  });
+}
+
+function pauseHiddenVideos() {
+  document.querySelectorAll('video').forEach((video) => {
+    if (!video.paused && video.closest('.hidden')) {
+      video.pause();
+    }
+  });
+}
+
+function syncVideoAudioButton(video) {
+  if (!video || !video.id) return;
+  const btn = document.querySelector(`[data-video-unmute="${video.id}"]`);
+  if (!btn) return;
+  const isUnmuted = !video.muted && video.volume > 0;
+  const labelEl = btn.querySelector('[data-video-unmute-label]');
+  if (labelEl) {
+    labelEl.textContent = isUnmuted
+      ? 'Silenciar áudio da explicação'
+      : 'Ativar áudio da explicação';
+  }
+  btn.classList.toggle('bg-uneb-primary', isUnmuted);
+  btn.classList.toggle('hover:bg-blue-900', isUnmuted);
+  btn.classList.toggle('text-white', isUnmuted);
+  btn.classList.toggle('border-blue-400', isUnmuted);
+  btn.classList.toggle('bg-slate-900', !isUnmuted);
+  btn.classList.toggle('hover:bg-slate-800', !isUnmuted);
+  btn.classList.toggle('text-slate-100', !isUnmuted);
+  btn.classList.toggle('border-slate-700', !isUnmuted);
+}
+
 function redrawActiveCanvases() {
   const state = getState();
   requestAnimationFrame(() => {
@@ -300,7 +450,9 @@ export function applySessionUI() {
   const teacherPanel = document.getElementById('teacher-header-panel');
   const previewBanner = document.getElementById('teacher-preview-banner');
   const studentBadge = document.getElementById('student-name-badge');
+  const popoverClassEl = document.getElementById('popover-student-class');
   const btnShareReport = document.getElementById('btn-student-share-report');
+  const btnMobileShareProxy = document.getElementById('btn-mobile-share-proxy');
   const navTurma = document.getElementById('nav-turma');
   const btnReset = document.getElementById('btn-reset-progress');
   const btnToggleAnswers = document.getElementById('btn-teacher-toggle-answers');
@@ -326,8 +478,9 @@ export function applySessionUI() {
 
   if (studentPanel) studentPanel.classList.toggle('hidden', isTeacher);
   if (teacherPanel) teacherPanel.classList.toggle('hidden', !isTeacher);
-  if (navTurma) navTurma.classList.toggle('hidden', !isTeacher);
+  if (navTurma) navTurma.classList.add('hidden');
   if (btnShareReport) btnShareReport.classList.toggle('hidden', isTeacher || isPreviewingStudent);
+  if (btnMobileShareProxy) btnMobileShareProxy.classList.toggle('hidden', isTeacher || isPreviewingStudent);
   if (previewBanner) previewBanner.classList.toggle('hidden', !isPreviewingStudent);
   if (btnReset) btnReset.classList.toggle('hidden', isPreviewingStudent);
 
@@ -335,22 +488,35 @@ export function applySessionUI() {
     switchView('home', false);
   }
 
+  const cls = state.classCode || 'UNEB-A';
   if (studentBadge) {
-    const cls = state.classCode || 'UNEB-A';
     studentBadge.textContent = isPreviewingStudent
-      ? 'Prévia: Estudante'
-      : state.studentName
-        ? `Olá, ${state.studentName} • ${cls}`
-        : `Sessão Estudante • ${cls}`;
+      ? 'Prévia: Aluno'
+      : state.studentName || `Turma ${cls}`;
+  }
+  if (popoverClassEl) {
+    popoverClassEl.textContent = isPreviewingStudent
+      ? 'Prévia de Aluno ativa'
+      : `Turma ${cls}`;
   }
 
   if (btnToggleAnswers) {
     const visible = Boolean(state.teacherShowAnswers);
+    const fullLabel = visible ? 'Gabarito na Lousa: Visível' : 'Gabarito na Lousa: Oculto';
+    const compactLabel = visible ? 'Gabarito: Visível' : 'Gabarito: Oculto';
     btnToggleAnswers.setAttribute('aria-pressed', String(visible));
-    btnToggleAnswers.textContent = visible ? 'Gabarito na Lousa: Visível' : 'Gabarito na Lousa: Oculto';
-    btnToggleAnswers.className = visible
-      ? 'px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-500 text-white hover:bg-emerald-400 transition-colors cursor-pointer'
-      : 'px-3 py-1.5 rounded-lg text-xs font-semibold bg-white/10 hover:bg-white/20 text-white border border-white/25 transition-colors cursor-pointer';
+    btnToggleAnswers.setAttribute('aria-label', fullLabel);
+    btnToggleAnswers.classList.toggle('is-answers-visible', visible);
+    const labelEl = btnToggleAnswers.querySelector('[data-answers-label]');
+    if (labelEl) {
+      labelEl.textContent = compactLabel;
+    } else {
+      btnToggleAnswers.textContent = compactLabel;
+    }
+    const iconClosed = btnToggleAnswers.querySelector('[data-answers-icon="closed"]');
+    const iconOpen = btnToggleAnswers.querySelector('[data-answers-icon="open"]');
+    if (iconClosed) iconClosed.classList.toggle('hidden', visible);
+    if (iconOpen) iconOpen.classList.toggle('hidden', !visible);
   }
 
   document.querySelectorAll('.teacher-note').forEach((el) => {
@@ -574,9 +740,22 @@ function setupGlobalListeners() {
     });
   }
 
+  const closeStudentPopover = wireHeaderPopover('btn-student-profile', 'student-profile-popover');
+  const closeTeacherPopover = wireHeaderPopover('btn-teacher-more', 'teacher-more-popover');
+
+  const btnMobileShareProxy = document.getElementById('btn-mobile-share-proxy');
+  const btnShareDesktop = document.getElementById('btn-student-share-report');
+  if (btnMobileShareProxy && btnShareDesktop) {
+    btnMobileShareProxy.addEventListener('click', () => {
+      closeStudentPopover();
+      btnShareDesktop.click();
+    });
+  }
+
   const btnPreviewStudent = document.getElementById('btn-teacher-preview-student');
   if (btnPreviewStudent) {
     btnPreviewStudent.addEventListener('click', () => {
+      closeTeacherPopover();
       setState({ teacherPreviewAsStudent: true }, 'session');
       applySessionUI();
       showToast('Pré-visualizando tela do aluno (seu estado foi preservado).');
@@ -593,52 +772,65 @@ function setupGlobalListeners() {
   }
 
   document.querySelectorAll('[data-switch-session]').forEach((btn) => {
-    btn.addEventListener('click', switchSessionGate);
+    btn.addEventListener('click', () => {
+      closeStudentPopover();
+      closeTeacherPopover();
+      switchSessionGate();
+    });
   });
 
   // Reset de Progresso
   const btnReset = document.getElementById('btn-reset-progress');
-  if (btnReset) btnReset.addEventListener('click', handleResetStudentProgress);
+  if (btnReset) {
+    btnReset.addEventListener('click', () => {
+      closeStudentPopover();
+      handleResetStudentProgress();
+    });
+  }
 
-  // Navegação entre abas (Desktop)
+  // Navegação entre abas (Desktop e Botão Docente)
   const navHome = document.getElementById('nav-home');
   const navDay1 = document.getElementById('nav-day1');
   const navDay2 = document.getElementById('nav-day2');
   const navQuiz = document.getElementById('nav-quiz');
   const navTurma = document.getElementById('nav-turma');
+  const btnTeacherTurma = document.getElementById('btn-teacher-turma');
   if (navHome) navHome.addEventListener('click', () => switchView('home'));
   if (navDay1) navDay1.addEventListener('click', () => {
+    clearAulasQuickFilterInputs();
     filterDayModulesByAxis('all');
     switchView('day1');
   });
   if (navDay2) navDay2.addEventListener('click', () => {
+    clearAulasQuickFilterInputs();
     filterDayModulesByAxis('all');
     switchView('day2');
   });
   if (navQuiz) navQuiz.addEventListener('click', () => switchView('quiz'));
   if (navTurma) navTurma.addEventListener('click', () => switchView('turma'));
+  if (btnTeacherTurma) btnTeacherTurma.addEventListener('click', () => switchView('turma'));
+
+  // Busca rápida nas Aulas (Dia 1 e Dia 2 sincronizados)
+  document.querySelectorAll('[data-aulas-quick-filter]').forEach((inputEl) => {
+    inputEl.addEventListener('input', () => {
+      applyAulasQuickFilter(inputEl.value, inputEl);
+    });
+  });
 
   // Chips horizontais de seleção rápida de Eixos Temáticos nas Aulas
   document.querySelectorAll('[data-axis-chip]').forEach((chipBtn) => {
     chipBtn.addEventListener('click', () => {
       const chip = chipBtn.getAttribute('data-axis-chip');
       if (!chip || chip === 'all') {
+        clearAulasQuickFilterInputs();
         filterDayModulesByAxis('all');
       } else {
         navigateToModule(chip);
-        filterDayModulesByAxis(chip);
       }
     });
   });
 
   // Navegação Thumb-Zone (Mobile Bottom Nav)
-  const mobileNavHome = document.getElementById('mobile-nav-home');
-  const mobileNavAulas = document.getElementById('mobile-nav-aulas');
-  const mobileNavQuiz = document.getElementById('mobile-nav-quiz');
-  if (mobileNavHome) mobileNavHome.addEventListener('click', () => switchView('home'));
-  if (mobileNavAulas) mobileNavAulas.addEventListener('click', () => switchView('day1'));
-  if (mobileNavQuiz) mobileNavQuiz.addEventListener('click', () => switchView('quiz'));
-
   document.querySelectorAll('#mobile-bottom-nav [data-target-view]').forEach(btn => {
     btn.addEventListener('click', () => {
       const target = btn.getAttribute('data-target-view');
@@ -660,23 +852,12 @@ function setupGlobalListeners() {
     btnHubStartQuiz.addEventListener('click', () => switchView('quiz'));
   }
 
-  document.querySelectorAll('#hub-quadro-aula [data-target-module], #hub-quadro-aula [data-axis]').forEach(btn => {
+  document.querySelectorAll('#hub-quadro-aula [data-target-module]:not(#btn-hub-continue-class), #hub-quadro-aula [data-axis]:not(#btn-hub-continue-class)').forEach(btn => {
     btn.addEventListener('click', () => {
       const mod = btn.getAttribute('data-target-module') || btn.getAttribute('data-axis');
       if (mod) navigateToModule(mod);
     });
   });
-
-  // Toggle do menu de utilitários no Mobile
-  const btnMobileUtil = document.getElementById('btn-mobile-util-trigger');
-  const studentUtilActions = document.getElementById('student-util-actions');
-  if (btnMobileUtil && studentUtilActions) {
-    btnMobileUtil.addEventListener('click', () => {
-      const isExpanded = btnMobileUtil.getAttribute('aria-expanded') === 'true';
-      btnMobileUtil.setAttribute('aria-expanded', String(!isExpanded));
-      studentUtilActions.classList.toggle('hidden', isExpanded);
-    });
-  }
 
   // Botões de conclusão dos módulos
   document.querySelectorAll('[data-comp-module]').forEach(btn => {
@@ -690,6 +871,43 @@ function setupGlobalListeners() {
       }
       updateMetricUI();
     });
+  });
+
+  // Players de vídeo conceituais (Estágio 1): ativação de áudio e exclusividade de playback
+  document.querySelectorAll('[data-video-unmute]').forEach((btn) => {
+    const targetId = btn.getAttribute('data-video-unmute');
+    const video = targetId ? document.getElementById(targetId) : null;
+    if (!video) return;
+    syncVideoAudioButton(video);
+    btn.addEventListener('click', () => {
+      const willUnmute = video.muted || video.volume === 0;
+      if (willUnmute) {
+        pauseOtherVideos(video);
+        if (video.volume === 0) video.volume = 1;
+        video.muted = false;
+        if (video.paused) {
+          video.play().catch(() => {});
+        }
+      } else {
+        video.muted = true;
+      }
+      syncVideoAudioButton(video);
+    });
+  });
+
+  document.querySelectorAll('video').forEach((video) => {
+    video.addEventListener('volumechange', () => {
+      syncVideoAudioButton(video);
+    });
+    video.addEventListener('play', () => {
+      pauseOtherVideos(video);
+    });
+  });
+
+  document.addEventListener('click', (e) => {
+    if (e.target instanceof Element && e.target.closest('[data-stage-tab], [data-advance-stage]')) {
+      queueMicrotask(pauseHiddenVideos);
+    }
   });
 
   window.addEventListener('resize', debounceResize);
