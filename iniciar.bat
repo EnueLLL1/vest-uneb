@@ -48,6 +48,11 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command ^
   "        '.svg'  { 'image/svg+xml' } " ^
   "        '.ico'  { 'image/x-icon' } " ^
   "        '.pdf'  { 'application/pdf' } " ^
+  "        '.mp4'  { 'video/mp4' } " ^
+  "        '.webm' { 'video/webm' } " ^
+  "        '.vtt'  { 'text/vtt; charset=utf-8' } " ^
+  "        '.mp3'  { 'audio/mpeg' } " ^
+  "        '.wav'  { 'audio/wav' } " ^
   "        default { 'application/octet-stream' } " ^
   "      }; " ^
   "      $response.ContentType = $mime; " ^

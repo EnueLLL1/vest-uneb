@@ -9,8 +9,17 @@ Desktop.ini
 node_modules/
 .vercel/
 
+# Python / Manim build-time environment, local TTS weights & render cache
+.venv/
+piper_models/
+manim_animations/media/
+manim_animations/__pycache__/
+*.pyc
+
+# Visual verification harness outputs
+test/screenshots/
+
 # IDE & Gemini
 .gemini/
 .idea/
 .vscode/
-

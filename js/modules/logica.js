@@ -169,20 +169,6 @@ export function toggleProp(which) {
   updateLogicUI();
 }
 
-export function checkLogicAnswer(optionIndex) {
-  const fb = document.getElementById('logic-feedback');
-  if (!fb) return;
-  fb.classList.remove('hidden', 'bg-emerald-50', 'text-emerald-900', 'border-emerald-200', 'bg-rose-50', 'text-rose-900', 'border-rose-200');
-
-  if (optionIndex === 3) {
-    fb.classList.add('bg-emerald-50', 'text-emerald-900', 'border', 'border-emerald-200');
-    fb.textContent = 'Correto! (Alternativa C) A negação formal da condicional P → Q é P ∧ ~Q.';
-  } else {
-    fb.classList.add('bg-rose-50', 'text-rose-900', 'border', 'border-rose-200');
-    fb.textContent = 'Atenção: mantenha a 1ª afirmativa e adicione "E" negando a 2ª parte (P ∧ ~Q).';
-  }
-}
-
 function selectLogicConceptRule(ruleKey) {
   const data = LOGIC_RULES[ruleKey];
   if (!data) return;
@@ -211,13 +197,6 @@ export function initLogic() {
   const btnQ = document.getElementById('toggle-q');
   if (btnP) btnP.addEventListener('click', () => toggleProp('p'));
   if (btnQ) btnQ.addEventListener('click', () => toggleProp('q'));
-
-  document.querySelectorAll('[data-logic-opt]').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const optIdx = parseInt(btn.getAttribute('data-logic-opt'), 10);
-      checkLogicAnswer(optIdx);
-    });
-  });
 
   document.querySelectorAll('[data-logic-rule]').forEach((btn) => {
     btn.addEventListener('click', () => selectLogicConceptRule(btn.getAttribute('data-logic-rule')));

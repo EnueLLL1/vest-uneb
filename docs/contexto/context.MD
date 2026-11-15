@@ -55,7 +55,8 @@ Aplicação web educacional interativa modular em ES Modules voltada para estuda
   - `stats.js` (`renderHistogramCanvas`): Sturges e histograma por classes do Eixo 6.
   - `quiz.js`: Motor do simulado, cronômetro adaptativo, navegação rápida e relatório por eixo.
 - **`js/utils/`:** `canvas.js` (scaling HiDPI), `toast.js` (região viva acessível) e `confirm.js` (confirmação via `<dialog>`).
-- **Scripts & Testes:** `iniciar.bat` (servidor HTTP local seguro), `verify_banco.js` (integridade do banco e imagens), `test/test_math.js` e `test/test_state.js`.
+- **Pílulas de Vídeo Manim (Build-time offline):** `manim_animations/` (`.venv` Manim + MiKTeX local + TTS `VoiceStudio`), ativos otimizados em `assets/videos/` e `assets/posters/` e diretrizes completas em `docs/manim_video_pipeline.md`.
+- **Scripts & Testes:** `iniciar.bat` (servidor HTTP local seguro), `verify_banco.js` (integridade do banco e imagens), `test/test_math.js`, `test/test_state.js` e `test/test_ui_hierarchy.js`.
 
 ## 5. Instruções para Novas Alterações
 
@@ -63,5 +64,6 @@ Ao modificar este projeto:
 
 1. Mantenha a arquitetura modular ES sem introduzir bibliotecas externas pesadas de gráficos.
 2. Preserve a responsividade mobile-first (alvos de toque >= 44px em `pointer: coarse`) e o suporte ao Modo Professor (que revela gabaritos comentados e notas de aula em todos os eixos).
-3. Após alterar classes Tailwind em `index.html` ou `js/`, recompile `css/app.css` com `npx tailwindcss@3 -i css/input.css -o css/app.css --minify`.
-4. Execute `node verify_banco.js`, `node test/test_math.js` e `node test/test_state.js` antes de concluir alterações.
+3. Para animações de Estágio 1 e questões críticas, siga o **Jeito B** aprovado em `docs/manim_video_pipeline.md` (lousa escura 3B1B + `MathTex` com tradução de símbolos *"em português claro"* e narração local em `VoiceStudio`), preservando o Laboratório Vivo em Canvas intacto.
+4. Após alterar classes Tailwind em `index.html` ou `js/`, recompile `css/app.css` com `npx tailwindcss@3 -i css/input.css -o css/app.css --minify`.
+5. Execute `node verify_banco.js`, `node test/test_math.js`, `node test/test_state.js` e `node test/test_ui_hierarchy.js` antes de concluir alterações.

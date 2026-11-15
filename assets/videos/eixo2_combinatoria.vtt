@@ -1,0 +1,42 @@
+WEBVTT
+
+00:00:00.150 --> 00:00:06.150
+No Eixo dois, imagine uma progressão aritmética em degraus,
+do primeiro termo a um até o último termo a n.
+
+00:00:06.700 --> 00:00:11.900
+Virando uma cópia de cabeça para baixo,
+formamos um retângulo de largura n por altura a um mais a n.
+
+00:00:12.300 --> 00:00:15.850
+Dividindo por dois:
+soma dos extremos vezes a metade dos termos.
+
+00:00:16.400 --> 00:00:21.150
+Agora em contagem: três alunos, Ana, Beto e Caio,
+para escolher dois.
+
+00:00:21.550 --> 00:00:23.200
+Trocar a ordem muda o resultado?
+
+00:00:23.750 --> 00:00:28.650
+Num pódio de primeiro e segundo lugares,
+Ana e Beto é diferente de Beto e Ana.
+
+00:00:29.000 --> 00:00:33.950
+Como a ordem importa, usamos arranjo de n elementos
+tomados p a p: seis pódios.
+
+00:00:34.450 --> 00:00:38.200
+Já numa comissão sem cargos,
+Ana e Beto formam o mesmo grupo.
+
+00:00:38.550 --> 00:00:43.200
+Dividimos pelo fatorial de p para cortar repetições:
+três comissões pela combinação.
+
+00:00:43.650 --> 00:00:46.350
+Resumo: extremos na soma e ordem no pódio.
+
+00:00:46.700 --> 00:00:49.500
+Teste os controles no Laboratório Vivo abaixo.
